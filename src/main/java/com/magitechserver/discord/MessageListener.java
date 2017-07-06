@@ -25,7 +25,7 @@ public class MessageListener extends ListenerAdapter {
             String name = event.getMember().getEffectiveName();
 
             // Message is not empty
-            if(message == null || message.equalsIgnoreCase("") || message.equalsIgnoreCase(" ")) {
+            if(message == null || message.trim().isEmpty()) {
                 return;
             }
 

@@ -19,6 +19,7 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingEvent;
 import org.spongepowered.api.plugin.Plugin;
 
+import javax.security.auth.login.LoginException;
 import java.nio.file.Path;
 
 /**
@@ -82,14 +83,8 @@ public class MagiShat {
             config = new Config(this, configFile, configDir);
             config.load();
 
-            if(Config.BOT_TOKEN.contains(" ") || Config.BOT_TOKEN.contains("-")) {
-                logger.error("ERROR STARTING THE PLUGIN:");
-                logger.error("THE TOKEN IN THE CONFIG IS INVALID!");
-                logger.error("You probably didn't set the token yet, edit your config!");
-                return;
-            }
+            if(!initJDA()) return;
 
-            initJDA();
             // Registering listeners
             Sponge.getEventManager().registerListeners(this, new ChatListener());
 
@@ -116,10 +111,9 @@ public class MagiShat {
 
         config = null;
 
-        if(jda != null ) {
-            logger.info("Disconnecting from Discord...");
-            jda.shutdown(false);
-        }
+        logger.info("Disconnecting from Discord...");
+        jda.shutdown(false);
+
         // Unregistering listeners
         Sponge.getEventManager().unregisterListeners(new ChatListener());
 
@@ -127,18 +121,21 @@ public class MagiShat {
 
     }
 
-    private void initJDA() {
+    private boolean initJDA() {
         try {
             jda = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN).buildBlocking();
-            if (jda != null) {
-                jda.addEventListener(new MessageListener());
-            } else {
-                logger.error("ERROR LOGGING TO DISCORD!");
-                logger.error("Stacktrace: ");
-            }
+            jda.addEventListener(new MessageListener());
+        } catch (LoginException e) {
+            logger.error("ERROR STARTING THE PLUGIN:");
+            logger.error("THE TOKEN IN THE CONFIG IS INVALID!");
+            logger.error("You probably didn't set the token yet, edit your config!");
+            return false;
         } catch (Exception e) {
+            logger.error("Error connecting to discord. This is NOT a plugin error");
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
 }
