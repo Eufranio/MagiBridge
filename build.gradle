@@ -6,8 +6,8 @@ plugins {
 }
 
 group = 'com.magitechserver'
-version = '1.0-SNAPSHOT'
-description = 'An Discord <-> Minecraft chat relay plugin'
+version = '1.1'
+description = 'A utility Discord <-> Minecraft chat relay plugin'
 mainClassName = 'com.magitechserver.MagiShat'
 compileJava.options.encoding = 'UTF-8'
 
@@ -30,5 +30,4 @@ shadowJar {
         exclude(dependency('org.spongepowered:spongeapi:6.0.0'))
     }
     baseName = 'MagiShat'
-    version = 1.0
 }

@@ -3,7 +3,7 @@
 </p>
 
 # MagiShat, by Eufranio
-MagiShat is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, forwarding messages from/to both sides, trough JDA and supported chat plugins.
+MagiShat is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, forwarding messages from/to both sides, through JDA and supported chat plugins.
 
 ### Supported plugins:
 [UltimateChat, from FabioZumbi12](https://forums.spongepowered.org/t/thought-balloon-ultimatechat-v-1-7-0-api-5-6)

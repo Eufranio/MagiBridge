@@ -27,7 +27,6 @@ import java.nio.file.Path;
 
 @Plugin(id = MagiShat.ID,
         name = MagiShat.NAME,
-        version = MagiShat.VERSION,
         description = MagiShat.DESCRIPTION,
         authors = { MagiShat.AUTHOR },
         dependencies = @Dependency(id = "ultimatechat", optional = true))
@@ -38,7 +37,6 @@ public class MagiShat {
 
     public static final String ID = "magishat";
     public static final String NAME = "MagiShat";
-    public static final String VERSION = "1.0.0";
     public static final String DESCRIPTION = "A utility Discord <-> Minecraft chat relay plugin";
     public static final String AUTHOR = "Eufranio";
 
@@ -51,7 +49,9 @@ public class MagiShat {
     private Path configDir;
 
     @Inject
-    public static Logger logger;
+    public MagiShat(Logger logger) {
+        this.logger = logger;
+    }
 
     private Config config;
 
@@ -71,6 +71,8 @@ public class MagiShat {
 
     public static JDA jda;
 
+    public static Logger logger;
+
     @Listener
     public void gameConstruct(GameConstructionEvent event) {
         instance = this;
@@ -79,13 +81,11 @@ public class MagiShat {
     @Listener
     public void init(GameInitializationEvent event) {
         initStuff(false);
-        DiscordHandler.sendMessageToChannel(Config.DISCORD_MAIN_CHANNEL, Config.SERVER_STARTING_MESSAGE);
     }
 
     @Listener
     public void stop(GameStoppingEvent event) throws Exception {
         stopStuff(false);
-        DiscordHandler.sendMessageToChannel(Config.DISCORD_MAIN_CHANNEL, Config.SERVER_STOPPING_MESSAGE);
     }
 
     @Listener
@@ -110,9 +110,19 @@ public class MagiShat {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if(!fake) {
+            DiscordHandler.sendMessageToChannel(Config.DISCORD_MAIN_CHANNEL, Config.SERVER_STARTING_MESSAGE);
+        }
+
     }
 
     public void stopStuff(Boolean fake) {
+
+        if(!fake) {
+            DiscordHandler.sendMessageToChannel(Config.DISCORD_MAIN_CHANNEL, Config.SERVER_STOPPING_MESSAGE);
+        }
+
         config = null;
 
         logger.info("Disconnecting from Discord...");
@@ -122,6 +132,7 @@ public class MagiShat {
         Sponge.getEventManager().unregisterListeners(new ChatListener());
 
         logger.info("Plugin stopped successfully!");
+
     }
 
     private boolean initJDA() {
