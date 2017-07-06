@@ -15,6 +15,7 @@ import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingEvent;
+import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
 import javax.security.auth.login.LoginException;
@@ -24,7 +25,13 @@ import java.nio.file.Path;
  * Created by Frani on 22/06/2017.
  */
 
-@Plugin(id = MagiShat.ID, name = MagiShat.NAME, version = MagiShat.VERSION, description = MagiShat.DESCRIPTION, authors = { MagiShat.AUTHOR })
+@Plugin(id = MagiShat.ID,
+        name = MagiShat.NAME,
+        version = MagiShat.VERSION,
+        description = MagiShat.DESCRIPTION,
+        authors = { MagiShat.AUTHOR },
+        dependencies = @Dependency(id = "ultimatechat", optional = true))
+
 public class MagiShat {
 
     private static MagiShat instance = null;
