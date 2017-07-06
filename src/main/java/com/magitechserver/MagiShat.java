@@ -11,8 +11,6 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -46,7 +44,7 @@ public class MagiShat {
     private Path configDir;
 
     @Inject
-    public Logger logger;
+    public static Logger logger;
 
     private Config config;
 
@@ -64,19 +62,33 @@ public class MagiShat {
 
     public static MagiShat getInstance() { return instance; }
 
-    public JDA jda;
+    public static JDA jda;
 
     @Listener
     public void gameConstruct(GameConstructionEvent event) {
         instance = this;
     }
 
-    public JDA getJDA() {
-        return jda;
+    @Listener
+    public void init(GameInitializationEvent event) {
+        initStuff(false);
+        DiscordHandler.sendMessageToChannel(Config.DISCORD_MAIN_CHANNEL, Config.SERVER_STARTING_MESSAGE);
     }
 
     @Listener
-    public void init(GameInitializationEvent event) {
+    public void stop(GameStoppingEvent event) throws Exception {
+        stopStuff(false);
+        DiscordHandler.sendMessageToChannel(Config.DISCORD_MAIN_CHANNEL, Config.SERVER_STOPPING_MESSAGE);
+    }
+
+    @Listener
+    public void reload(GameReloadEvent event) throws Exception {
+        stopStuff(true);
+        initStuff(true);
+        logger.info("Plugin reloaded successfully!");
+    }
+
+    public void initStuff(Boolean fake) {
         try {
             logger.info("MagiShat is starting!");
 
@@ -93,22 +105,7 @@ public class MagiShat {
         }
     }
 
-    @Listener
-    public void reload(GameReloadEvent event) throws Exception {
-        Cause cause = Cause.source(this).build();
-
-        GameStoppingEvent gameStoppingEvent = SpongeEventFactory.createGameStoppingEvent(cause);
-        stop(gameStoppingEvent);
-
-        GameInitializationEvent gameInitializationEvent = SpongeEventFactory.createGameInitializationEvent(cause);
-        init(gameInitializationEvent);
-
-        logger.info("Plugin reloaded successfully!");
-    }
-
-    @Listener
-    public void stop(GameStoppingEvent event) throws Exception {
-
+    public void stopStuff(Boolean fake) {
         config = null;
 
         logger.info("Disconnecting from Discord...");
@@ -118,7 +115,6 @@ public class MagiShat {
         Sponge.getEventManager().unregisterListeners(new ChatListener());
 
         logger.info("Plugin stopped successfully!");
-
     }
 
     private boolean initJDA() {

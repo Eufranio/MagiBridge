@@ -32,7 +32,7 @@ public class Config {
             try {
                 Sponge.getAssetManager().getAsset(instance, "MagiShat.conf").get().copyToFile(configFile);
             } catch (IOException | NoSuchElementException e) {
-               MagiShat.getInstance().logger.error("Could not create the default config! Report it in the plugin issue tracker, and include this stacktrace: ");
+               MagiShat.logger.error("Could not create the default config! Report it in the plugin issue tracker, and include this stacktrace: ");
                e.printStackTrace();
                 return;
             }
@@ -45,7 +45,7 @@ public class Config {
         try {
             rootNode = loader.load();
         } catch (IOException e) {
-            MagiShat.getInstance().logger.error("Could not load the default config! Report it in the plugin issue tracker, and include this stacktrace: ");
+            MagiShat.logger.error("Could not load the default config! Report it in the plugin issue tracker, and include this stacktrace: ");
             e.printStackTrace();
             return;
         }
@@ -59,8 +59,10 @@ public class Config {
 
         ConfigurationNode messages = rootNode.getNode("messages");
         DISCORD_TO_SERVER_FORMAT = messages.getNode("discord-to-server-global-format").getString("Format of the messsage sent from Discord to the server. Supports %user% and %msg%");
+        SERVER_STARTING_MESSAGE = messages.getNode("server-starting-message").getString("**The server is starting!**");
+        SERVER_STOPPING_MESSAGE = messages.getNode("server-stopping-message").getString("**The server is stopping!**");
 
-        MagiShat.getInstance().logger.info("Config loaded successfully!");
+        MagiShat.logger.info("Config loaded successfully!");
 
     }
 
@@ -71,5 +73,9 @@ public class Config {
     public static String DISCORD_TO_SERVER_FORMAT;
 
     public static String DISCORD_STAFF_CHANNEL;
+
+    public static String SERVER_STARTING_MESSAGE;
+
+    public static String SERVER_STOPPING_MESSAGE;
 
 }
