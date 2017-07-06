@@ -32,7 +32,8 @@ public class Config {
             try {
                 Sponge.getAssetManager().getAsset(instance, "MagiShat.conf").get().copyToFile(configFile);
             } catch (IOException | NoSuchElementException e) {
-               System.out.println("Houve um erro ao carregar a config, abortando!");
+               MagiShat.getInstance().logger.error("Could not create the default config! Report it in the plugin issue tracker, and include this stacktrace: ");
+               e.printStackTrace();
                 return;
             }
         }
@@ -44,7 +45,8 @@ public class Config {
         try {
             rootNode = loader.load();
         } catch (IOException e) {
-            System.out.println("A config nao pode ser carregada!");
+            MagiShat.getInstance().logger.error("Could not load the default config! Report it in the plugin issue tracker, and include this stacktrace: ");
+            e.printStackTrace();
             return;
         }
 
@@ -58,7 +60,7 @@ public class Config {
         ConfigurationNode messages = rootNode.getNode("messages");
         DISCORD_TO_SERVER_FORMAT = messages.getNode("discord-to-server-global-format").getString("Format of the messsage sent from Discord to the server. Supports %user% and %msg%");
 
-        System.out.println("Config carregada!");
+        MagiShat.getInstance().logger.info("Config loaded successfully!");
 
     }
 
