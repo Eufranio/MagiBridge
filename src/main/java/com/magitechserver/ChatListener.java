@@ -18,11 +18,6 @@ public class ChatListener extends DiscordHandler {
                 String content = e.getMessage();
                 String sender = e.getSender().getName();
                 String message = "**" + sender + "**: " + content;
-                if(MagiShat.getInstance().getJDA().getTextChannelById(Config.DISCORD_MAIN_CHANNEL) == null) {
-                    MagiShat.getInstance().logger.error("The main chat channel defined in the config isn't a valid Discord Channel ID!");
-                    MagiShat.getInstance().logger.error("Replace it with a valid one then reload the plugin!");
-                    return;
-                }
                 sendMessageToChannel(Config.DISCORD_MAIN_CHANNEL, message);
             }
         }
@@ -32,11 +27,6 @@ public class ChatListener extends DiscordHandler {
                 String content = e.getMessage();
                 String sender = e.getSender().getName();
                 String message = "**" + sender + "**: " + content;
-                if(MagiShat.getInstance().getJDA().getTextChannelById(Config.DISCORD_STAFF_CHANNEL) == null) {
-                    MagiShat.getInstance().logger.error("The staff chat channel defined in the config isn't a valid Discord Channel ID!");
-                    MagiShat.getInstance().logger.error("Replace it with a valid one then reload the plugin!");
-                    return;
-                }
                 sendMessageToChannel(Config.DISCORD_STAFF_CHANNEL, message);
             }
         }
