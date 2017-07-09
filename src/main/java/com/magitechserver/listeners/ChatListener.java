@@ -1,6 +1,7 @@
-package com.magitechserver;
+package com.magitechserver.listeners;
 
 import br.net.fabiozumbi12.UltimateChat.API.SendChannelMessageEvent;
+import com.magitechserver.DiscordHandler;
 import com.magitechserver.util.Config;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -10,17 +11,18 @@ import java.util.Map;
 /**
  * Created by Frani on 05/07/2017.
  */
-public class ChatListener extends DiscordHandler {
+public class ChatListener {
 
     @Listener
     public void onMessage(SendChannelMessageEvent e) {
         String discordChannel = getKey(e.getChannel().getName().toLowerCase());
-        if(discordChannel != null) {
-            sendMessageToChannel(discordChannel, getMessage(e));
+        if(discordChannel != null && getUCMessage(e) != null) {
+            DiscordHandler.sendMessageToChannel(discordChannel, getUCMessage(e));
         }
     }
 
-    public String getMessage(SendChannelMessageEvent e) {
+
+    public String getUCMessage(SendChannelMessageEvent e) {
         if(e.getSender() instanceof Player) {
             String content = e.getMessage();
             String sender = e.getSender().getName();

@@ -7,9 +7,10 @@ MagiBridge is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, 
 
 ### Supported plugins:
 [UltimateChat, from FabioZumbi12](https://forums.spongepowered.org/t/thought-balloon-ultimatechat-v-1-7-0-api-5-6)
+[Nucleus, from dualspiral](https://ore.spongepowered.org/Nucleus/Nucleus)
 
 ### Planned support:
-[Nucleus, from dualspiral](https://ore.spongepowered.org/Nucleus/Nucleus)
+None, suggest one if you want in the Issues tab =)
 
 ### Download
 You can download MagiShat from the [releases tab](https://github.com/Eufranio/MagiShat/releases).

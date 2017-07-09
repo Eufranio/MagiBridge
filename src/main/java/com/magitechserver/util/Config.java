@@ -61,16 +61,23 @@ public class Config {
 
         ConfigurationNode channel = rootNode.getNode("channel");
         MAIN_DISCORD_CHANNEL = channel.getNode("main-discord-channel").getString();
+        USE_NUCLEUS = channel.getNode("use-nucleus").getBoolean();
+        USE_UCHAT = channel.getNode("use-ultimatechat").getBoolean();
 
-        ConfigurationNode ids = channel.getNode("ids");
+        ConfigurationNode ids = channel.getNode("ultimtechat");
         try {
             CHANNELS = ids.getValue(typeToken);
         } catch (ObjectMappingException e) {
             e.printStackTrace();
         }
 
+        ConfigurationNode nucleus = channel.getNode("nucleus");
+        NUCLEUS_GLOBAL_DISCORD_CHANNEL = nucleus.getNode("global-discord-channel").getString();
+        NUCLEUS_STAFF_DISCORD_CHANNEL = nucleus.getNode("staff-discord-channel").getString();
+
         ConfigurationNode messages = rootNode.getNode("messages");
-        DISCORD_TO_SERVER_FORMAT = messages.getNode("discord-to-server-global-format").getString("");
+        DISCORD_TO_SERVER_FORMAT = messages.getNode("discord-to-server-global-format").getString("&7[&b&lDiscord&7] &f%user%&7: &7%msg%");
+        DISCORD_TO_SERVER_STAFF_FORMAT = messages.getNode("discord-to-server-staff-format").getString("&7[&c&lDiscord&7] &f%user%&7: &7%msg%");
         SERVER_STARTING_MESSAGE = messages.getNode("server-starting-message").getString("**The server is starting!**");
         SERVER_STOPPING_MESSAGE = messages.getNode("server-stopping-message").getString("**The server is stopping!**");
 
@@ -87,6 +94,8 @@ public class Config {
 
     public static String DISCORD_TO_SERVER_FORMAT;
 
+    public static String DISCORD_TO_SERVER_STAFF_FORMAT;
+
     public static String SERVER_STARTING_MESSAGE;
 
     public static String SERVER_STOPPING_MESSAGE;
@@ -94,5 +103,13 @@ public class Config {
     public static String MAIN_DISCORD_CHANNEL;
 
     public static Map<String, String> CHANNELS;
+
+    public static Boolean USE_NUCLEUS;
+
+    public static Boolean USE_UCHAT;
+
+    public static String NUCLEUS_GLOBAL_DISCORD_CHANNEL;
+
+    public static String NUCLEUS_STAFF_DISCORD_CHANNEL;
 
 }

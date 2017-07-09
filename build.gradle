@@ -6,22 +6,25 @@ plugins {
 }
 
 group = 'com.magitechserver'
-version = '1.2'
+version = '1.3'
 description = 'A utility Discord <-> Minecraft chat relay plugin'
 mainClassName = 'com.magitechserver.MagiBridge'
 compileJava.options.encoding = 'UTF-8'
 
 dependencies {
     compile 'org.spongepowered:spongeapi:6.0.0'
+    compileOnly 'io.github.nucleuspowered:nucleus-api:1.0.0-SNAPSHOT-S6.0'
     compile group: 'net.dv8tion', name: 'JDA', version:'3.0.BETA2_128'
     compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.5'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compileOnly files('libs/uchat.jar')
+    compileOnly files('libs/nucleus.jar')
 }
 
 repositories {
     mavenCentral()
     jcenter()
+    maven { url = "http://repo.drnaylor.co.uk/artifactory/list/minecraft" }
 }
 
 shadowJar {

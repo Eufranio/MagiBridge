@@ -2,6 +2,8 @@ package com.magitechserver;
 
 import com.google.inject.Inject;
 import com.magitechserver.discord.MessageListener;
+import com.magitechserver.listeners.ChatListener;
+import com.magitechserver.listeners.SpongeChatListener;
 import com.magitechserver.util.Config;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -30,7 +32,7 @@ import java.nio.file.Path;
         name = MagiBridge.NAME,
         description = MagiBridge.DESCRIPTION,
         authors = { MagiBridge.AUTHOR },
-        dependencies = @Dependency(id = "ultimatechat"))
+        dependencies = @Dependency(id = "ultimatechat", optional = true))
 
 public class MagiBridge {
 
@@ -70,7 +72,9 @@ public class MagiBridge {
 
     public static MagiBridge getInstance() { return instance; }
 
-    public static ChatListener listener;
+    public static ChatListener UCListener;
+
+    public static SpongeChatListener NucleusListener;
 
     public static JDA jda;
 
@@ -83,7 +87,8 @@ public class MagiBridge {
 
     @Listener
     public void gameInitialization(GameInitializationEvent event) {
-        listener = new ChatListener();
+        UCListener = new ChatListener();
+        NucleusListener = new SpongeChatListener();
     }
 
     @Listener
@@ -113,7 +118,13 @@ public class MagiBridge {
             if(!initJDA()) return;
 
             // Registering listeners
-            Sponge.getEventManager().registerListeners(this, listener);
+            if(Config.USE_NUCLEUS && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
+                Sponge.getEventManager().registerListeners(this, NucleusListener);
+                logger.info("Hooking into Nucleus");
+            } else if(Config.USE_UCHAT && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
+                Sponge.getEventManager().registerListeners(this, UCListener);
+                logger.info("Hooking into UltimateChat");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,7 +150,11 @@ public class MagiBridge {
         } catch (NullPointerException e) {}
 
         // Unregistering listeners
-        Sponge.getEventManager().unregisterListeners(listener);
+        if(Config.USE_NUCLEUS && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
+            Sponge.getEventManager().unregisterListeners(NucleusListener);
+        } else if(Config.USE_UCHAT && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
+            Sponge.getEventManager().unregisterListeners(UCListener);
+        }
 
         logger.info("Plugin stopped successfully!");
 
