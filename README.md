@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/189087591683981313/332557402522124291/CARALHO.png" width="300" alt="MagiShat Logo"/>
+  <img src="https://cdn.discordapp.com/attachments/189087591683981313/333642110555127808/CARALHO.png" width="300" alt="MagiShat Logo"/>
 </p>
 
 # MagiBridge, by Eufranio
