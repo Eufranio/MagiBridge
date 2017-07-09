@@ -7,12 +7,12 @@ package com.magitechserver;
 public class DiscordHandler {
 
     public static void sendMessageToChannel(String channel, String message) {
-        if(MagiShat.jda.getTextChannelById(channel) == null) {
-            MagiShat.logger.error("The channel " + channel + " defined in the config isn't a valid Discord Channel ID!");
-            MagiShat.logger.error("Replace it with a valid one then reload the plugin!");
+        if(MagiBridge.jda.getTextChannelById(channel) == null) {
+            MagiBridge.logger.error("The channel " + channel + " defined in the config isn't a valid Discord Channel ID!");
+            MagiBridge.logger.error("Replace it with a valid one then reload the plugin!");
             return;
         }
-        MagiShat.jda.getTextChannelById(channel).sendMessage(message).queue();
+        MagiBridge.jda.getTextChannelById(channel).sendMessage(message).queue();
     }
 
 }

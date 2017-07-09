@@ -26,18 +26,18 @@ import java.nio.file.Path;
  * Created by Frani on 22/06/2017.
  */
 
-@Plugin(id = MagiShat.ID,
-        name = MagiShat.NAME,
-        description = MagiShat.DESCRIPTION,
-        authors = { MagiShat.AUTHOR },
+@Plugin(id = MagiBridge.ID,
+        name = MagiBridge.NAME,
+        description = MagiBridge.DESCRIPTION,
+        authors = { MagiBridge.AUTHOR },
         dependencies = @Dependency(id = "ultimatechat"))
 
-public class MagiShat {
+public class MagiBridge {
 
-    private static MagiShat instance = null;
+    private static MagiBridge instance = null;
 
-    public static final String ID = "magishat";
-    public static final String NAME = "MagiShat";
+    public static final String ID = "magibridge";
+    public static final String NAME = "MagiBridge";
     public static final String DESCRIPTION = "A utility Discord <-> Minecraft chat relay plugin";
     public static final String AUTHOR = "Eufranio";
 
@@ -50,7 +50,7 @@ public class MagiShat {
     private Path configDir;
 
     @Inject
-    public MagiShat(Logger logger) {
+    public MagiBridge(Logger logger) {
         this.logger = logger;
     }
 
@@ -68,7 +68,7 @@ public class MagiShat {
         return instance.config;
     }
 
-    public static MagiShat getInstance() { return instance; }
+    public static MagiBridge getInstance() { return instance; }
 
     public static ChatListener listener;
 
@@ -105,7 +105,7 @@ public class MagiShat {
 
     public void initStuff(Boolean fake) {
         try {
-            logger.info("MagiShat is starting!");
+            logger.info("MagiBridge is starting!");
 
             config = new Config(this, configFile, configDir);
             config.load();

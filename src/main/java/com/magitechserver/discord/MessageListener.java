@@ -6,8 +6,6 @@ import com.magitechserver.util.Config;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.util.Map;
-
 /**
  * Created by Frani on 04/07/2017.
  */

@@ -2,7 +2,7 @@ package com.magitechserver.util;
 
 
 import com.google.common.reflect.TypeToken;
-import com.magitechserver.MagiShat;
+import com.magitechserver.MagiBridge;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -20,11 +20,11 @@ import java.util.NoSuchElementException;
  */
 public class Config {
 
-    private final MagiShat instance;
+    private final MagiBridge instance;
     private final Path configFile;
     private final Path configDir;
 
-    public Config(MagiShat instance, Path configFile, Path configDir) {
+    public Config(MagiBridge instance, Path configFile, Path configDir) {
         this.instance = instance;
         this.configFile = configFile;
         this.configDir = configDir;
@@ -33,9 +33,9 @@ public class Config {
     public void load() {
         if(!configFile.toFile().exists()) {
             try {
-                Sponge.getAssetManager().getAsset(instance, "MagiShat.conf").get().copyToFile(configFile);
+                Sponge.getAssetManager().getAsset(instance, "MagiBridge.conf").get().copyToFile(configFile);
             } catch (IOException | NoSuchElementException e) {
-               MagiShat.logger.error("Could not create the default config! Report it in the plugin issue tracker, and include this stacktrace: ");
+               MagiBridge.logger.error("Could not create the default config! Report it in the plugin issue tracker, and include this stacktrace: ");
                e.printStackTrace();
                 return;
             }
@@ -47,9 +47,9 @@ public class Config {
 
         try {
             rootNode = loader.load();
-            MagiShat.logger.error(configDir.toString());
+            MagiBridge.logger.error(configDir.toString());
         } catch (IOException e) {
-            MagiShat.logger.error("Could not load the default config! Report it in the plugin issue tracker, and include this stacktrace: ");
+            MagiBridge.logger.error("Could not load the default config! Report it in the plugin issue tracker, and include this stacktrace: ");
             e.printStackTrace();
             return;
         }
@@ -74,7 +74,7 @@ public class Config {
         SERVER_STARTING_MESSAGE = messages.getNode("server-starting-message").getString("**The server is starting!**");
         SERVER_STOPPING_MESSAGE = messages.getNode("server-stopping-message").getString("**The server is stopping!**");
 
-        MagiShat.logger.info("Config loaded successfully!");
+        MagiBridge.logger.info("Config loaded successfully!");
 
         /* try {
             loader.save(rootNode);

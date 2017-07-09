@@ -2,8 +2,8 @@
   <img src="https://cdn.discordapp.com/attachments/189087591683981313/332557402522124291/CARALHO.png" width="300" alt="MagiShat Logo"/>
 </p>
 
-# MagiShat, by Eufranio
-MagiShat is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, forwarding messages from/to both sides, through JDA and supported chat plugins.
+# MagiBridge, by Eufranio
+MagiBridge is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, forwarding messages from/to both sides, through JDA and supported chat plugins.
 
 ### Supported plugins:
 [UltimateChat, from FabioZumbi12](https://forums.spongepowered.org/t/thought-balloon-ultimatechat-v-1-7-0-api-5-6)
