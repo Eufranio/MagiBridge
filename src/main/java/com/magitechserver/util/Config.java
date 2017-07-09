@@ -1,15 +1,18 @@
 package com.magitechserver.util;
 
 
+import com.google.common.reflect.TypeToken;
 import com.magitechserver.MagiShat;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -44,38 +47,52 @@ public class Config {
 
         try {
             rootNode = loader.load();
+            MagiShat.logger.error(configDir.toString());
         } catch (IOException e) {
             MagiShat.logger.error("Could not load the default config! Report it in the plugin issue tracker, and include this stacktrace: ");
             e.printStackTrace();
             return;
         }
 
+        TypeToken<Map<String, String>> typeToken = new TypeToken<Map<String, String>>() {};
+
         ConfigurationNode bot = rootNode.getNode("bot");
         BOT_TOKEN = bot.getNode("token").getString("your-token-here");
 
         ConfigurationNode channel = rootNode.getNode("channel");
-        DISCORD_MAIN_CHANNEL = channel.getNode("discord-main-channel").getString("Main channel ID of your discord server");
-        DISCORD_STAFF_CHANNEL = channel.getNode("discord-staff-channel").getString("Channel ID of your Staff/Admin channel");
+        MAIN_DISCORD_CHANNEL = channel.getNode("main-discord-channel").getString();
+
+        ConfigurationNode ids = channel.getNode("ids");
+        try {
+            CHANNELS = ids.getValue(typeToken);
+        } catch (ObjectMappingException e) {
+            e.printStackTrace();
+        }
 
         ConfigurationNode messages = rootNode.getNode("messages");
-        DISCORD_TO_SERVER_FORMAT = messages.getNode("discord-to-server-global-format").getString("Format of the messsage sent from Discord to the server. Supports %user% and %msg%");
+        DISCORD_TO_SERVER_FORMAT = messages.getNode("discord-to-server-global-format").getString("");
         SERVER_STARTING_MESSAGE = messages.getNode("server-starting-message").getString("**The server is starting!**");
         SERVER_STOPPING_MESSAGE = messages.getNode("server-stopping-message").getString("**The server is stopping!**");
 
         MagiShat.logger.info("Config loaded successfully!");
 
+        /* try {
+            loader.save(rootNode);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } */
     }
 
     public static String BOT_TOKEN;
 
-    public static String DISCORD_MAIN_CHANNEL;
-
     public static String DISCORD_TO_SERVER_FORMAT;
-
-    public static String DISCORD_STAFF_CHANNEL;
 
     public static String SERVER_STARTING_MESSAGE;
 
     public static String SERVER_STOPPING_MESSAGE;
+
+    public static String MAIN_DISCORD_CHANNEL;
+
+    public static Map<String, String> CHANNELS;
 
 }

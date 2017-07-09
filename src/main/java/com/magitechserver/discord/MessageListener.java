@@ -1,9 +1,12 @@
 package com.magitechserver.discord;
 
+import br.net.fabiozumbi12.UltimateChat.UCChannel;
 import com.magitechserver.UCHandler;
 import com.magitechserver.util.Config;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+
+import java.util.Map;
 
 /**
  * Created by Frani on 04/07/2017.
@@ -11,43 +14,29 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class MessageListener extends ListenerAdapter {
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
-        if(event.getChannel().getId().equals(Config.DISCORD_MAIN_CHANNEL)) {
+    public void onMessageReceived(MessageReceivedEvent e) {
+        String channelID = e.getChannel().getId();
+        String chatChannel = Config.CHANNELS.get(channelID);
+        if(chatChannel != null) {
+            String message = e.getMessage().getContent();
+            String name = e.getMember().getEffectiveName();
+            if(UCHandler.getChannelByCaseInsensitiveName(chatChannel) == null) return;
+            UCChannel channel = UCHandler.getChannelByCaseInsensitiveName(chatChannel);
 
-            // User is not a bot
-            if(event.getAuthor().getId() == event.getJDA().getSelfUser().getId() || event.getAuthor().isFake()) {
-                return;
-            }
-
-            String message = event.getMessage().getContent();
-
-            // Get nickname and not real name
-            String name = event.getMember().getEffectiveName();
-
-            // Message is not empty
-            if(message == null || message.trim().isEmpty()) {
-                return;
-            }
-
-            // Message is not higher than 120 chars
+            if(e.getAuthor().getId() == e.getJDA().getSelfUser().getId() || e.getAuthor().isFake()) return;
+            if(message == null || message.trim().isEmpty()) return;
             if(message.length() > 120) {
                 message = message.substring(0, message.length() - 120);
             }
-
-            // Message is not in a code block
             if(message.startsWith("```")) {
                 message = message.substring(0, message.length() - 3).substring(3);
             }
-            if(message.startsWith("``")) {
-                message = message.substring(0, message.length() - 2).substring(2);
+            if(message.startsWith("`")) {
+                message = message.substring(0, message.length() - 1).substring(1);
             }
-
-            // Replace placeholders from config to their actual values
             String msg = Config.DISCORD_TO_SERVER_FORMAT.replace("%user%", name).replace("%msg%", message);
 
-            // Finally sends the message to the channel
-            UCHandler.sendMessageToChannel("global", msg);
-
+            UCHandler.sendMessageToChannel(channel, msg);
         }
     }
 

@@ -5,6 +5,8 @@ import com.magitechserver.util.Config;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 
+import java.util.Map;
+
 /**
  * Created by Frani on 05/07/2017.
  */
@@ -12,24 +14,30 @@ public class ChatListener extends DiscordHandler {
 
     @Listener
     public void onMessage(SendChannelMessageEvent e) {
+        String discordChannel = getKey(e.getChannel().getName().toLowerCase());
+        if(discordChannel != null) {
+            sendMessageToChannel(discordChannel, getMessage(e));
+        }
+    }
 
-        if (e.getChannel().getName().equalsIgnoreCase("global")) {
-            if (e.getSender() instanceof Player) {
-                String content = e.getMessage();
-                String sender = e.getSender().getName();
-                String message = "**" + sender + "**: " + content;
-                sendMessageToChannel(Config.DISCORD_MAIN_CHANNEL, message);
+    public String getMessage(SendChannelMessageEvent e) {
+        if(e.getSender() instanceof Player) {
+            String content = e.getMessage();
+            String sender = e.getSender().getName();
+            String message = "**" + sender + "**: " + content;
+            return message;
+        }
+        return null;
+    }
+
+    private String getKey(String value) {
+        if(!Config.CHANNELS.containsValue(value)) return null;
+        for (Map.Entry<String, String> values : Config.CHANNELS.entrySet()) {
+            if(value.equals(values.getValue())) {
+                return values.getKey();
             }
         }
-
-        if (Config.DISCORD_STAFF_CHANNEL != null && e.getChannel().getName().equalsIgnoreCase("staff")) {
-            if (e.getSender() instanceof Player) {
-                String content = e.getMessage();
-                String sender = e.getSender().getName();
-                String message = "**" + sender + "**: " + content;
-                sendMessageToChannel(Config.DISCORD_STAFF_CHANNEL, message);
-            }
-        }
+        return null;
     }
 }
 

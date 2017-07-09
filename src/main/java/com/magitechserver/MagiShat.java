@@ -14,6 +14,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -29,7 +30,7 @@ import java.nio.file.Path;
         name = MagiShat.NAME,
         description = MagiShat.DESCRIPTION,
         authors = { MagiShat.AUTHOR },
-        dependencies = @Dependency(id = "ultimatechat", optional = true))
+        dependencies = @Dependency(id = "ultimatechat"))
 
 public class MagiShat {
 
@@ -69,6 +70,8 @@ public class MagiShat {
 
     public static MagiShat getInstance() { return instance; }
 
+    public static ChatListener listener;
+
     public static JDA jda;
 
     public static Logger logger;
@@ -79,7 +82,12 @@ public class MagiShat {
     }
 
     @Listener
-    public void init(GameInitializationEvent event) {
+    public void gameInitialization(GameInitializationEvent event) {
+        listener = new ChatListener();
+    }
+
+    @Listener
+    public void init(GamePostInitializationEvent event) {
         initStuff(false);
     }
 
@@ -105,14 +113,14 @@ public class MagiShat {
             if(!initJDA()) return;
 
             // Registering listeners
-            Sponge.getEventManager().registerListeners(this, new ChatListener());
+            Sponge.getEventManager().registerListeners(this, listener);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if(!fake) {
-            DiscordHandler.sendMessageToChannel(Config.DISCORD_MAIN_CHANNEL, Config.SERVER_STARTING_MESSAGE);
+            DiscordHandler.sendMessageToChannel(Config.MAIN_DISCORD_CHANNEL, Config.SERVER_STARTING_MESSAGE);
         }
 
     }
@@ -120,16 +128,18 @@ public class MagiShat {
     public void stopStuff(Boolean fake) {
 
         if(!fake) {
-            DiscordHandler.sendMessageToChannel(Config.DISCORD_MAIN_CHANNEL, Config.SERVER_STOPPING_MESSAGE);
+            DiscordHandler.sendMessageToChannel(Config.MAIN_DISCORD_CHANNEL, Config.SERVER_STOPPING_MESSAGE);
         }
 
         config = null;
 
         logger.info("Disconnecting from Discord...");
-        jda.shutdown(false);
+        try {
+            jda.shutdown(false);
+        } catch (NullPointerException e) {}
 
         // Unregistering listeners
-        Sponge.getEventManager().unregisterListeners(new ChatListener());
+        Sponge.getEventManager().unregisterListeners(listener);
 
         logger.info("Plugin stopped successfully!");
 

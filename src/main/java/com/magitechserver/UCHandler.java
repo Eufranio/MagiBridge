@@ -1,7 +1,7 @@
 package com.magitechserver;
 
 import br.net.fabiozumbi12.UltimateChat.UCChannel;
-import br.net.fabiozumbi12.UltimateChat.UChat;
+import br.net.fabiozumbi12.UltimateChat.API.uChatAPI;
 import org.spongepowered.api.Sponge;
 
 /**
@@ -10,22 +10,16 @@ import org.spongepowered.api.Sponge;
 public class UCHandler {
 
     // Obvious?
-    public static void sendMessageToChannel(String channel, String message) {
-
-        UCChannel chatChannel = getChannelByCaseInsensitiveName(channel);
-
-        if(!(chatChannel == null)) {
-            chatChannel.sendMessage(Sponge.getServer().getConsole(), message);
-        }
+    public static void sendMessageToChannel(UCChannel channel, String message) {
+        channel.sendMessage(Sponge.getServer().getConsole(), message);
     }
 
     // Channels can be upper/lower case
-    private static UCChannel getChannelByCaseInsensitiveName(String name) {
-        for (UCChannel channel : UChat.get().getConfig().getChannels())
+    public static UCChannel getChannelByCaseInsensitiveName(String name) {
+        for (UCChannel channel : uChatAPI.getChannels())
             if (channel.getName().equalsIgnoreCase(name)) {
                 return channel;
             }
         return null;
     }
-
 }
