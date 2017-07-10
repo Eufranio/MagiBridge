@@ -64,7 +64,7 @@ public class Config {
         USE_NUCLEUS = channel.getNode("use-nucleus").getBoolean();
         USE_UCHAT = channel.getNode("use-ultimatechat").getBoolean();
 
-        ConfigurationNode ids = channel.getNode("ultimtechat");
+        ConfigurationNode ids = channel.getNode("ultimatechat");
         try {
             CHANNELS = ids.getValue(typeToken);
         } catch (ObjectMappingException e) {
