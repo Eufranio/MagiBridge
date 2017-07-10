@@ -119,10 +119,10 @@ public class MagiBridge {
             if(!initJDA()) return;
 
             // Registering listeners
-            if(Config.USE_NUCLEUS && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
+            if(getConfig().getBool("channel", "use-nucleus") && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
                 Sponge.getEventManager().registerListeners(this, NucleusListener);
                 logger.info("Hooking into Nucleus");
-            } else if(Config.USE_UCHAT && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
+            } else if(getConfig().getBool("channel", "use-ultimatechat") && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
                 Sponge.getEventManager().registerListeners(this, UCListener);
                 logger.info("Hooking into UltimateChat");
             }
@@ -132,7 +132,7 @@ public class MagiBridge {
         }
 
         if(!fake) {
-            DiscordHandler.sendMessageToChannel(Config.MAIN_DISCORD_CHANNEL, Config.SERVER_STARTING_MESSAGE);
+            DiscordHandler.sendMessageToChannel(getConfig().getString("channel", "main-discord-channel"), getConfig().getString("messages", "server-starting-message"));
         }
 
     }
@@ -140,7 +140,7 @@ public class MagiBridge {
     public void stopStuff(Boolean fake) {
 
         if(!fake) {
-            DiscordHandler.sendMessageToChannel(Config.MAIN_DISCORD_CHANNEL, Config.SERVER_STOPPING_MESSAGE);
+            DiscordHandler.sendMessageToChannel(getConfig().getString("channel", "main-discord-channel"), getConfig().getString("messages", "server-stopping-message"));
         }
 
         config = null;
@@ -151,9 +151,9 @@ public class MagiBridge {
         } catch (NullPointerException e) {}
 
         // Unregistering listeners
-        if(Config.USE_NUCLEUS && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
+        if(getConfig().getBool("channel", "use-nucleus") && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
             Sponge.getEventManager().unregisterListeners(NucleusListener);
-        } else if(Config.USE_UCHAT && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
+        } else if(getConfig().getBool("channel", "use-ultimatechat") && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
             Sponge.getEventManager().unregisterListeners(UCListener);
         }
 
@@ -163,7 +163,7 @@ public class MagiBridge {
 
     private boolean initJDA() {
         try {
-            jda = new JDABuilder(AccountType.BOT).setToken(Config.BOT_TOKEN).buildBlocking();
+            jda = new JDABuilder(AccountType.BOT).setToken(getConfig().getString("bot", "token")).buildBlocking();
             jda.addEventListener(new MessageListener());
         } catch (LoginException e) {
             logger.error("ERROR STARTING THE PLUGIN:");

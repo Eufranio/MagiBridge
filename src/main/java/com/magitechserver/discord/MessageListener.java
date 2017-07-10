@@ -1,8 +1,8 @@
 package com.magitechserver.discord;
 
 import br.net.fabiozumbi12.UltimateChat.UCChannel;
+import com.magitechserver.MagiBridge;
 import com.magitechserver.UCHandler;
-import com.magitechserver.util.Config;
 import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -18,9 +18,9 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent e) {
         String msg = null;
-        if (Config.USE_UCHAT && !Config.USE_NUCLEUS) {
+        if (MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && !MagiBridge.getConfig().getBool("channel", "use-nucleus")) {
             String channelID = e.getChannel().getId();
-            String chatChannel = Config.CHANNELS.get(channelID);
+            String chatChannel = MagiBridge.getConfig().getMap("channel", "ultimatechat").get(channelID);
             if (chatChannel != null) {
                 String message = e.getMessage().getContent();
                 String name = e.getMember().getEffectiveName();
@@ -42,18 +42,18 @@ public class MessageListener extends ListenerAdapter {
                 }
 
                 // Apply placeholders
-                msg = Config.DISCORD_TO_SERVER_FORMAT.replace("%user%", name).replace("%msg%", message);
+                msg = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format").replace("%user%", name).replace("%msg%", message);
 
                 UCHandler.sendMessageToChannel(channel, msg);
             }
         }
 
-        if(Config.USE_NUCLEUS && !Config.USE_UCHAT) {
+        if(MagiBridge.getConfig().getBool("channel", "use-nucleus") && !MagiBridge.getConfig().getBool("channels", "use-ultimatechat")) {
             String channelID = e.getChannel().getId();
             MessageChannel chatChannel = null;
-            if(channelID.equals(Config.NUCLEUS_GLOBAL_DISCORD_CHANNEL)) {
+            if(channelID.equals(MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel"))) {
                 chatChannel = Sponge.getServer().getBroadcastChannel();
-            } else if(channelID.equals(Config.NUCLEUS_STAFF_DISCORD_CHANNEL)) {
+            } else if(channelID.equals(MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel"))) {
                 chatChannel = StaffChatMessageChannel.getInstance();
             }
 
@@ -75,11 +75,11 @@ public class MessageListener extends ListenerAdapter {
                 }
 
                 // Apply placeholders
-                msg = Config.DISCORD_TO_SERVER_FORMAT.replace("%user%", name).replace("%msg%", message).replace("&", "§");
+                msg = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format").replace("%user%", name).replace("%msg%", message).replace("&", "§");
 
                 // Change message if on a staff channel
-                if(channelID.equals(Config.NUCLEUS_STAFF_DISCORD_CHANNEL)) {
-                    msg = Config.DISCORD_TO_SERVER_STAFF_FORMAT.replace("%user%", name).replace("%msg%", message).replace("&", "§");
+                if(channelID.equals(MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel"))) {
+                    msg = MagiBridge.getConfig().getString("messages", "discord-to-server-staff-format").replace("%user%", name).replace("%msg%", message).replace("&", "§");
                 }
 
                 // Finally sends the message

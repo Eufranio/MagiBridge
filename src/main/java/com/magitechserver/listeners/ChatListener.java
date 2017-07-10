@@ -2,6 +2,7 @@ package com.magitechserver.listeners;
 
 import br.net.fabiozumbi12.UltimateChat.API.SendChannelMessageEvent;
 import com.magitechserver.DiscordHandler;
+import com.magitechserver.MagiBridge;
 import com.magitechserver.util.Config;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -33,8 +34,8 @@ public class ChatListener {
     }
 
     private String getKey(String value) {
-        if(!Config.CHANNELS.containsValue(value)) return null;
-        for (Map.Entry<String, String> values : Config.CHANNELS.entrySet()) {
+        if(!MagiBridge.getConfig().getMap("channel", "ultimatechat").containsValue(value)) return null;
+        for (Map.Entry<String, String> values : MagiBridge.getConfig().getMap("channel", "ultimatechat").entrySet()) {
             if(value.equals(values.getValue())) {
                 return values.getKey();
             }
