@@ -23,9 +23,8 @@ public class MessageListener extends ListenerAdapter {
         // Basics
         String channelID = e.getChannel().getId();
         String message = e.getMessage().getContent();
-        String name = e.getMember().getEffectiveName();
-        if (name == null) return;
         if (e.getAuthor().getId() == e.getJDA().getSelfUser().getId() || e.getAuthor().isFake()) return;
+        String name = e.getMember().getEffectiveName();
         if (message == null || message.trim().isEmpty()) return;
         if (message.length() > 120) {
             message = message.substring(0, message.length() - 120);

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.magitechserver.discord.MessageListener;
 import com.magitechserver.listeners.ChatListener;
 import com.magitechserver.listeners.SpongeChatListener;
+import com.magitechserver.listeners.SpongeLoginListener;
 import com.magitechserver.util.Config;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -59,14 +60,6 @@ public class MagiBridge {
 
     private Config config;
 
-    public static Path getConfigFile() {
-        return instance.configFile;
-    }
-
-    public static Path getConfigDir() {
-        return instance.configDir;
-    }
-
     public static Config getConfig() {
         return instance.config;
     }
@@ -77,24 +70,19 @@ public class MagiBridge {
 
     public static SpongeChatListener NucleusListener;
 
+    public static SpongeLoginListener LoginListener;
+
     public static JDA jda;
 
     public static Logger logger;
 
     @Listener
-    public void gameConstruct(GameConstructionEvent event) {
+    public void init(GamePostInitializationEvent event) {
         instance = this;
-    }
-
-    @Listener
-    public void gameInitialization(GameInitializationEvent event) {
+        initStuff(false);
         UCListener = new ChatListener();
         NucleusListener = new SpongeChatListener();
-    }
-
-    @Listener
-    public void init(GamePostInitializationEvent event) {
-        initStuff(false);
+        LoginListener = new SpongeLoginListener();
     }
 
     @Listener
@@ -126,6 +114,7 @@ public class MagiBridge {
                 Sponge.getEventManager().registerListeners(this, UCListener);
                 logger.info("Hooking into UltimateChat");
             }
+            Sponge.getEventManager().registerListeners(this, LoginListener);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,8 +132,6 @@ public class MagiBridge {
             DiscordHandler.sendMessageToChannel(getConfig().getString("channel", "main-discord-channel"), getConfig().getString("messages", "server-stopping-message"));
         }
 
-        config = null;
-
         logger.info("Disconnecting from Discord...");
         try {
             jda.shutdown(false);
@@ -156,7 +143,8 @@ public class MagiBridge {
         } else if(getConfig().getBool("channel", "use-ultimatechat") && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
             Sponge.getEventManager().unregisterListeners(UCListener);
         }
-
+        Sponge.getEventManager().unregisterListeners(LoginListener);
+        config = null;
         logger.info("Plugin stopped successfully!");
 
     }
