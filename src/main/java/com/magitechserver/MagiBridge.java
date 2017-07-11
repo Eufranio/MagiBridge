@@ -77,12 +77,16 @@ public class MagiBridge {
     public static Logger logger;
 
     @Listener
-    public void init(GamePostInitializationEvent event) {
-        instance = this;
-        initStuff(false);
+    public void rlyInit(GameInitializationEvent event) {
         UCListener = new ChatListener();
         NucleusListener = new SpongeChatListener();
         LoginListener = new SpongeLoginListener();
+    }
+
+    @Listener
+    public void init(GamePostInitializationEvent event) {
+        instance = this;
+        initStuff(false);
     }
 
     @Listener

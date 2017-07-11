@@ -17,24 +17,22 @@ import java.util.Set;
 /**
  * Created by Frani on 10/07/2017.
  */
-public abstract class BridgeCommandSource implements CommandSource {
+public class BridgeCommandSource implements CommandSource {
 
-    private final CommandSource actualSource;
+    public BridgeCommandSource(String channel, CommandSource actualSource) {
+        this.channel = channel;
+        this.actualSource = actualSource;
+    }
+
+    private CommandSource actualSource;
 
     private String channel;
 
-    public void channelTo(String c) {
-        this.channel = c;
-    }
-
     @Override
     public void sendMessage(Text message) {
-        DiscordHandler.sendMessageToChannel(channel, message.toPlain());
-        this.channel = null;
-    }
-
-    public BridgeCommandSource(CommandSource actualSource) {
-        this.actualSource = actualSource;
+        if(message.toPlain().equals("") || message.toPlain().trim().isEmpty()) return;
+        String msg = "```" + message.toPlain() + "```";
+        DiscordHandler.sendMessageToChannel(channel, msg);
     }
 
     @Override

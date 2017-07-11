@@ -4,6 +4,7 @@ import br.net.fabiozumbi12.UltimateChat.UCChannel;
 import com.magitechserver.DiscordHandler;
 import com.magitechserver.MagiBridge;
 import com.magitechserver.UCHandler;
+import com.magitechserver.util.BridgeCommandSource;
 import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -23,7 +24,7 @@ public class MessageListener extends ListenerAdapter {
         // Basics
         String channelID = e.getChannel().getId();
         String message = e.getMessage().getContent();
-        if (e.getAuthor().getId() == e.getJDA().getSelfUser().getId() || e.getAuthor().isFake()) return;
+        if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) || e.getAuthor().isFake()) return;
         String name = e.getMember().getEffectiveName();
         if (message == null || message.trim().isEmpty()) return;
         if (message.length() > 120) {
@@ -36,6 +37,16 @@ public class MessageListener extends ListenerAdapter {
             message = message.substring(0, message.length() - 1).substring(1);
         }
         String msg = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format").replace("%user%", name).replace("%msg%", message).replace("&", "§");
+
+        // Handle console command
+        if(message.startsWith(MagiBridge.getConfig().getString("channel", "console-command"))) {
+            if (e.getMember().getRoles().stream().noneMatch(r -> r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "console-command-requiered-role")))) {
+                DiscordHandler.sendMessageToChannel(e.getChannel().getId(), "**You don't have permission to use the console command!**");
+                return;
+            }
+            String cmd = message.replace(MagiBridge.getConfig().getString("channel", "console-command") + " ", "");
+            Sponge.getCommandManager().process(new BridgeCommandSource(e.getChannel().getId(), Sponge.getServer().getConsole()), cmd);
+        }
 
         // UltimateChat hook active
         if (MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && !MagiBridge.getConfig().getBool("channel", "use-nucleus")) {
@@ -85,8 +96,6 @@ public class MessageListener extends ListenerAdapter {
             }
             DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), msg);
         }
-
-
     }
 
 }
