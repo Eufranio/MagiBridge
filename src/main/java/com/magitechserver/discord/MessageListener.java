@@ -53,7 +53,10 @@ public class MessageListener extends ListenerAdapter {
             String chatChannel = MagiBridge.getConfig().getMap("channel", "ultimatechat").get(channelID);
             if (chatChannel != null) {
 
-                if (UCHandler.getChannelByCaseInsensitiveName(chatChannel) == null) return;
+                if(MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(chatChannel)  != null) {
+                    msg = MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(chatChannel).replace("%user%", name).replace("%msg%", message).replace("&", "§");
+                }
+
                 UCChannel channel = UCHandler.getChannelByCaseInsensitiveName(chatChannel);
 
                 UCHandler.sendMessageToChannel(channel, msg);
