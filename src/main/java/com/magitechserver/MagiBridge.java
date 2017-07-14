@@ -7,6 +7,7 @@ import com.magitechserver.listeners.SpongeChatListener;
 import com.magitechserver.listeners.SpongeLoginListener;
 import com.magitechserver.util.CommandHandler;
 import com.magitechserver.util.Config;
+import com.magitechserver.util.TopicUpdater;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -40,6 +41,8 @@ import java.nio.file.Path;
 public class MagiBridge {
 
     private static MagiBridge instance = null;
+
+    private TopicUpdater updater;
 
     public static final String ID = "magibridge";
     public static final String NAME = "MagiBridge";
@@ -128,6 +131,20 @@ public class MagiBridge {
         if(!fake) {
             DiscordHandler.sendMessageToChannel(getConfig().getString("channel", "main-discord-channel"), getConfig().getString("messages", "server-starting-message"));
             CommandHandler.registerBroadcastCommand();
+
+            if (updater != null) {
+                if (updater.getState() == Thread.State.NEW) {
+                    updater.start();
+                } else {
+                    updater.interrupt();
+                    updater = new TopicUpdater();
+                    updater.start();
+                }
+            } else {
+                updater = new TopicUpdater();
+                updater.start();
+            }
+
         }
 
     }
@@ -136,6 +153,8 @@ public class MagiBridge {
 
         if(!fake) {
             DiscordHandler.sendMessageToChannel(getConfig().getString("channel", "main-discord-channel"), getConfig().getString("messages", "server-stopping-message"));
+            if (updater != null) updater.interrupt();
+            jda.getTextChannelById(getConfig().getString("channel", "main-discord-channel")).getManager().setTopic(getConfig().getString("messages", "channel-topic-offline")).queue();
         }
 
         logger.info("Disconnecting from Discord...");
@@ -171,5 +190,4 @@ public class MagiBridge {
         }
         return true;
     }
-
 }

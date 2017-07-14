@@ -101,7 +101,7 @@ public class MessageListener extends ListenerAdapter {
         }
     }
 
-    public Boolean isListenableChannel(String channel) {
+    public static Boolean isListenableChannel(String channel) {
         if(MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && MagiBridge.getConfig().getMap("channel", "ultimatechat").containsKey(channel)) {
             return true;
         }
