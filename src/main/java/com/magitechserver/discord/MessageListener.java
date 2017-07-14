@@ -40,7 +40,7 @@ public class MessageListener extends ListenerAdapter {
 
         // Handle console command
         if(message.startsWith(MagiBridge.getConfig().getString("channel", "console-command")) && isListenableChannel(channelID)) {
-            if (e.getMember().getRoles().stream().noneMatch(r -> r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "console-command-requiered-role")))) {
+            if (e.getMember().getRoles().stream().noneMatch(r -> r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "console-command-required-role")))) {
                 DiscordHandler.sendMessageToChannel(e.getChannel().getId(), "**You don't have permission to use the console command!**");
                 return;
             }
