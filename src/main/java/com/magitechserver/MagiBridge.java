@@ -5,6 +5,7 @@ import com.magitechserver.discord.MessageListener;
 import com.magitechserver.listeners.ChatListener;
 import com.magitechserver.listeners.SpongeChatListener;
 import com.magitechserver.listeners.SpongeLoginListener;
+import com.magitechserver.util.CommandHandler;
 import com.magitechserver.util.Config;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -126,6 +127,7 @@ public class MagiBridge {
 
         if(!fake) {
             DiscordHandler.sendMessageToChannel(getConfig().getString("channel", "main-discord-channel"), getConfig().getString("messages", "server-starting-message"));
+            CommandHandler.registerBroadcastCommand();
         }
 
     }
