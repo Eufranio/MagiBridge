@@ -2,9 +2,7 @@ package com.magitechserver;
 
 import com.google.inject.Inject;
 import com.magitechserver.discord.MessageListener;
-import com.magitechserver.listeners.ChatListener;
-import com.magitechserver.listeners.SpongeChatListener;
-import com.magitechserver.listeners.SpongeLoginListener;
+import com.magitechserver.listeners.*;
 import com.magitechserver.util.CommandHandler;
 import com.magitechserver.util.Config;
 import com.magitechserver.util.TopicUpdater;
@@ -71,10 +69,10 @@ public class MagiBridge {
     public static MagiBridge getInstance() { return instance; }
 
     public static ChatListener UCListener;
-
     public static SpongeChatListener NucleusListener;
-
     public static SpongeLoginListener LoginListener;
+    public static AchievementListener AchievementListener;
+    public static DeathListener DeathListener;
 
     public static JDA jda;
 
@@ -85,6 +83,8 @@ public class MagiBridge {
         UCListener = new ChatListener();
         NucleusListener = new SpongeChatListener();
         LoginListener = new SpongeLoginListener();
+        AchievementListener = new AchievementListener();
+        DeathListener = new DeathListener();
     }
 
     @Listener
@@ -122,6 +122,13 @@ public class MagiBridge {
                 Sponge.getEventManager().registerListeners(this, UCListener);
                 logger.info("Hooking into UltimateChat");
             }
+            if(getConfig().getBool("misc", "death-messages-enabled")) {
+                Sponge.getEventManager().registerListeners(this, DeathListener);
+            }
+            if(getConfig().getBool("misc", "achievement-messages-enabled")) {
+                Sponge.getEventManager().registerListeners(this, AchievementListener);
+            }
+
             Sponge.getEventManager().registerListeners(this, LoginListener);
 
         } catch (Exception e) {
