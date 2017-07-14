@@ -14,6 +14,10 @@ public class SpongeLoginListener {
 
     @Listener
     public void onLogin(ClientConnectionEvent.Join event, @First Player p) {
+        if(!p.hasPlayedBefore()) {
+            DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), MagiBridge.getConfig().getString("messages", "new-players-message").replace("%player%", p.getName()));
+            return;
+        }
         String joinMsg = MagiBridge.getConfig().getString("messages", "player-join-message").replace("%player%", p.getName());
         DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), joinMsg);
     }
