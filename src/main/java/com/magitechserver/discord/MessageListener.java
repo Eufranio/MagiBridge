@@ -39,7 +39,7 @@ public class MessageListener extends ListenerAdapter {
         String msg = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format").replace("%user%", name).replace("%msg%", message).replace("&", "§");
 
         // Handle console command
-        if(message.startsWith(MagiBridge.getConfig().getString("channel", "console-command"))) {
+        if(message.startsWith(MagiBridge.getConfig().getString("channel", "console-command")) && isListenableChannel(channelID)) {
             if (e.getMember().getRoles().stream().noneMatch(r -> r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "console-command-requiered-role")))) {
                 DiscordHandler.sendMessageToChannel(e.getChannel().getId(), "**You don't have permission to use the console command!**");
                 return;
@@ -86,7 +86,7 @@ public class MessageListener extends ListenerAdapter {
         }
 
         // Handle player list command
-        if(message.equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "player-list-command"))) {
+        if(message.equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "player-list-command")) && isListenableChannel(channelID)) {
             String players = null;
             if(Sponge.getServer().getOnlinePlayers().size() == 0) {
                 msg = "**There are no players online!**";
@@ -99,6 +99,24 @@ public class MessageListener extends ListenerAdapter {
             }
             DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), msg);
         }
+    }
+
+    public Boolean isListenableChannel(String channel) {
+        if(MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && MagiBridge.getConfig().getMap("channel", "ultimatechat").containsKey(channel)) {
+            return true;
+        }
+
+        if(MagiBridge.getConfig().getBool("channel", "use-nucleus") && (
+                MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel").equals(channel)
+             || MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel").equals(channel))) {
+            return true;
+        }
+
+        if(MagiBridge.getConfig().getString("channel", "main-discord-channel").equals(channel)) {
+            return true;
+        }
+
+        return false;
     }
 
 }
