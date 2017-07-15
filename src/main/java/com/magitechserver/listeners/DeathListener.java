@@ -4,6 +4,7 @@ import com.magitechserver.DiscordHandler;
 import com.magitechserver.MagiBridge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 
 /**
@@ -11,7 +12,7 @@ import org.spongepowered.api.event.entity.DestructEntityEvent;
  */
 public class DeathListener {
 
-    @Listener
+    @Listener(order = Order.LAST)
     public void onDeath(DestructEntityEvent.Death event) {
         if(event.getTargetEntity() instanceof Player) {
             String deathMessage = event.getMessage().toPlain();

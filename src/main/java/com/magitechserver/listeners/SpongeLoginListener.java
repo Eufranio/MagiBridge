@@ -4,6 +4,7 @@ import com.magitechserver.DiscordHandler;
 import com.magitechserver.MagiBridge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
@@ -12,7 +13,7 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
  */
 public class SpongeLoginListener {
 
-    @Listener
+    @Listener(order = Order.LAST)
     public void onLogin(ClientConnectionEvent.Join event, @First Player p) {
         if(!p.hasPlayedBefore()) {
             DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), MagiBridge.getConfig().getString("messages", "new-players-message").replace("%player%", p.getName()));
@@ -22,7 +23,7 @@ public class SpongeLoginListener {
         DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), joinMsg);
     }
 
-    @Listener
+    @Listener(order = Order.LAST)
     public void onQuit(ClientConnectionEvent.Disconnect event, @First Player p) {
         String quitMsg = MagiBridge.getConfig().getString("messages", "player-quit-message").replace("%player%", p.getName());
         DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), quitMsg);
