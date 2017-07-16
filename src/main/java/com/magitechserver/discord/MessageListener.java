@@ -27,6 +27,7 @@ public class MessageListener extends ListenerAdapter {
         String message = e.getMessage().getContent();
         if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) || e.getAuthor().isFake()) return;
         String name = e.getMember().getEffectiveName();
+        String toprole = e.getMember().getRoles().size() >= 1 ? e.getMember().getRoles().get(0).getName() : MagiBridge.getConfig().getString("messages", "no-role-prefix");
         if (message == null || message.trim().isEmpty()) return;
         if (message.length() > 120) {
             message = message.substring(0, message.length() - 120);
@@ -55,7 +56,11 @@ public class MessageListener extends ListenerAdapter {
             if (chatChannel != null) {
 
                 if(MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(chatChannel)  != null) {
-                    msg = MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(chatChannel).replace("%user%", name).replace("%msg%", message).replace("&", "§");
+                    msg = MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(chatChannel)
+                            .replace("%user%", name)
+                            .replace("%msg%", message)
+                            .replace("%toprole%", toprole)
+                            .replace("&", "§");
                 }
 
                 UCChannel channel = UCHandler.getChannelByCaseInsensitiveName(chatChannel);
@@ -79,7 +84,11 @@ public class MessageListener extends ListenerAdapter {
 
             if (chatChannel != null) {
                 if(channelID.equals(MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel"))) {
-                    msg = MagiBridge.getConfig().getString("messages", "discord-to-server-staff-format").replace("%user%", name).replace("%msg%", message).replace("&", "§");
+                    msg = MagiBridge.getConfig().getString("messages", "discord-to-server-staff-format")
+                            .replace("%user%", name)
+                            .replace("%msg%", message)
+                            .replace("%toprole%", toprole)
+                            .replace("&", "§");
                 }
 
                 Text text = Text.of(msg);
