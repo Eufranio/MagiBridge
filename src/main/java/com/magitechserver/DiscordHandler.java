@@ -12,6 +12,7 @@ public class DiscordHandler {
             MagiBridge.logger.error("Replace it with a valid one then reload the plugin!");
             return;
         }
+
         MagiBridge.jda.getTextChannelById(channel).sendMessage(message).queue();
     }
 

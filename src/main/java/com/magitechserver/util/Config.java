@@ -81,4 +81,8 @@ public class Config {
         }
         return null;
     }
+
+    public static Boolean useWebhooks() {
+        return MagiBridge.getConfig().getBool("channel", "use-webhooks");
+    }
 }
