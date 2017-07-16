@@ -27,6 +27,7 @@ public class SpongeChatListener {
                     .replace("%prefix%", prefix)
                     .replace("%message%", content);
             String discordChannel = MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel");
+
             if(e.getChannel().get() instanceof StaffChatMessageChannel) {
                 discordChannel = MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel");
             }

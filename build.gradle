@@ -19,6 +19,7 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compileOnly files('libs/uchat.jar')
     compileOnly files('libs/nucleus.jar')
+    compileOnly files('libs/boop.jar')
 }
 
 repositories {

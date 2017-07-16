@@ -5,6 +5,7 @@ import com.magitechserver.DiscordHandler;
 import com.magitechserver.MagiBridge;
 import com.magitechserver.UCHandler;
 import com.magitechserver.util.BridgeCommandSource;
+import flavor.pie.boop.BoopableChannel;
 import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -67,7 +68,11 @@ public class MessageListener extends ListenerAdapter {
         if(MagiBridge.getConfig().getBool("channel", "use-nucleus") && !MagiBridge.getConfig().getBool("channels", "use-ultimatechat")) {
             MessageChannel chatChannel = null;
             if(channelID.equals(MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel"))) {
-                chatChannel = Sponge.getServer().getBroadcastChannel();
+                if(Sponge.getPluginManager().getPlugin("boop").isPresent() && MagiBridge.getConfig().getBool("misc", "use-boop")) {
+                    chatChannel = new BoopableChannel(Sponge.getServer().getBroadcastChannel().getMembers());
+                } else {
+                    chatChannel = Sponge.getServer().getBroadcastChannel();
+                }
             } else if(channelID.equals(MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel"))) {
                 chatChannel = StaffChatMessageChannel.getInstance();
             }

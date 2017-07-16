@@ -18,6 +18,6 @@ public class AchievementListener {
         String msg = MagiBridge.getConfig().getString("messages", "achievement-message")
                 .replace("%player%", player)
                 .replace("%achievement%", achievement);
-        DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "discord-main-channel"), msg);
+        DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), msg);
     }
 }
