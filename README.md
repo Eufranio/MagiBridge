@@ -1,6 +1,7 @@
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/189087591683981313/333642110555127808/CARALHO.png" width="300" alt="MagiShat Logo"/>
+  <img src="https://user-images.githubusercontent.com/2921172/28250066-27f28466-6a2f-11e7-81fb-98cfee3a7313.png" width="300" alt="MagiBridge Logo"/>
 </p>
+MagiBridge logo, made by @fcpwiz
 
 # MagiBridge, by Eufranio
 MagiBridge is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, forwarding messages from/to both sides, through JDA and supported chat plugins.
@@ -12,7 +13,7 @@ MagiBridge is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, 
 None, suggest one if you want in the Issues tab =)
 
 ### Download
-You can download MagiShat from the [releases tab](https://github.com/Eufranio/MagiShat/releases).
+You can download MagiShat from the [releases tab](https://github.com/Eufranio/MagiBridge/releases).
 
 ### Issues / Suggestions
-You can suggest additions or report issues by [creating a ticket](https://github.com/Eufranio/MagiShat/issues/new) in the Issues tab, and I'll try to fix it asap.
+You can suggest additions or report issues by [creating a ticket](https://github.com/Eufranio/MagiBridge/issues/new) in the Issues tab, and I'll try to fix it asap.
