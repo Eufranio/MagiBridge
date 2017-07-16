@@ -20,10 +20,14 @@ public class SpongeChatListener {
     @Listener
     public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
         if(e.getChannel().isPresent()) {
-            String message = e.getMessage().toPlain();
+            String content = e.getMessage().toPlain();
+            String prefix = p.getOption("prefix").orElse("");
+            String message = MagiBridge.getConfig().getString("messages", "server-to-discord-format")
+                    .replace("%player%", p.getName())
+                    .replace("%prefix%", prefix)
+                    .replace("%message%", content);
             String discordChannel = MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel");
             if(e.getChannel().get() instanceof StaffChatMessageChannel) {
-                message = "**" + p.getName() + "**: " + message;
                 discordChannel = MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel");
             }
             if(Config.useWebhooks()) {

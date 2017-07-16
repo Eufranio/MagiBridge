@@ -20,10 +20,10 @@ public class ChatListener {
         String discordChannel = getKey(e.getChannel().getName().toLowerCase());
         if(discordChannel != null && getUCMessage(e) != null) {
             String prefix = null;
-            prefix = ((Player) e.getSender()).getOption("prefix").orElse(null);
+            prefix = ((Player) e.getSender()).getOption("prefix").orElse("");
             if(Config.useWebhooks()) {
                 Webhooking.sendWebhookMessage(MagiBridge.getConfig().getString("messages", "webhook-name")
-                        .replace("%prefix%", prefix == null ? "" : prefix)
+                        .replace("%prefix%", prefix)
                         .replace("%player%", e.getSender().getName()),
                         e.getSender().getName(),
                         getUCMessage(e),
@@ -38,8 +38,12 @@ public class ChatListener {
     private String getUCMessage(SendChannelMessageEvent e) {
         if(e.getSender() instanceof Player) {
             String content = e.getMessage();
-            String sender = e.getSender().getName();
-            String message = "**" + sender + "**: " + content;
+            String player = e.getSender().getName();
+            String prefix = ((Player) e.getSender()).getOption("prefix").orElse("");
+            String message = MagiBridge.getConfig().getString("messages", "server-to-discord-format")
+                    .replace("%player%", player)
+                    .replace("%prefix%", prefix)
+                    .replace("%message%", content);
             if(Config.useWebhooks()) {
                 message = content;
             }
@@ -49,9 +53,8 @@ public class ChatListener {
     }
 
     private String getKey(String value) {
-        if(!MagiBridge.getConfig().getMap("channel", "ultimatechat").containsValue(value)) return null;
         for (Map.Entry<String, String> values : MagiBridge.getConfig().getMap("channel", "ultimatechat").entrySet()) {
-            if(value.equals(values.getValue())) {
+            if(value.equals(values.getValue().toLowerCase())) {
                 return values.getKey();
             }
         }
