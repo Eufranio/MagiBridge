@@ -12,7 +12,7 @@ import org.json.JSONObject;
  */
 public class Webhooking {
 
-    public static void sendWebhookMessage(String player, String message, String channelID) {
+    public static void sendWebhookMessage(String hook, String player, String message, String channelID) {
 
         TextChannel channel = MagiBridge.jda.getTextChannelById(channelID);
         if(!channel.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
@@ -31,7 +31,7 @@ public class Webhooking {
 
         JSONObject json = new JSONObject();
         json.put("content", message);
-        json.put("username", player);
+        json.put("username", hook);
         json.put("avatar_url", "https://crafatar.com/avatars/" + player + "?default=MHF_Alex");
         try {
             Unirest.post(webhook.getUrl())

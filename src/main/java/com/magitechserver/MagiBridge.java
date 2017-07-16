@@ -175,6 +175,12 @@ public class MagiBridge {
         } else if(getConfig().getBool("channel", "use-ultimatechat") && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
             Sponge.getEventManager().unregisterListeners(UCListener);
         }
+        if(getConfig().getBool("misc", "death-messages-enabled")) {
+            Sponge.getEventManager().unregisterListeners(DeathListener);
+        }
+        if(getConfig().getBool("misc", "achievement-messages-enabled")) {
+            Sponge.getEventManager().unregisterListeners(AchievementListener);
+        }
         Sponge.getEventManager().unregisterListeners(LoginListener);
         config = null;
         logger.info("Plugin stopped successfully!");

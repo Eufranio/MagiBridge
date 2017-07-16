@@ -19,8 +19,15 @@ public class ChatListener {
     public void onMessage(SendChannelMessageEvent e) {
         String discordChannel = getKey(e.getChannel().getName().toLowerCase());
         if(discordChannel != null && getUCMessage(e) != null) {
+            String prefix = null;
+            prefix = ((Player) e.getSender()).getOption("prefix").orElse(null);
             if(Config.useWebhooks()) {
-                Webhooking.sendWebhookMessage(e.getSender().getName(), getUCMessage(e), discordChannel);
+                Webhooking.sendWebhookMessage(MagiBridge.getConfig().getString("messages", "webhook-name")
+                        .replace("%prefix%", prefix == null ? "" : prefix)
+                        .replace("%player%", e.getSender().getName()),
+                        e.getSender().getName(),
+                        getUCMessage(e),
+                        discordChannel);
                 return;
             }
             DiscordHandler.sendMessageToChannel(discordChannel, getUCMessage(e));

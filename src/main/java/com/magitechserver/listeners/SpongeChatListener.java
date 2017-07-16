@@ -27,7 +27,12 @@ public class SpongeChatListener {
                 discordChannel = MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel");
             }
             if(Config.useWebhooks()) {
-                Webhooking.sendWebhookMessage(p.getName(), e.getMessage().toPlain(), discordChannel);
+                Webhooking.sendWebhookMessage(MagiBridge.getConfig().getString("messages", "webhook-name")
+                        .replace("%prefix%", p.getOption("prefix").isPresent() ? p.getOption("prefix").orElse(null) : "")
+                        .replace("%player%", p.getName()),
+                        p.getName(),
+                        e.getMessage().toPlain(),
+                        discordChannel);
                 return;
             }
             DiscordHandler.sendMessageToChannel(discordChannel, message);
