@@ -5,6 +5,7 @@ import com.magitechserver.DiscordHandler;
 import com.magitechserver.MagiBridge;
 import com.magitechserver.UCHandler;
 import com.magitechserver.util.BridgeCommandSource;
+import com.magitechserver.util.ReplacerUtil;
 import flavor.pie.boop.BoopableChannel;
 import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -58,11 +59,11 @@ public class MessageListener extends ListenerAdapter {
             if (chatChannel != null) {
 
                 if(MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(chatChannel)  != null) {
-                    msg = MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(chatChannel)
+                    msg = ReplacerUtil.replaceEach(MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(chatChannel)
                             .replace("%user%", name)
                             .replace("%msg%", message)
-                            .replace("%toprole%", toprole)
-                            .replace("&", "§");
+                            .replace("%toprole%", toprole),
+                            MagiBridge.getConfig().getMap("discord-to-mc-replacer"));
                 }
 
                 UCChannel channel = UCHandler.getChannelByCaseInsensitiveName(chatChannel);
@@ -87,11 +88,12 @@ public class MessageListener extends ListenerAdapter {
 
             if (chatChannel != null) {
                 if(channelID.equals(MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel"))) {
-                    msg = MagiBridge.getConfig().getString("messages", "discord-to-server-staff-format")
+                    msg = ReplacerUtil.replaceEach(MagiBridge.getConfig().getString("messages", "discord-to-server-staff-format")
                             .replace("%user%", name)
                             .replace("%msg%", message)
                             .replace("%toprole%", toprole)
-                            .replace("&", "§");
+                            .replace("&", "§"),
+                            MagiBridge.getConfig().getMap("discord-to-mc-replacer"));
                 }
 
                 Text text = Text.of(msg);
