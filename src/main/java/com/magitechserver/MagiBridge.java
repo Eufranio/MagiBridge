@@ -9,6 +9,7 @@ import com.magitechserver.util.TopicUpdater;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Game;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
@@ -129,8 +130,10 @@ public class MagiBridge {
             if(getConfig().getBool("misc", "achievement-messages-enabled")) {
                 Sponge.getEventManager().registerListeners(this, AchievementListener);
             }
-
             Sponge.getEventManager().registerListeners(this, LoginListener);
+            if(!getConfig().getString("messages", "bot-game-status").trim().isEmpty()) {
+                jda.getPresence().setGame(Game.of(getConfig().getString("messages", "bot-game-status")));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
