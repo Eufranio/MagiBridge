@@ -70,7 +70,16 @@ public class Config {
     }
 
     public String getString(Object... key) {
-        return rootNode.getNode(key).getString();
+        String string = null;
+        try {
+            string = rootNode.getNode(key).getString();
+        } catch (Exception e) {
+            MagiBridge.logger.error("Could not retrieve a specific String!");
+            MagiBridge.logger.error("String key: " + key);
+            MagiBridge.logger.error("Stacktrace: ");
+            e.printStackTrace();
+        }
+        return string;
     }
 
     public Map<String, String> getMap(Object... key) {
