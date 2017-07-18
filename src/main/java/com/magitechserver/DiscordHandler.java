@@ -7,6 +7,7 @@ package com.magitechserver;
 public class DiscordHandler {
 
     public static void sendMessageToChannel(String channel, String message) {
+        if(MagiBridge.jda == null) return;
         if(MagiBridge.jda.getTextChannelById(channel) == null) {
             MagiBridge.logger.error("The channel " + channel + " defined in the config isn't a valid Discord Channel ID!");
             MagiBridge.logger.error("Replace it with a valid one then reload the plugin!");
