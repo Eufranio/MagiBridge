@@ -5,12 +5,14 @@ import com.magitechserver.MagiBridge;
 import com.magitechserver.util.Config;
 import com.magitechserver.util.Webhooking;
 import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
+import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
+import nl.riebie.mcclans.channels.ClanMessageChannelImpl;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 
-import java.util.Optional;
 
 /**
  * Created by Frani on 09/07/2017.
@@ -28,6 +30,9 @@ public class SpongeChatListener {
                     .replace("%message%", content);
             String discordChannel = MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel");
 
+            if(Sponge.getPluginManager().isLoaded("mcclans")) {
+                if(e.getChannel().get() instanceof AllyMessageChannelImpl || e.getChannel().get() instanceof ClanMessageChannelImpl) return;
+            }
             if(e.getChannel().get() instanceof StaffChatMessageChannel) {
                 discordChannel = MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel");
             }

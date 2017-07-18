@@ -40,6 +40,7 @@ public class MessageListener extends ListenerAdapter {
         }
         String msg = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format").replace("%user%", name).replace("%msg%", message).replace("&", "§");
 
+
         // Handle console command
         if(message.startsWith(MagiBridge.getConfig().getString("channel", "console-command")) && isListenableChannel(channelID)) {
             if (e.getMember().getRoles().stream().noneMatch(r -> r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "console-command-required-role")))) {
@@ -49,6 +50,7 @@ public class MessageListener extends ListenerAdapter {
             String cmd = message.replace(MagiBridge.getConfig().getString("channel", "console-command") + " ", "");
             Sponge.getCommandManager().process(new BridgeCommandSource(e.getChannel().getId(), Sponge.getServer().getConsole()), cmd);
         }
+
 
         // UltimateChat hook active
         if (MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && !MagiBridge.getConfig().getBool("channel", "use-nucleus")) {
@@ -68,6 +70,7 @@ public class MessageListener extends ListenerAdapter {
                 UCHandler.sendMessageToChannel(channel, msg);
             }
         }
+
 
         // Nucleus hook active
         if(MagiBridge.getConfig().getBool("channel", "use-nucleus") && !MagiBridge.getConfig().getBool("channels", "use-ultimatechat")) {
@@ -99,6 +102,7 @@ public class MessageListener extends ListenerAdapter {
             }
         }
 
+
         // Handle player list command
         if(message.equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "player-list-command")) && isListenableChannel(channelID)) {
             String players = null;
@@ -115,7 +119,7 @@ public class MessageListener extends ListenerAdapter {
         }
     }
 
-    public static Boolean isListenableChannel(String channel) {
+    private static Boolean isListenableChannel(String channel) {
         if(MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && MagiBridge.getConfig().getMap("channel", "ultimatechat").containsKey(channel)) {
             return true;
         }

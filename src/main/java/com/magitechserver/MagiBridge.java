@@ -34,7 +34,7 @@ import java.nio.file.Path;
         description = MagiBridge.DESCRIPTION,
         authors = { MagiBridge.AUTHOR },
         dependencies = {@Dependency(id = "ultimatechat", optional = true),
-                        @Dependency(id = "nucleus", version = "[1.7.3,)", optional = true),
+                        @Dependency(id = "nucleus", optional = true),
                         @Dependency(id = "boop", version = "[1.5.0,)", optional = true)})
 
 public class MagiBridge {

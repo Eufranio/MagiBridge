@@ -40,12 +40,14 @@ public class ChatListener {
             String content = e.getMessage();
             String player = e.getSender().getName();
             String prefix = ((Player) e.getSender()).getOption("prefix").orElse("");
-            String message = MagiBridge.getConfig().getString("messages", "server-to-discord-format")
-                    .replace("%player%", player)
-                    .replace("%prefix%", prefix)
-                    .replace("%message%", content);
+            String message = "";
             if(Config.useWebhooks()) {
                 message = content;
+            } else {
+                message = MagiBridge.getConfig().getString("messages", "server-to-discord-format")
+                        .replace("%player%", player)
+                        .replace("%prefix%", prefix)
+                        .replace("%message%", content);
             }
             return message;
         }
