@@ -165,7 +165,9 @@ public class MagiBridge {
         if(!fake) {
             DiscordHandler.sendMessageToChannel(getConfig().getString("channel", "main-discord-channel"), getConfig().getString("messages", "server-stopping-message"));
             if (updater != null) updater.interrupt();
-            jda.getTextChannelById(getConfig().getString("channel", "main-discord-channel")).getManager().setTopic(getConfig().getString("messages", "channel-topic-offline")).queue();
+            try {
+                jda.getTextChannelById(getConfig().getString("channel", "main-discord-channel")).getManager().setTopic(getConfig().getString("messages", "channel-topic-offline")).queue();
+            } catch (NullPointerException e) {}
         }
 
         logger.info("Disconnecting from Discord...");
