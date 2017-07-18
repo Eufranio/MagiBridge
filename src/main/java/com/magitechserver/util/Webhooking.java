@@ -32,7 +32,7 @@ public class Webhooking {
         JSONObject json = new JSONObject();
         json.put("content", message);
         json.put("username", hook);
-        json.put("avatar_url", "https://crafatar.com/avatars/" + player + "?default=MHF_Alex");
+        json.put("avatar_url", MagiBridge.getConfig().getString("messages", "webhook-picture-url").replace("%player%", player));
         try {
             Unirest.post(webhook.getUrl())
                     .header("Content-Type", "application/json")
