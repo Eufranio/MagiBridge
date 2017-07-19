@@ -24,7 +24,8 @@ public class SpongeChatListener {
         if(e.getChannel().isPresent()) {
             String content = e.getChannel().get() instanceof StaffChatMessageChannel ? e.getFormatter().getBody().toText().toPlain() : e.getMessage().toPlain();
             String prefix = p.getOption("prefix").orElse("");
-            String message = MagiBridge.getConfig().getString("messages", "server-to-discord-format")
+            String format = e.getChannel().get() instanceof StaffChatMessageChannel ? MagiBridge.getConfig().getString("messages", "server-to-discord-staff-format") : MagiBridge.getConfig().getString("messages", "server-to-discord-format");
+            String message = format
                     .replace("%player%", p.getName())
                     .replace("%prefix%", prefix.replaceAll("&([0-9a-fA-FlLkKrR])", ""))
                     .replace("%message%", content);
