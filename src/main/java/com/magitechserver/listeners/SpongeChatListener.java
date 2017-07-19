@@ -22,7 +22,7 @@ public class SpongeChatListener {
     @Listener
     public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
         if(e.getChannel().isPresent()) {
-            String content = e.getMessage().toPlain();
+            String content = e.getChannel().get() instanceof StaffChatMessageChannel ? e.getFormatter().getBody().toText().toPlain() : e.getMessage().toPlain();
             String prefix = p.getOption("prefix").orElse("");
             String message = MagiBridge.getConfig().getString("messages", "server-to-discord-format")
                     .replace("%player%", p.getName())
