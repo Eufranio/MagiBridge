@@ -111,8 +111,17 @@ public class MessageListener extends ListenerAdapter {
             if(Sponge.getServer().getOnlinePlayers().size() == 0) {
                 msg = "**There are no players online!**";
             } else {
+                String listformat = MagiBridge.getConfig().getString("messages", "player-list-name");
                 for (Player player : Sponge.getServer().getOnlinePlayers()) {
-                    players = players == null ? player.getName() + ", " : players + player.getName() + ", ".substring(0, players.length() - 1);
+                    players = players == null ? listformat
+                            .replace("%player%", player.getName())
+                            .replace("%prefix%", player.getOption("prefix")
+                                    .orElse("")) + ", "
+                            : players + listformat
+                            .replace("%player%", player.getName())
+                            .replace("%prefix%", player.getOption("prefix")
+                                    .orElse("")) +
+                            ", ".substring(0, players.length() - 1);
                 }
                 msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
                         + "```" + players + "```";
