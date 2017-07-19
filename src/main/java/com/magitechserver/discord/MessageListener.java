@@ -112,7 +112,7 @@ public class MessageListener extends ListenerAdapter {
                 msg = "**There are no players online!**";
             } else {
                 for (Player player : Sponge.getServer().getOnlinePlayers()) {
-                    players = players == null ? player.getName() : players + player.getName() + ", ";
+                    players = players == null ? player.getName() + ", " : players + player.getName() + ", ".substring(0, players.length() - 1);
                 }
                 msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
                         + "```" + players + "```";
