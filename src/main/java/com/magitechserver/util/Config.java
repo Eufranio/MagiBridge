@@ -12,6 +12,7 @@ import org.spongepowered.api.Sponge;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -75,7 +76,7 @@ public class Config {
             string = rootNode.getNode(key).getString();
         } catch (Exception e) {
             MagiBridge.logger.error("Could not retrieve a specific String!");
-            MagiBridge.logger.error("String key: " + key);
+            MagiBridge.logger.error("String key: " + Arrays.toString(key));
             MagiBridge.logger.error("Stacktrace: ");
             e.printStackTrace();
         }
