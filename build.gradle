@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.magitechserver'
-version = '1.8'
+version = '1.8.1'
 description = 'A utility Discord <-> Minecraft chat relay plugin'
 mainClassName = 'com.magitechserver.MagiBridge'
 compileJava.options.encoding = 'UTF-8'
@@ -31,6 +31,7 @@ repositories {
 
 shadowJar {
     relocate 'org.apache', 'shaded.apache'
+    relocate 'org.json', 'shaded.org.json'
     dependencies {
         exclude(dependency('org.spongepowered:spongeapi:6.0.0'))
     }
