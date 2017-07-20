@@ -11,8 +11,12 @@ import nl.riebie.mcclans.channels.ClanMessageChannelImpl;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.message.MessageChannelEvent;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**
@@ -20,9 +24,11 @@ import org.spongepowered.api.event.message.MessageChannelEvent;
  */
 public class SpongeChatListener {
 
-    @Listener
+    @Listener(order = Order.LAST)
     public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
+        if(e.isCancelled()) return;
         if(e.getChannel().isPresent()) {
+            MagiBridge.logger.error("MessageChannel: " + e.getChannel().get().getClass());
             String content = e.getChannel().get() instanceof StaffChatMessageChannel ? e.getFormatter().getBody().toText().toPlain() : e.getMessage().toPlain();
             String prefix = p.getOption("prefix").orElse("");
             String format = e.getChannel().get() instanceof StaffChatMessageChannel ? MagiBridge.getConfig().getString("messages", "server-to-discord-staff-format") : MagiBridge.getConfig().getString("messages", "server-to-discord-format");
