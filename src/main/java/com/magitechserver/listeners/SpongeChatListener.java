@@ -3,6 +3,7 @@ package com.magitechserver.listeners;
 import com.magitechserver.DiscordHandler;
 import com.magitechserver.MagiBridge;
 import com.magitechserver.util.Config;
+import com.magitechserver.util.GroupUtil;
 import com.magitechserver.util.Webhooking;
 import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
 import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
@@ -28,7 +29,8 @@ public class SpongeChatListener {
             String message = format
                     .replace("%player%", p.getName())
                     .replace("%prefix%", prefix)
-                    .replace("%message%", content);
+                    .replace("%message%", content)
+                    .replace("%topgroup%", GroupUtil.getHighestGroup(p));
             String discordChannel = MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel");
 
             if(Sponge.getPluginManager().isLoaded("mcclans")) {
@@ -40,7 +42,8 @@ public class SpongeChatListener {
             if(Config.useWebhooks()) {
                 Webhooking.sendWebhookMessage(MagiBridge.getConfig().getString("messages", "webhook-name")
                         .replace("%prefix%", p.getOption("prefix").isPresent() ? p.getOption("prefix").orElse(null) : "")
-                        .replace("%player%", p.getName()),
+                        .replace("%player%", p.getName())
+                        .replace("%topgroup%", GroupUtil.getHighestGroup(p)),
                         p.getName(),
                         e.getMessage().toPlain(),
                         discordChannel);

@@ -4,6 +4,7 @@ import br.net.fabiozumbi12.UltimateChat.API.SendChannelMessageEvent;
 import com.magitechserver.DiscordHandler;
 import com.magitechserver.MagiBridge;
 import com.magitechserver.util.Config;
+import com.magitechserver.util.GroupUtil;
 import com.magitechserver.util.Webhooking;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -24,7 +25,8 @@ public class ChatListener {
             if(Config.useWebhooks()) {
                 Webhooking.sendWebhookMessage(MagiBridge.getConfig().getString("messages", "webhook-name")
                         .replace("%prefix%", prefix)
-                        .replace("%player%", e.getSender().getName()),
+                        .replace("%player%", e.getSender().getName()
+                        .replace("%topgroup%", GroupUtil.getHighestGroup((Player) e.getSender()))),
                         e.getSender().getName(),
                         getUCMessage(e),
                         discordChannel);
@@ -47,7 +49,8 @@ public class ChatListener {
                 message = MagiBridge.getConfig().getString("messages", "server-to-discord-format")
                         .replace("%player%", player)
                         .replace("%prefix%", prefix)
-                        .replace("%message%", content);
+                        .replace("%message%", content)
+                        .replace("%topgroup%", GroupUtil.getHighestGroup((Player) e.getSender()));
             }
             return message;
         }
