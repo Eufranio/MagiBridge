@@ -30,7 +30,7 @@ public class Webhooking {
         }
 
         JSONObject json = new JSONObject();
-        json.put("content", message);
+        json.put("content", message.replaceAll("&([0-9a-fA-FlLkKrR])", ""));
         json.put("username", hook);
         json.put("avatar_url", MagiBridge.getConfig().getString("messages", "webhook-picture-url").replace("%player%", player));
         try {

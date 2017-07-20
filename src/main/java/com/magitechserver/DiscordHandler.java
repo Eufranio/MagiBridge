@@ -14,7 +14,7 @@ public class DiscordHandler {
             return;
         }
 
-        MagiBridge.jda.getTextChannelById(channel).sendMessage(message).queue();
+        MagiBridge.jda.getTextChannelById(channel).sendMessage(message.replaceAll("&([0-9a-fA-FlLkKrR])", "")).queue();
     }
 
 }

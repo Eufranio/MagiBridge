@@ -27,7 +27,7 @@ public class SpongeChatListener {
             String format = e.getChannel().get() instanceof StaffChatMessageChannel ? MagiBridge.getConfig().getString("messages", "server-to-discord-staff-format") : MagiBridge.getConfig().getString("messages", "server-to-discord-format");
             String message = format
                     .replace("%player%", p.getName())
-                    .replace("%prefix%", prefix.replaceAll("&([0-9a-fA-FlLkKrR])", ""))
+                    .replace("%prefix%", prefix)
                     .replace("%message%", content);
             String discordChannel = MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel");
 
