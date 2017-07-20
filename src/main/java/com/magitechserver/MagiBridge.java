@@ -131,7 +131,7 @@ public class MagiBridge {
                 Sponge.getEventManager().registerListeners(this, AchievementListener);
             }
             Sponge.getEventManager().registerListeners(this, LoginListener);
-            if(!getConfig().getString("messages", "bot-game-status").trim().isEmpty()) {
+            if(!getConfig().getString("messages", "bot-game-status").isEmpty()) {
                 jda.getPresence().setGame(Game.of(getConfig().getString("messages", "bot-game-status")));
             }
 

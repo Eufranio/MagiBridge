@@ -77,8 +77,7 @@ public class Config {
         } catch (Exception e) {
             MagiBridge.logger.error("Could not retrieve a specific String!");
             MagiBridge.logger.error("String key: " + Arrays.toString(key));
-            MagiBridge.logger.error("Stacktrace: ");
-            e.printStackTrace();
+            MagiBridge.logger.error("Stacktrace: " + e);
         }
         return string;
     }
