@@ -153,21 +153,13 @@ public class MessageListener extends ListenerAdapter {
 
     private static Boolean isMessageCommand(String message)
     {
-        final List<String> commands = new ArrayList<>();
+        final String command = (MagiBridge.getConfig().getString("channel", "console-command").toLowerCase());
+        final String online = (MagiBridge.getConfig().getString("channel", "player-list-command").toLowerCase());
 
-        commands.add(MagiBridge.getConfig().getString("channel", "console-command").toLowerCase());
-        commands.add(MagiBridge.getConfig().getString("channel", "player-list-command").toLowerCase());
-
-        final int commandLength = MagiBridge.getConfig().getString("channel", "console-command").toLowerCase().length();
-        final int messageLength = message.length();
-        final int textLength = messageLength - commandLength;
-        final String editedMessage = message.substring(0, messageLength - textLength).toLowerCase();
-
-        if (commands.contains(message.toLowerCase()) || commands.contains(editedMessage))
+        if (message.contains(online.toLowerCase()) || message.contains(command.toLowerCase()))
         {
             return true;
         }
-        
         return false;
     }
 
