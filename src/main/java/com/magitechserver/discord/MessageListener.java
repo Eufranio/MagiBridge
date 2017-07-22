@@ -15,6 +15,9 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Frani on 04/07/2017.
  */
@@ -56,7 +59,7 @@ public class MessageListener extends ListenerAdapter {
         // UltimateChat hook active
         if (MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && !MagiBridge.getConfig().getBool("channel", "use-nucleus")) {
             String chatChannel = MagiBridge.getConfig().getMap("channel", "ultimatechat").get(channelID);
-            if (chatChannel != null) {
+            if (chatChannel != null && !isMessageCommand(message)) {
 
                 if(MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(chatChannel)  != null) {
                     msg = ReplacerUtil.replaceEach(MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(chatChannel)
@@ -86,7 +89,7 @@ public class MessageListener extends ListenerAdapter {
                 chatChannel = StaffChatMessageChannel.getInstance();
             }
 
-            if (chatChannel != null) {
+            if (chatChannel != null && !isMessageCommand(message)) {
                 if(channelID.equals(MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel"))) {
                     msg = ReplacerUtil.replaceEach(MagiBridge.getConfig().getString("messages", "discord-to-server-staff-format")
                             .replace("%user%", name)
@@ -145,6 +148,18 @@ public class MessageListener extends ListenerAdapter {
             return true;
         }
 
+        return false;
+    }
+
+    private static Boolean isMessageCommand(String message)
+    {
+        final String command = (MagiBridge.getConfig().getString("channel", "console-command").toLowerCase());
+        final String online = (MagiBridge.getConfig().getString("channel", "player-list-command").toLowerCase());
+
+        if (message.contains(online.toLowerCase()) || message.contains(command.toLowerCase()))
+        {
+            return true;
+        }
         return false;
     }
 
