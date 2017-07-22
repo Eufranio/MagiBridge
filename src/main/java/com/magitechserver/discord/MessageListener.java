@@ -15,6 +15,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 
+import java.util.Collection;
+
 /**
  * Created by Frani on 04/07/2017.
  */
@@ -39,8 +41,10 @@ public class MessageListener extends ListenerAdapter {
         if (message.startsWith("`")) {
             message = message.substring(0, message.length() - 1).substring(1);
         }
-        String msg = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format").replace("%user%", name).replace("%msg%", message).replace("&", "§");
+        if(message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "console-command").toLowerCase())
+                || message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "player-list-command").toLowerCase())) return;
 
+        String msg = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format").replace("%user%", name).replace("%msg%", message).replace("&", "§");
 
         // Handle console command
         if(message.startsWith(MagiBridge.getConfig().getString("channel", "console-command")) && isListenableChannel(channelID)) {
@@ -104,24 +108,31 @@ public class MessageListener extends ListenerAdapter {
             }
         }
 
-
         // Handle player list command
         if(message.equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "player-list-command")) && isListenableChannel(channelID)) {
             String players = null;
-            if(Sponge.getServer().getOnlinePlayers().size() == 0) {
+            Collection<Player> cplayers = Sponge.getServer().getOnlinePlayers();
+            if(cplayers.size() == 0) {
                 msg = "**There are no players online!**";
             } else {
                 String listformat = MagiBridge.getConfig().getString("messages", "player-list-name");
-                for (Player player : Sponge.getServer().getOnlinePlayers()) {
-                    players = players == null ? listformat
-                            .replace("%player%", player.getName())
-                            .replace("%prefix%", player.getOption("prefix")
-                                    .orElse("")) + ", "
-                            : players + listformat
-                            .replace("%player%", player.getName())
-                            .replace("%prefix%", player.getOption("prefix")
-                                    .orElse("")) +
-                            ", ".substring(0, players.length() - 1);
+                if(cplayers.size() > 1) {
+                    for (Player player : cplayers) {
+                        players = players == null ? listformat
+                                .replace("%player%", player.getName())
+                                .replace("%prefix%", player.getOption("prefix")
+                                        .orElse("")) + ", "
+                                : players + listformat
+                                .replace("%player%", player.getName())
+                                .replace("%prefix%", player.getOption("prefix")
+                                        .orElse("")) +
+                                ", ".substring(0, players.length() - 1);
+                    }
+                } else {
+                    players = listformat
+                            .replace("%player%", cplayers.iterator().next().getName())
+                            .replace("%prefix%", cplayers.iterator().next().getOption("prefix")
+                                    .orElse(""));
                 }
                 msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
                         + "```" + players + "```";

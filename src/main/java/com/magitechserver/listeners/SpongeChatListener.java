@@ -26,7 +26,7 @@ public class SpongeChatListener {
 
     @Listener(order = Order.LAST)
     public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
-        if(e.isCancelled()) return;
+        if(!Sponge.getServer().getOnlinePlayers().contains(p)) return;
         if(e.getChannel().isPresent()) {
             MagiBridge.logger.error("MessageChannel: " + e.getChannel().get().getClass());
             String content = e.getChannel().get() instanceof StaffChatMessageChannel ? e.getFormatter().getBody().toText().toPlain() : e.getMessage().toPlain();
