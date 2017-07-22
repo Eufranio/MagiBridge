@@ -122,11 +122,11 @@ public class MessageListener extends ListenerAdapter {
                                 .replace("%player%", player.getName())
                                 .replace("%prefix%", player.getOption("prefix")
                                         .orElse("")) + ", "
-                                : players + listformat
+                                : players + (listformat
                                 .replace("%player%", player.getName())
                                 .replace("%prefix%", player.getOption("prefix")
                                         .orElse("")) +
-                                ", ".substring(0, players.length() - 1);
+                                ", ").substring(0, players.length() - 1);
                     }
                 } else {
                     players = listformat
