@@ -28,8 +28,7 @@ public class SpongeChatListener {
     public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
         if(!Sponge.getServer().getOnlinePlayers().contains(p)) return;
         if(e.getChannel().isPresent()) {
-            MagiBridge.logger.error("MessageChannel: " + e.getChannel().get().getClass());
-            String content = e.getChannel().get() instanceof StaffChatMessageChannel ? e.getFormatter().getBody().toText().toPlain() : e.getMessage().toPlain();
+            String content = e.getFormatter().getBody().toText().toPlain();
             String prefix = p.getOption("prefix").orElse("");
             String format = e.getChannel().get() instanceof StaffChatMessageChannel ? MagiBridge.getConfig().getString("messages", "server-to-discord-staff-format") : MagiBridge.getConfig().getString("messages", "server-to-discord-format");
             String message = format

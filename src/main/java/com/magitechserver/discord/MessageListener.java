@@ -16,6 +16,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,7 +37,7 @@ public class MessageListener extends ListenerAdapter {
         if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) || e.getAuthor().isFake()) return;
         String name = e.getMember().getEffectiveName();
         String toprole = e.getMember().getRoles().size() >= 1 ? e.getMember().getRoles().get(0).getName() : MagiBridge.getConfig().getString("messages", "no-role-prefix");
-        if (message == null || message.trim().isEmpty()) return;
+        if (message == null && e.getMessage().getAttachments().size() == 0 || message.trim().isEmpty() && e.getMessage().getAttachments().size() == 0) return;
         if (message.length() > 120) {
             message = message.substring(0, message.length() - 120);
         }
@@ -73,7 +75,7 @@ public class MessageListener extends ListenerAdapter {
                                 .replace("%player%", player.getName())
                                 .replace("%prefix%", player.getOption("prefix")
                                         .orElse("")) + ", "
-                                : players + (listformat
+                                : (players + listformat
                                 .replace("%player%", player.getName())
                                 .replace("%prefix%", player.getOption("prefix")
                                         .orElse("")) +
@@ -113,7 +115,6 @@ public class MessageListener extends ListenerAdapter {
             }
         }
 
-
         // Nucleus hook active
         if(MagiBridge.getConfig().getBool("channel", "use-nucleus") && !MagiBridge.getConfig().getBool("channels", "use-ultimatechat")) {
             MessageChannel chatChannel = null;
@@ -137,27 +138,24 @@ public class MessageListener extends ListenerAdapter {
                             MagiBridge.getConfig().getMap("discord-to-mc-replacer"));
                 }
 
-                Text text = Text.of(msg);
-
                 if(hasAttachment) {
-                    Text.Builder builder = Text.builder();
-                    Text hover = Text.of("Messages: ");
-                    for(Message.Attachment attachment : e.getMessage().getAttachments()) {
-                        // String attachmentUrl = attachment.getUrl();
-                        hover.concat(Text.of(attachment.getUrl()));
+                    Text attachment = attachmentBuilder(e);
+                    Text textMsg = Text.of(msg);
+                    if(!message.trim().isEmpty()) {
+                        chatChannel.getMembers().forEach(player -> player.sendMessage(Text.of(textMsg)));
                     }
-                    URL url = null;
-                    try {
-                        url = new URL(e.getMessage().getAttachments().get(0).getUrl());
-                    } catch (MalformedURLException exception) {}
-                    text = Text.builder(MagiBridge.getConfig().getString("messages", "attachment-name"))
-                            .onHover(TextActions.showText(hover))
-                            .onClick(TextActions.openUrl(url))
-                            .build();
+                    chatChannel.getMembers().forEach(player -> player.sendMessage(Text.of(
+                            ReplacerUtil.replaceEach(MagiBridge.getConfig().getString("messages", "discord-to-server-global-format")
+                                    .replace("%user%", name)
+                                    .replace("%msg%", "")
+                                    .replace("%toprole%", toprole)
+                                    .replace("&", "§"),
+                            MagiBridge.getConfig().getMap("discord-to-mc-replacer"))).concat(attachment)
+                    ));
+                } else {
+                    Text plainMsg = Text.of(msg);
+                    chatChannel.getMembers().forEach(player -> player.sendMessage(plainMsg));
                 }
-
-                Text anything = text;
-                chatChannel.getMembers().forEach(player -> player.sendMessage(anything));
 
                 // Can't do this yet. Waiting for Nucleus update
                 // chatChannel.send(name, msg);
@@ -181,6 +179,26 @@ public class MessageListener extends ListenerAdapter {
         }
 
         return false;
+    }
+
+    private Text attachmentBuilder(MessageReceivedEvent e) {
+        Text text = Text.of();
+        Text.Builder builder = Text.builder();
+        Text hover = TextSerializers.FORMATTING_CODE.deserialize("&bAttachment: ").concat(Text.NEW_LINE);
+        for(Message.Attachment attachment : e.getMessage().getAttachments()) {
+            hover = hover.concat(Text.of(attachment.getFileName())).concat(Text.NEW_LINE);
+        }
+        hover = hover.concat(TextSerializers.FORMATTING_CODE.deserialize("&bClick to open the attachment!"));
+        URL url = null;
+        try {
+            url = new URL(e.getMessage().getAttachments().get(0).getUrl());
+        } catch (MalformedURLException exception) {}
+        text = Text.builder(MagiBridge.getConfig().getString("messages", "attachment-name"))
+                .color(TextColors.AQUA)
+                .onHover(TextActions.showText(hover))
+                .onClick(TextActions.openUrl(url))
+                .build();
+        return text;
     }
 
 }

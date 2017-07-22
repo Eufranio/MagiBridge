@@ -173,7 +173,7 @@ public class MagiBridge {
         logger.info("Disconnecting from Discord...");
         try {
             jda.shutdown(false);
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException | NoClassDefFoundError e) {}
 
         // Unregistering listeners
         if(getConfig().getBool("channel", "use-nucleus") && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
