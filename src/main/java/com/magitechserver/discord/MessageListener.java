@@ -8,13 +8,17 @@ import com.magitechserver.util.BridgeCommandSource;
 import com.magitechserver.util.ReplacerUtil;
 import flavor.pie.boop.BoopableChannel;
 import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 
 /**
@@ -41,10 +45,9 @@ public class MessageListener extends ListenerAdapter {
         if (message.startsWith("`")) {
             message = message.substring(0, message.length() - 1).substring(1);
         }
-        if(message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "console-command").toLowerCase())
-                || message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "player-list-command").toLowerCase())) return;
 
         String msg = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format").replace("%user%", name).replace("%msg%", message).replace("&", "§");
+        boolean hasAttachment = e.getMessage().getAttachments().size() >= 1;
 
         // Handle console command
         if(message.startsWith(MagiBridge.getConfig().getString("channel", "console-command")) && isListenableChannel(channelID)) {
@@ -56,6 +59,40 @@ public class MessageListener extends ListenerAdapter {
             Sponge.getCommandManager().process(new BridgeCommandSource(e.getChannel().getId(), Sponge.getServer().getConsole()), cmd);
         }
 
+        // Handle player list command
+        if(message.equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "player-list-command")) && isListenableChannel(channelID)) {
+            String players = null;
+            Collection<Player> cplayers = Sponge.getServer().getOnlinePlayers();
+            if(cplayers.size() == 0) {
+                msg = "**There are no players online!**";
+            } else {
+                String listformat = MagiBridge.getConfig().getString("messages", "player-list-name");
+                if(cplayers.size() > 1) {
+                    for (Player player : cplayers) {
+                        players = players == null ? listformat
+                                .replace("%player%", player.getName())
+                                .replace("%prefix%", player.getOption("prefix")
+                                        .orElse("")) + ", "
+                                : players + (listformat
+                                .replace("%player%", player.getName())
+                                .replace("%prefix%", player.getOption("prefix")
+                                        .orElse("")) +
+                                ", ").substring(0, players.length() - 1);
+                    }
+                } else {
+                    players = listformat
+                            .replace("%player%", cplayers.iterator().next().getName())
+                            .replace("%prefix%", cplayers.iterator().next().getOption("prefix")
+                                    .orElse(""));
+                }
+                msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
+                        + "```" + players + "```";
+            }
+            DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), msg);
+        }
+
+        if(message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "console-command").toLowerCase())
+                || message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "player-list-command").toLowerCase())) return;
 
         // UltimateChat hook active
         if (MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && !MagiBridge.getConfig().getBool("channel", "use-nucleus")) {
@@ -101,43 +138,30 @@ public class MessageListener extends ListenerAdapter {
                 }
 
                 Text text = Text.of(msg);
-                chatChannel.getMembers().forEach(player -> player.sendMessage(text));
+
+                if(hasAttachment) {
+                    Text.Builder builder = Text.builder();
+                    Text hover = Text.of("Messages: ");
+                    for(Message.Attachment attachment : e.getMessage().getAttachments()) {
+                        // String attachmentUrl = attachment.getUrl();
+                        hover.concat(Text.of(attachment.getUrl()));
+                    }
+                    URL url = null;
+                    try {
+                        url = new URL(e.getMessage().getAttachments().get(0).getUrl());
+                    } catch (MalformedURLException exception) {}
+                    text = Text.builder(MagiBridge.getConfig().getString("messages", "attachment-name"))
+                            .onHover(TextActions.showText(hover))
+                            .onClick(TextActions.openUrl(url))
+                            .build();
+                }
+
+                Text anything = text;
+                chatChannel.getMembers().forEach(player -> player.sendMessage(anything));
 
                 // Can't do this yet. Waiting for Nucleus update
                 // chatChannel.send(name, msg);
             }
-        }
-
-        // Handle player list command
-        if(message.equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "player-list-command")) && isListenableChannel(channelID)) {
-            String players = null;
-            Collection<Player> cplayers = Sponge.getServer().getOnlinePlayers();
-            if(cplayers.size() == 0) {
-                msg = "**There are no players online!**";
-            } else {
-                String listformat = MagiBridge.getConfig().getString("messages", "player-list-name");
-                if(cplayers.size() > 1) {
-                    for (Player player : cplayers) {
-                        players = players == null ? listformat
-                                .replace("%player%", player.getName())
-                                .replace("%prefix%", player.getOption("prefix")
-                                        .orElse("")) + ", "
-                                : players + (listformat
-                                .replace("%player%", player.getName())
-                                .replace("%prefix%", player.getOption("prefix")
-                                        .orElse("")) +
-                                ", ").substring(0, players.length() - 1);
-                    }
-                } else {
-                    players = listformat
-                            .replace("%player%", cplayers.iterator().next().getName())
-                            .replace("%prefix%", cplayers.iterator().next().getOption("prefix")
-                                    .orElse(""));
-                }
-                msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
-                        + "```" + players + "```";
-            }
-            DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), msg);
         }
     }
 
