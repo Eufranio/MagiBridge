@@ -50,7 +50,7 @@ public class SpongeChatListener {
                         .replace("%player%", p.getName())
                         .replace("%topgroup%", GroupUtil.getHighestGroup(p)),
                         p.getName(),
-                        e.getMessage().toPlain(),
+                        content,
                         discordChannel);
                 return;
             }
