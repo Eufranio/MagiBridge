@@ -82,7 +82,7 @@ public class MessageListener extends ListenerAdapter {
                 msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
                         + "```" + players + "```";
             }
-            DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), msg);
+            DiscordHandler.sendMessageToChannel(e.getChannel().getId(), msg);
         }
 
         if(message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "console-command").toLowerCase())
