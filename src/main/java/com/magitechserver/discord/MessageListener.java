@@ -69,7 +69,7 @@ public class MessageListener extends ListenerAdapter {
                 msg = "**There are no players online!**";
             } else {
                 String listformat = MagiBridge.getConfig().getString("messages", "player-list-name");
-                if(cplayers.size() > 1) {
+                if(cplayers.size() >= 1) {
                     for (Player player : cplayers) {
                         players = players + listformat
                                 .replace("%player%", player.getName())
@@ -78,11 +78,6 @@ public class MessageListener extends ListenerAdapter {
                                 ", ";
                     }
                     players = players.substring(0, players.length() - 2);
-                } else if (cplayers.size() == 1) {
-                    players = listformat
-                            .replace("%player%", cplayers.iterator().next().getName())
-                            .replace("%prefix%", cplayers.iterator().next().getOption("prefix")
-                                    .orElse(""));
                 }
                 msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
                         + "```" + players + "```";
