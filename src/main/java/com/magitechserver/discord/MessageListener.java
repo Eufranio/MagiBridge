@@ -71,11 +71,7 @@ public class MessageListener extends ListenerAdapter {
                 String listformat = MagiBridge.getConfig().getString("messages", "player-list-name");
                 if(cplayers.size() > 1) {
                     for (Player player : cplayers) {
-                        players = players == null ? listformat
-                                .replace("%player%", player.getName())
-                                .replace("%prefix%", player.getOption("prefix")
-                                        .orElse("")) + ", "
-                                : players + listformat
+                        players = players + listformat
                                 .replace("%player%", player.getName())
                                 .replace("%prefix%", player.getOption("prefix")
                                         .orElse("")) +
