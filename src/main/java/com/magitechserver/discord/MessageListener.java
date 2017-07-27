@@ -39,7 +39,7 @@ public class MessageListener extends ListenerAdapter {
         String toprole = e.getMember().getRoles().size() >= 1 ? e.getMember().getRoles().get(0).getName() : MagiBridge.getConfig().getString("messages", "no-role-prefix");
         if (message == null && e.getMessage().getAttachments().size() == 0 || message.trim().isEmpty() && e.getMessage().getAttachments().size() == 0) return;
         if (message.length() > 120) {
-            message = message.substring(0, message.length() - 120);
+            message = message.substring(0, 120);
         }
         if (message.startsWith("```")) {
             message = message.substring(0, message.length() - 3).substring(3);
