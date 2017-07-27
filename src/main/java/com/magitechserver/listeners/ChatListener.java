@@ -18,6 +18,9 @@ public class ChatListener {
 
     @Listener
     public void onMessage(SendChannelMessageEvent e) {
+        // Tell
+        if(e.getChannel() == null) return;
+
         String discordChannel = getKey(e.getChannel().getName().toLowerCase());
         if(discordChannel != null && getUCMessage(e) != null) {
             String prefix = null;
