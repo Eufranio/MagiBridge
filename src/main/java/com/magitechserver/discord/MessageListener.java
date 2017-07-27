@@ -75,13 +75,14 @@ public class MessageListener extends ListenerAdapter {
                                 .replace("%player%", player.getName())
                                 .replace("%prefix%", player.getOption("prefix")
                                         .orElse("")) + ", "
-                                : (players + listformat
+                                : players + listformat
                                 .replace("%player%", player.getName())
                                 .replace("%prefix%", player.getOption("prefix")
                                         .orElse("")) +
-                                ", ").substring(0, players.length() - 1);
+                                ", ";
                     }
-                } else {
+                    players = players.substring(0, players.length() - 2);
+                } else if (cplayers.size() == 1) {
                     players = listformat
                             .replace("%player%", cplayers.iterator().next().getName())
                             .replace("%prefix%", cplayers.iterator().next().getOption("prefix")
