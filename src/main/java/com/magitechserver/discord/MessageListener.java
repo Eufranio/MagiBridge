@@ -63,7 +63,7 @@ public class MessageListener extends ListenerAdapter {
 
         // Handle player list command
         if(message.equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "player-list-command")) && isListenableChannel(channelID)) {
-            String players = null;
+            String players = "";
             Collection<Player> cplayers = Sponge.getServer().getOnlinePlayers();
             if(cplayers.size() == 0) {
                 msg = "**There are no players online!**";
