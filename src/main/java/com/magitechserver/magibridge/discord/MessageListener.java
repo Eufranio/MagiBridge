@@ -56,7 +56,7 @@ public class MessageListener extends ListenerAdapter {
         // Handle console command
         if(message.startsWith(MagiBridge.getConfig().getString("channel", "console-command")) && isListenableChannel(channelID)) {
             if (e.getMember().getRoles().stream().noneMatch(r -> r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "console-command-required-role")))) {
-                DiscordHandler.sendMessageToChannel(e.getChannel().getId(), "**You don't have permission to use the console command!**");
+                DiscordHandler.sendMessageToChannel(e.getChannel().getId(), MagiBridge.getConfig().getString("messages", "console-command-no-permission"));
                 return;
             }
             String cmd = message.replace(MagiBridge.getConfig().getString("channel", "console-command") + " ", "");
@@ -69,7 +69,7 @@ public class MessageListener extends ListenerAdapter {
             String players = "";
             Collection<Player> cplayers = Sponge.getServer().getOnlinePlayers();
             if(cplayers.size() == 0) {
-                msg = "**There are no players online!**";
+                msg = MagiBridge.getConfig().getString("messages", "no-players-message");
             } else {
                 String listformat = MagiBridge.getConfig().getString("messages", "player-list-name");
                 if(cplayers.size() >= 1) {
