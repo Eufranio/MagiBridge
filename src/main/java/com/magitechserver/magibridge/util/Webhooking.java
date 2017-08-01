@@ -4,8 +4,13 @@ import com.magitechserver.magibridge.MagiBridge;
 import com.mashape.unirest.http.Unirest;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.Webhook;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Frani on 15/07/2017.
@@ -29,8 +34,23 @@ public class Webhooking {
             webhook = channel.getGuild().getController().createWebhook(channel, "MB: " + channel.getName()).complete();
         }
 
+        String content = message.replaceAll("&([0-9a-fA-FlLkKrR])", "");
+        List<String> usersMentioned = new ArrayList<>();
+        Arrays.stream(content.split(" ")).filter(word ->
+                word.startsWith("@")).forEach(mention ->
+                    usersMentioned.add(mention.substring(1)));
+
+        if(!usersMentioned.isEmpty()) {
+            for (String user : usersMentioned) {
+                List<User> users = MagiBridge.jda.getUsersByName(user, true);
+                if(!users.isEmpty()) {
+                    content = content.replaceAll("@" + user, "<@" + users.get(0).getId() + ">");
+                }
+            }
+        }
+
         JSONObject json = new JSONObject();
-        json.put("content", message.replaceAll("&([0-9a-fA-FlLkKrR])", ""));
+        json.put("content", content);
         json.put("username", hook.replaceAll("&([0-9a-fA-FlLkKrR])", ""));
         json.put("avatar_url", MagiBridge.getConfig().getString("messages", "webhook-picture-url").replace("%player%", player));
         try {
