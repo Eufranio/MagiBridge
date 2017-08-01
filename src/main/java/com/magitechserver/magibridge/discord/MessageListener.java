@@ -107,6 +107,11 @@ public class MessageListener extends ListenerAdapter {
             }
         }
 
+        if(e.getMember().getRoles().stream().noneMatch(r ->
+                r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "color-allowed-role")))) {
+            message = message.replaceAll("&([0-9a-fA-FlLkKrR])", "").replaceAll("§([0-9a-fA-FlLkKrR])", "");
+        }
+
         // Nucleus hook active
         if(MagiBridge.getConfig().getBool("channel", "use-nucleus") && !MagiBridge.getConfig().getBool("channels", "use-ultimatechat")) {
             MessageChannel chatChannel = null;
