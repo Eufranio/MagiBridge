@@ -14,6 +14,7 @@ compileJava.options.encoding = 'UTF-8'
 dependencies {
     compile 'org.spongepowered:spongeapi:6.0.0'
     compileOnly 'io.github.nucleuspowered:nucleus-api:1.0.0-SNAPSHOT-S6.0'
+    compile 'com.mashape.unirest:unirest-java:1.4.9'
     compile group: 'net.dv8tion', name: 'JDA', version:'3.2.0_241'
     compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.5'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
