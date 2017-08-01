@@ -25,7 +25,9 @@ public class SpongeChatListener {
     public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
         if(!Sponge.getServer().getOnlinePlayers().contains(p)) return;
         if(e.getChannel().isPresent()) {
-            String content = e.getFormatter().getBody().toText().toPlain();
+            String content = e.getFormatter().getBody().toText().toPlain()
+                    .replace("@everyone", p.hasPermission("magibridge.everyone") ? "@everyone" : "")
+                    .replace("@here", p.hasPermission("magibridge.everyone") ? "@here" : "");
             String prefix = p.getOption("prefix").orElse("");
             String format = e.getChannel().get() instanceof StaffChatMessageChannel ? MagiBridge.getConfig().getString("messages", "server-to-discord-staff-format") : MagiBridge.getConfig().getString("messages", "server-to-discord-format");
             String message = format
@@ -43,7 +45,7 @@ public class SpongeChatListener {
             }
             if(Config.useWebhooks()) {
                 Webhooking.sendWebhookMessage(MagiBridge.getConfig().getString("messages", "webhook-name")
-                        .replace("%prefix%", p.getOption("prefix").isPresent() ? p.getOption("prefix").orElse(null) : "")
+                        .replace("%prefix%", p.getOption("prefix").orElse(""))
                         .replace("%player%", p.getName())
                         .replace("%topgroup%", GroupUtil.getHighestGroup(p)),
                         p.getName(),
