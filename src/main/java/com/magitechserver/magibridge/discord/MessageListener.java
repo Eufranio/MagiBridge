@@ -11,6 +11,7 @@ import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChanne
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.requests.RestAction;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -22,6 +23,7 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Frani on 04/07/2017.
@@ -59,6 +61,7 @@ public class MessageListener extends ListenerAdapter {
             }
             String cmd = message.replace(MagiBridge.getConfig().getString("channel", "console-command") + " ", "");
             Sponge.getCommandManager().process(new BridgeCommandSource(e.getChannel().getId(), Sponge.getServer().getConsole()), cmd);
+            e.getMessage().delete().queueAfter(10, TimeUnit.SECONDS);
         }
 
         // Handle player list command
@@ -82,11 +85,17 @@ public class MessageListener extends ListenerAdapter {
                 msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
                         + "```" + players + "```";
             }
-            DiscordHandler.sendMessageToChannel(e.getChannel().getId(), msg);
+            e.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
+            DiscordHandler.sendMessageToChannel(e.getChannel().getId(), msg, 5);
         }
 
         if(message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "console-command").toLowerCase())
                 || message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "player-list-command").toLowerCase())) return;
+
+        if(e.getMember().getRoles().stream().noneMatch(r ->
+                r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "color-allowed-role")))) {
+            message = message.replaceAll("&([0-9a-fA-FlLkKrR])", "").replaceAll("§([0-9a-fA-FlLkKrR])", "");
+        }
 
         // UltimateChat hook active
         if (MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && !MagiBridge.getConfig().getBool("channel", "use-nucleus")) {
@@ -105,11 +114,6 @@ public class MessageListener extends ListenerAdapter {
 
                 UCHandler.sendMessageToChannel(channel, msg);
             }
-        }
-
-        if(e.getMember().getRoles().stream().noneMatch(r ->
-                r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "color-allowed-role")))) {
-            message = message.replaceAll("&([0-9a-fA-FlLkKrR])", "").replaceAll("§([0-9a-fA-FlLkKrR])", "");
         }
 
         // Nucleus hook active
