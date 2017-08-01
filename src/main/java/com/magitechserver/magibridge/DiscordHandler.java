@@ -1,4 +1,4 @@
-package com.magitechserver;
+package com.magitechserver.magibridge;
 
 
 /**

@@ -1,11 +1,11 @@
-package com.magitechserver.listeners;
+package com.magitechserver.magibridge.listeners;
 
 import br.net.fabiozumbi12.UltimateChat.API.SendChannelMessageEvent;
-import com.magitechserver.DiscordHandler;
-import com.magitechserver.MagiBridge;
-import com.magitechserver.util.Config;
-import com.magitechserver.util.GroupUtil;
-import com.magitechserver.util.Webhooking;
+import com.magitechserver.magibridge.DiscordHandler;
+import com.magitechserver.magibridge.MagiBridge;
+import com.magitechserver.magibridge.util.Config;
+import com.magitechserver.magibridge.util.GroupUtil;
+import com.magitechserver.magibridge.util.Webhooking;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 

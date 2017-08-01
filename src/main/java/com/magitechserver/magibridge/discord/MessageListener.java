@@ -1,11 +1,11 @@
-package com.magitechserver.discord;
+package com.magitechserver.magibridge.discord;
 
 import br.net.fabiozumbi12.UltimateChat.UCChannel;
-import com.magitechserver.DiscordHandler;
-import com.magitechserver.MagiBridge;
-import com.magitechserver.UCHandler;
-import com.magitechserver.util.BridgeCommandSource;
-import com.magitechserver.util.ReplacerUtil;
+import com.magitechserver.magibridge.DiscordHandler;
+import com.magitechserver.magibridge.MagiBridge;
+import com.magitechserver.magibridge.UCHandler;
+import com.magitechserver.magibridge.util.BridgeCommandSource;
+import com.magitechserver.magibridge.util.ReplacerUtil;
 import flavor.pie.boop.BoopableChannel;
 import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
 import net.dv8tion.jda.core.entities.Message;

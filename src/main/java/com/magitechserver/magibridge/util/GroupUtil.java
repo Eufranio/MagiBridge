@@ -1,4 +1,4 @@
-package com.magitechserver.util;
+package com.magitechserver.magibridge.util;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;

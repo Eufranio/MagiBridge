@@ -1,4 +1,4 @@
-package com.magitechserver.util;
+package com.magitechserver.magibridge.util;
 
 import java.util.Map;
 

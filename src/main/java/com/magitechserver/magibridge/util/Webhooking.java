@@ -1,6 +1,6 @@
-package com.magitechserver.util;
+package com.magitechserver.magibridge.util;
 
-import com.magitechserver.MagiBridge;
+import com.magitechserver.magibridge.MagiBridge;
 import com.mashape.unirest.http.Unirest;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.TextChannel;

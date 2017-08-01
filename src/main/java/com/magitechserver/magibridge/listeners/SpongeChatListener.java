@@ -1,10 +1,10 @@
-package com.magitechserver.listeners;
+package com.magitechserver.magibridge.listeners;
 
-import com.magitechserver.DiscordHandler;
-import com.magitechserver.MagiBridge;
-import com.magitechserver.util.Config;
-import com.magitechserver.util.GroupUtil;
-import com.magitechserver.util.Webhooking;
+import com.magitechserver.magibridge.DiscordHandler;
+import com.magitechserver.magibridge.MagiBridge;
+import com.magitechserver.magibridge.util.Config;
+import com.magitechserver.magibridge.util.GroupUtil;
+import com.magitechserver.magibridge.util.Webhooking;
 import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
 import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
 import nl.riebie.mcclans.channels.ClanMessageChannelImpl;
@@ -14,9 +14,6 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.message.MessageChannelEvent;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 
 /**

@@ -1,7 +1,7 @@
-package com.magitechserver.listeners;
+package com.magitechserver.magibridge.listeners;
 
-import com.magitechserver.DiscordHandler;
-import com.magitechserver.MagiBridge;
+import com.magitechserver.magibridge.DiscordHandler;
+import com.magitechserver.magibridge.MagiBridge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;

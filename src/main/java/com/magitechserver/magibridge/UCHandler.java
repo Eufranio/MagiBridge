@@ -1,4 +1,4 @@
-package com.magitechserver;
+package com.magitechserver.magibridge;
 
 import br.net.fabiozumbi12.UltimateChat.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.API.uChatAPI;

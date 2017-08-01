@@ -1,6 +1,6 @@
-package com.magitechserver.util;
+package com.magitechserver.magibridge.util;
 
-import com.magitechserver.DiscordHandler;
+import com.magitechserver.magibridge.DiscordHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.service.permission.Subject;

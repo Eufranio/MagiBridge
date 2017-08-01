@@ -1,7 +1,6 @@
-package com.magitechserver.util;
+package com.magitechserver.magibridge.util;
 
-import com.magitechserver.MagiBridge;
-import com.magitechserver.discord.MessageListener;
+import com.magitechserver.magibridge.MagiBridge;
 import org.spongepowered.api.Sponge;
 
 import java.lang.management.ManagementFactory;

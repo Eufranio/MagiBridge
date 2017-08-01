@@ -1,11 +1,11 @@
-package com.magitechserver;
+package com.magitechserver.magibridge;
 
 import com.google.inject.Inject;
-import com.magitechserver.discord.MessageListener;
-import com.magitechserver.listeners.*;
-import com.magitechserver.util.CommandHandler;
-import com.magitechserver.util.Config;
-import com.magitechserver.util.TopicUpdater;
+import com.magitechserver.magibridge.discord.MessageListener;
+import com.magitechserver.magibridge.listeners.*;
+import com.magitechserver.magibridge.util.Config;
+import com.magitechserver.magibridge.util.CommandHandler;
+import com.magitechserver.magibridge.util.TopicUpdater;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -16,7 +16,6 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
-import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingEvent;
@@ -73,8 +72,8 @@ public class MagiBridge {
     public static ChatListener UCListener;
     public static SpongeChatListener NucleusListener;
     public static SpongeLoginListener LoginListener;
-    public static AchievementListener AchievementListener;
-    public static DeathListener DeathListener;
+    public static com.magitechserver.magibridge.listeners.AchievementListener AchievementListener;
+    public static com.magitechserver.magibridge.listeners.DeathListener DeathListener;
 
     public static JDA jda;
 

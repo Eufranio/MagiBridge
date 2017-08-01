@@ -1,8 +1,8 @@
-package com.magitechserver.util;
+package com.magitechserver.magibridge.util;
 
 
 import com.google.common.reflect.TypeToken;
-import com.magitechserver.MagiBridge;
+import com.magitechserver.magibridge.MagiBridge;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
