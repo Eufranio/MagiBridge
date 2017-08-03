@@ -9,6 +9,7 @@ import com.magitechserver.magibridge.util.GroupUtil;
 import com.magitechserver.magibridge.util.ReplacerUtil;
 import flavor.pie.boop.BoopableChannel;
 import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -56,7 +57,8 @@ public class MessageListener extends ListenerAdapter {
 
         // Handle console command
         if(message.startsWith(MagiBridge.getConfig().getString("channel", "console-command")) && isListenableChannel(channelID)) {
-            if (e.getMember().getRoles().stream().noneMatch(r -> r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "console-command-required-role")))) {
+            String args[] = e.getMessage().getContent().replace(MagiBridge.getConfig().getString("channel", "console-command") + " ", "").split(" ");
+            if (!canUseCommand(e.getMember(), args[0])) {
                 DiscordHandler.sendMessageToChannel(e.getChannel().getId(), MagiBridge.getConfig().getString("messages", "console-command-no-permission"));
                 return;
             }
@@ -204,4 +206,12 @@ public class MessageListener extends ListenerAdapter {
         return text;
     }
 
+    private boolean canUseCommand(Member m, String command) {
+        if (m.getRoles().stream().anyMatch(r ->
+                r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "console-command-required-role")))) {
+            return true;
+        }
+        return MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command) != null && m.getRoles().stream().anyMatch(role ->
+            role.getName().equalsIgnoreCase(MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command)));
+    }
 }
