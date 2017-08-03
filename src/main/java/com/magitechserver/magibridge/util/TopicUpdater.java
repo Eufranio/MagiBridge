@@ -25,10 +25,14 @@ public class TopicUpdater extends Thread {
                     .replace("%hoursonline%", Long.valueOf(ManagementFactory.getRuntimeMXBean().getUptime()/3600000).toString())
                     .replace("%minutesonline%", Long.valueOf(ManagementFactory.getRuntimeMXBean().getUptime()/60000).toString());
 
-            MagiBridge.jda.getTextChannelById(MagiBridge.getConfig().getString("channel", "main-discord-channel")).getManager().setTopic(topic).queue();
+            try {
+                MagiBridge.jda.getTextChannelById(MagiBridge.getConfig().getString("channel", "main-discord-channel")).getManager().setTopic(topic).queue();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
 
             try {
-                Thread.sleep(2000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 MagiBridge.logger.error("Something interrupted the topic updater!");
             }
