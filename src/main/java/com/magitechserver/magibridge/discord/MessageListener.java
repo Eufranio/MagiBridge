@@ -5,6 +5,7 @@ import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.UCHandler;
 import com.magitechserver.magibridge.util.BridgeCommandSource;
+import com.magitechserver.magibridge.util.GroupUtil;
 import com.magitechserver.magibridge.util.ReplacerUtil;
 import flavor.pie.boop.BoopableChannel;
 import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
@@ -76,6 +77,7 @@ public class MessageListener extends ListenerAdapter {
                     for (Player player : cplayers) {
                         players = players + listformat
                                 .replace("%player%", player.getName())
+                                .replace("%topgroup%", GroupUtil.getHighestGroup(player))
                                 .replace("%prefix%", player.getOption("prefix")
                                         .orElse("")) +
                                 ", ";
