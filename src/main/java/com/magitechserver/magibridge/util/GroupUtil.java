@@ -1,5 +1,6 @@
 package com.magitechserver.magibridge.util;
 
+import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.PermissionService;
@@ -12,6 +13,7 @@ import org.spongepowered.api.service.permission.Subject;
 public class GroupUtil {
 
     public static String getHighestGroup(Player player){
+        if(Sponge.getPlatform().getContainer(Platform.Component.API).getVersion().orElse("").equals("7.0.0")) return "";
         if(!Sponge.getGame().getServiceManager().getRegistration(PermissionService.class).isPresent()) return "";
         PermissionService ps = Sponge.getGame().getServiceManager().getRegistration(PermissionService.class).get().getProvider();
         for (Subject sub : player.getParents()) {
