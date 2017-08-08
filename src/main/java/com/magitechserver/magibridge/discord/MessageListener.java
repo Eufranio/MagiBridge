@@ -100,7 +100,7 @@ public class MessageListener extends ListenerAdapter {
         if(message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "console-command").toLowerCase())
                 || message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "player-list-command").toLowerCase())) return;
 
-        if(e.getMember().getRoles().stream().noneMatch(r ->
+        if(!MagiBridge.getConfig().getString("channel", "color-allowed-role").equalsIgnoreCase("everyone") || e.getMember().getRoles().stream().noneMatch(r ->
                 r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "color-allowed-role")))) {
             message = message.replaceAll("&([0-9a-fA-FlLkKrR])", "").replaceAll("§([0-9a-fA-FlLkKrR])", "");
         }
@@ -211,6 +211,9 @@ public class MessageListener extends ListenerAdapter {
     }
 
     private boolean canUseCommand(Member m, String command) {
+        if (MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command).equalsIgnoreCase("everyone")) {
+            return true;
+        }
         if (m.getRoles().stream().anyMatch(r ->
                 r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "console-command-required-role")))) {
             return true;
