@@ -52,7 +52,11 @@ public class MessageListener extends ListenerAdapter {
             message = message.substring(0, message.length() - 1).substring(1);
         }
 
-        String msg = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format").replace("%user%", name).replace("%msg%", message).replace("&", "§");
+        String msg = ReplacerUtil.replaceEach(MagiBridge.getConfig().getString("messages", "discord-to-server-global-format")
+                .replace("%user%", name)
+                .replace("%msg%", message)
+                .replace("&", "§"),
+                MagiBridge.getConfig().getMap("discord-to-mc-replacer"));
         boolean hasAttachment = e.getMessage().getAttachments().size() >= 1;
 
         // Handle console command
