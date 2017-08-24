@@ -4,7 +4,6 @@ import com.magitechserver.magibridge.util.ReplacerUtil;
 import flavor.pie.boop.BoopableChannel;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -39,11 +38,28 @@ public class NucleusHandler {
 
         if(messageChannel != null) {
             Text messageAsText = Text.of(msg);
+
+            Map<String, String> map = MagiBridge.getConfig().getMap("messages", "prefix");
+            Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(map.get("text")).toBuilder();
+            Text hover = TextSerializers.FORMATTING_CODE.deserialize(map.get("hover"));
+
+            URL url;
+            try {
+                url = new URL(map.get("link"));
+            } catch (MalformedURLException e) {
+                MagiBridge.logger.error("Invalid prefix URL!");
+                return;
+            }
+
+            Text prefix = text.onHover(TextActions.showText(hover))
+                    .onClick(TextActions.openUrl(url))
+                    .build();
+
             if(hasAttachment) {
                 Text attachment = attachmentBuilder(attachments);
-                messageChannel.getMembers().forEach(player -> player.sendMessage(Text.of(msg).concat(attachment)));
+                messageChannel.getMembers().forEach(player -> player.sendMessage(Text.of(msg).concat(attachment).concat(prefix)));
             } else {
-                messageChannel.getMembers().forEach(player -> player.sendMessage(messageAsText));
+                messageChannel.getMembers().forEach(player -> player.sendMessage(messageAsText.concat(prefix)));
             }
         }
     }
