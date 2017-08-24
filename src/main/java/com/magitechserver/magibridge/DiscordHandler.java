@@ -1,14 +1,16 @@
 package com.magitechserver.magibridge;
 
-import com.magitechserver.magibridge.util.Config;
-import com.magitechserver.magibridge.util.ReplacerUtil;
-import com.magitechserver.magibridge.util.Webhooking;
+import com.magitechserver.magibridge.util.*;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.living.player.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -92,6 +94,61 @@ public class DiscordHandler {
             MagiBridge.jda.getTextChannelById(channel).sendMessage(message).queue();
         }
 
+    }
+
+    public static void dispatchCommand(MessageReceivedEvent e) {
+        String args[] = e.getMessage().getContent().replace(MagiBridge.getConfig().getString("channel", "console-command") + " ", "").split(" ");
+
+        if (!canUseCommand(e.getMember(), args[0])) {
+            DiscordHandler.sendMessageToChannel(e.getChannel().getId(), MagiBridge.getConfig().getString("messages", "console-command-no-permission"));
+            return;
+        }
+
+        String cmd = e.getMessage().getContent().replace(MagiBridge.getConfig().getString("channel", "console-command") + " ", "");
+        Sponge.getCommandManager().process(new BridgeCommandSource(e.getChannel().getId(), Sponge.getServer().getConsole()), cmd);
+    }
+
+    public static void dispatchList(Message m, MessageChannel c) {
+        String players = "";
+        String msg;
+        Collection<Player> cplayers =  new ArrayList<>();
+        Sponge.getServer().getOnlinePlayers().forEach(p -> {
+            if(!p.get(Keys.VANISH).orElse(false)) {
+                cplayers.add(p);
+            }
+        });
+        if(cplayers.size() == 0) {
+            msg = MagiBridge.getConfig().getString("messages", "no-players-message");
+        } else {
+            String listformat = MagiBridge.getConfig().getString("messages", "player-list-name");
+            if(cplayers.size() >= 1) {
+                for (Player player : cplayers) {
+                    players = players + listformat
+                            .replace("%player%", player.getName())
+                            .replace("%topgroup%", GroupUtil.getHighestGroup(player))
+                            .replace("%prefix%", player.getOption("prefix")
+                                    .orElse("")) +
+                            ", ";
+                }
+                players = players.substring(0, players.length() - 2);
+            }
+            msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
+                    + "```" + players + "```";
+        }
+        m.delete().queueAfter(10, TimeUnit.SECONDS);
+        sendMessageToChannel(c.getId(), msg, 10);
+    }
+
+    private static boolean canUseCommand(Member m, String command) {
+        if (MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command).equalsIgnoreCase("everyone")) {
+            return true;
+        }
+        if (m.getRoles().stream().anyMatch(r ->
+                r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "console-command-required-role")))) {
+            return true;
+        }
+        return MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command) != null && m.getRoles().stream().anyMatch(role ->
+                role.getName().equalsIgnoreCase(MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command)));
     }
 
 }
