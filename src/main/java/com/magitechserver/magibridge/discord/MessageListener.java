@@ -15,6 +15,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.requests.RestAction;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -24,6 +25,7 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
@@ -74,7 +76,12 @@ public class MessageListener extends ListenerAdapter {
         // Handle player list command
         if(message.equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "player-list-command")) && isListenableChannel(channelID)) {
             String players = "";
-            Collection<Player> cplayers = Sponge.getServer().getOnlinePlayers();
+            Collection<Player> cplayers =  new ArrayList<>();
+            Sponge.getServer().getOnlinePlayers().forEach(p -> {
+                if(!p.get(Keys.VANISH).orElse(false)) {
+                    cplayers.add(p);
+                }
+            });
             if(cplayers.size() == 0) {
                 msg = MagiBridge.getConfig().getString("messages", "no-players-message");
             } else {
