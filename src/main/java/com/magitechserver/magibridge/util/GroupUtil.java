@@ -15,12 +15,12 @@ public class GroupUtil {
     public static String getHighestGroup(Player player){
         if(Sponge.getPlatform().getContainer(Platform.Component.API).getVersion().orElse("").contains("7.0.0")) return "";
         if(!Sponge.getGame().getServiceManager().getRegistration(PermissionService.class).isPresent()) return "";
-        PermissionService ps = Sponge.getGame().getServiceManager().getRegistration(PermissionService.class).get().getProvider();
+        /* PermissionService ps = Sponge.getGame().getServiceManager().getRegistration(PermissionService.class).get().getProvider();
         for (Subject sub : player.getParents()) {
             if (sub.getContainingCollection().equals(ps.getGroupSubjects())) {
                 return sub.getIdentifier();
             }
-        }
+        } */
         return "";
     }
 
