@@ -40,18 +40,17 @@ public class SpongeChatListener {
             String[] nick = new String[1];
             NucleusAPI.getNicknameService().ifPresent(s -> s.getNickname(p).ifPresent(n -> nick[0] = n.toPlain()));
 
-            String message = e.getFormatter().getBody().toText().toPlain();
             String channel = isStaffMessage ? MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel") : MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel");
             String format = e.getChannel().get().getClass().equals(staffChannel.getClass()) ? "server-to-discord-staff-format" : "server-to-discord-format";
             Map<String, String> placeholders = new HashMap<>();
                 placeholders.put("%prefix%", p.getOption("prefix").orElse(""));
                 placeholders.put("%player%", p.getName());
-                placeholders.put("%message%", message);
+                placeholders.put("%message%", e.getFormatter().getBody().toText().toPlain());
                 placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
                 placeholders.put("%nick%", nick[0] != null ? nick[0] : "");
             boolean removeEveryone = !p.hasPermission("magibridge.everyone");
 
-            DiscordHandler.sendMessageToDiscord(message, channel, format, placeholders, removeEveryone, 0);
+            DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0);
         }
     }
 

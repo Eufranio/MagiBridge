@@ -20,7 +20,6 @@ public class ChatListener {
         // Tell
         if(e.getChannel() == null) return;
 
-        String message = e.getMessage().toPlain();
         String channel = getKey(e.getChannel().getName().toLowerCase());
         if(channel == null) return;
         String format = "server-to-discord-format";
@@ -31,7 +30,7 @@ public class ChatListener {
             placeholders.put("%topgroup%", GroupUtil.getHighestGroup((Player)e.getSender()));
         boolean removeEveryone = !e.getSender().hasPermission("magibridge.everyone");
 
-        DiscordHandler.sendMessageToDiscord(message, channel, format, placeholders, removeEveryone, 0);
+        DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0);
     }
 
     private String getKey(String value) {

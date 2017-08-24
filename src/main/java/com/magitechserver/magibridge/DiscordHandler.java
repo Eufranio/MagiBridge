@@ -50,10 +50,11 @@ public class DiscordHandler {
         return true;
     }
 
-    public static void sendMessageToDiscord(String message, String channel, String format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime) {
+    public static void sendMessageToDiscord(String channel, String format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime) {
         if(!isValidChannel(channel)) return;
 
         // Mention discord users if they're mentioned in the message
+        String message = placeholders.get("%message%");
         List<String> usersMentioned = new ArrayList<>();
         Arrays.stream(message.split(" ")).filter(word ->
                 word.startsWith("@")).forEach(mention ->
