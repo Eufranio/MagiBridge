@@ -18,10 +18,9 @@ dependencies {
     compile group: 'net.dv8tion', name: 'JDA', version:'3.2.0_241'
     compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.5'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
-    compileOnly files('libs/uchat.jar')
-    compileOnly files('libs/nucleus.jar')
     compileOnly files('libs/boop.jar')
     compileOnly files('libs/mcclans.jar')
+    compileOnly files('libs/uchat.jar')
 }
 
 repositories {

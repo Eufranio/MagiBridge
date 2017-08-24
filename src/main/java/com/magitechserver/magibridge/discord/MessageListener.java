@@ -8,12 +8,11 @@ import com.magitechserver.magibridge.util.BridgeCommandSource;
 import com.magitechserver.magibridge.util.GroupUtil;
 import com.magitechserver.magibridge.util.ReplacerUtil;
 import flavor.pie.boop.BoopableChannel;
-import io.github.nucleuspowered.nucleus.modules.staffchat.StaffChatMessageChannel;
+import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.requests.RestAction;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -141,7 +140,7 @@ public class MessageListener extends ListenerAdapter {
                     chatChannel = Sponge.getServer().getBroadcastChannel();
                 }
             } else if(channelID.equals(MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel"))) {
-                chatChannel = StaffChatMessageChannel.getInstance();
+                chatChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
             }
 
             if (chatChannel != null) {

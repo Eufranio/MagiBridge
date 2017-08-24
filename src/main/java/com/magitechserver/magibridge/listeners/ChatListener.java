@@ -42,7 +42,7 @@ public class ChatListener {
 
     private String getUCMessage(SendChannelMessageEvent e) {
         if(e.getSender() instanceof Player) {
-            String content = e.getMessage()
+            String content = e.getMessage().toPlain()
                     .replace("@everyone", e.getSender().hasPermission("magibridge.everyone") ? "@everyone" : "")
                     .replace("@here", e.getSender().hasPermission("magibridge.everyone") ? "@here" : "");
             String player = e.getSender().getName();
