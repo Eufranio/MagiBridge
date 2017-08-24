@@ -4,6 +4,8 @@ import br.net.fabiozumbi12.UltimateChat.API.SendChannelMessageEvent;
 import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.util.GroupUtil;
+import io.github.nucleuspowered.nucleus.api.NucleusAPI;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 
@@ -21,6 +23,7 @@ public class ChatListener {
         if(e.getChannel() == null) return;
 
         String channel = getKey(e.getChannel().getName().toLowerCase());
+
         if(channel == null) return;
         String format = "server-to-discord-format";
         Map<String, String> placeholders = new HashMap<>();
@@ -28,6 +31,13 @@ public class ChatListener {
             placeholders.put("%player%", e.getSender().getName());
             placeholders.put("%message%", e.getMessage().toPlain());
             placeholders.put("%topgroup%", GroupUtil.getHighestGroup((Player)e.getSender()));
+
+        if(Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
+            String[] nick = new String[1];
+            NucleusAPI.getNicknameService().ifPresent(s -> s.getNickname((Player)e.getSender()).ifPresent(n -> nick[0] = n.toPlain()));
+            placeholders.put("%nick%", nick[0] != null ? nick[0] : "");
+        }
+
         boolean removeEveryone = !e.getSender().hasPermission("magibridge.everyone");
 
         DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0);
