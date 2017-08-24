@@ -83,7 +83,7 @@ public class DiscordHandler {
             MagiBridge.jda.getTextChannelById(channel).sendMessage(message)
                     .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
         } else if(Config.useWebhooks()) {
-            Webhooking.sendWebhookMessage(MagiBridge.getConfig().getString("messages", "webhook-name"),
+            Webhooking.sendWebhookMessage(ReplacerUtil.replaceEach(MagiBridge.getConfig().getString("messages", "webhook-name"), placeholders),
                     placeholders.get("%player%"),
                     placeholders.get("%message%"),
                     channel);
