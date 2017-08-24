@@ -110,6 +110,7 @@ public class DiscordHandler {
 
     public static void dispatchList(Message m, MessageChannel c) {
         String players = "";
+        boolean shouldDelete = MagiBridge.getConfig().getBool("channel", "delete-list-message");
         String msg;
         Collection<Player> cplayers =  new ArrayList<>();
         Sponge.getServer().getOnlinePlayers().forEach(p -> {
@@ -135,8 +136,12 @@ public class DiscordHandler {
             msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
                     + "```" + players + "```";
         }
-        m.delete().queueAfter(10, TimeUnit.SECONDS);
-        sendMessageToChannel(c.getId(), msg, 10);
+        if(shouldDelete) {
+            m.delete().queueAfter(10, TimeUnit.SECONDS);
+            sendMessageToChannel(c.getId(), msg, 10);
+        } else {
+            sendMessageToChannel(c.getId(), msg);
+        }
     }
 
     private static boolean canUseCommand(Member m, String command) {
