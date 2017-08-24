@@ -3,12 +3,11 @@ package com.magitechserver.magibridge.listeners;
 import br.net.fabiozumbi12.UltimateChat.API.SendChannelMessageEvent;
 import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
-import com.magitechserver.magibridge.util.Config;
 import com.magitechserver.magibridge.util.GroupUtil;
-import com.magitechserver.magibridge.util.Webhooking;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -21,45 +20,18 @@ public class ChatListener {
         // Tell
         if(e.getChannel() == null) return;
 
-        String discordChannel = getKey(e.getChannel().getName().toLowerCase());
-        if(discordChannel != null && getUCMessage(e) != null) {
-            String prefix = null;
-            prefix = ((Player) e.getSender()).getOption("prefix").orElse("");
-            if(Config.useWebhooks()) {
-                Webhooking.sendWebhookMessage(MagiBridge.getConfig().getString("messages", "webhook-name")
-                        .replace("%prefix%", prefix)
-                        .replace("%player%", e.getSender().getName()
-                        .replace("%topgroup%", GroupUtil.getHighestGroup((Player) e.getSender()))),
-                        e.getSender().getName(),
-                        getUCMessage(e),
-                        discordChannel);
-                return;
-            }
-            DiscordHandler.sendMessageToChannel(discordChannel, getUCMessage(e));
-        }
-    }
+        String message = e.getMessage().toPlain();
+        String channel = getKey(e.getChannel().getName().toLowerCase());
+        if(channel == null) return;
+        String format = "server-to-discord-format";
+        Map<String, String> placeholders = new HashMap<>();
+            placeholders.put("%prefix%", e.getSender().getOption("prefix").orElse(""));
+            placeholders.put("%player%", e.getSender().getName());
+            placeholders.put("%message%", e.getMessage().toPlain());
+            placeholders.put("%topgroup%", GroupUtil.getHighestGroup((Player)e.getSender()));
+        boolean removeEveryone = !e.getSender().hasPermission("magibridge.everyone");
 
-
-    private String getUCMessage(SendChannelMessageEvent e) {
-        if(e.getSender() instanceof Player) {
-            String content = e.getMessage().toPlain()
-                    .replace("@everyone", e.getSender().hasPermission("magibridge.everyone") ? "@everyone" : "")
-                    .replace("@here", e.getSender().hasPermission("magibridge.everyone") ? "@here" : "");
-            String player = e.getSender().getName();
-            String prefix = ((Player) e.getSender()).getOption("prefix").orElse("");
-            String message = "";
-            if(Config.useWebhooks()) {
-                message = content;
-            } else {
-                message = MagiBridge.getConfig().getString("messages", "server-to-discord-format")
-                        .replace("%player%", player)
-                        .replace("%prefix%", prefix)
-                        .replace("%message%", content)
-                        .replace("%topgroup%", GroupUtil.getHighestGroup((Player) e.getSender()));
-            }
-            return message;
-        }
-        return null;
+        DiscordHandler.sendMessageToDiscord(message, channel, format, placeholders, removeEveryone, 0);
     }
 
     private String getKey(String value) {
