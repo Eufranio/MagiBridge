@@ -55,8 +55,18 @@ public class DiscordHandler {
     public static void sendMessageToDiscord(String channel, String format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime) {
         if(!isValidChannel(channel)) return;
 
+        String rawFormat = MagiBridge.getConfig().getString("messages", format);
+
+        // Applies placeholders
+        String message = ReplacerUtil.replaceEach(rawFormat, placeholders);
+        message = message.replaceAll("&([0-9a-fA-FlLkKrR])", "");
+
+        if(removeEveryone) {
+            message = message.replace("@everyone", "");
+            message = message.replace("@here", "");
+        }
+
         // Mention discord users if they're mentioned in the message
-        String message = placeholders.get("%message%");
         List<String> usersMentioned = new ArrayList<>();
         Arrays.stream(message.split(" ")).filter(word ->
                 word.startsWith("@")).forEach(mention ->
@@ -69,17 +79,6 @@ public class DiscordHandler {
                     message = message.replaceAll("@" + user, "<@" + users.get(0).getId() + ">");
                 }
             }
-        }
-
-        String raw = MagiBridge.getConfig().getString("messages", format);
-
-        // Applies placeholders
-        String finalMessage = ReplacerUtil.replaceEach(raw, placeholders);
-        message = message.replaceAll("&([0-9a-fA-FlLkKrR])", "");
-
-        if(removeEveryone) {
-            message = message.replace("@everyone", "");
-            message = message.replace("@here", "");
         }
 
         if(deleteTime > 0) {

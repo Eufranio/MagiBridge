@@ -39,11 +39,13 @@ public class MessageListener extends ListenerAdapter {
         // Handle console command
         if(message.startsWith(MagiBridge.getConfig().getString("channel", "console-command")) && isListenableChannel(channelID)) {
             DiscordHandler.dispatchCommand(e);
+            return;
         }
 
         // Handle player list command
         if(message.equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "player-list-command")) && isListenableChannel(channelID)) {
             DiscordHandler.dispatchList(e.getMessage(), e.getChannel());
+            return;
         }
 
         // UltimateChat hook active
@@ -94,10 +96,6 @@ public class MessageListener extends ListenerAdapter {
         if (message.startsWith("`")) {
             message = message.substring(0, message.length() - 1).substring(1);
         }
-        if(message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "console-command").toLowerCase())
-                || message.toLowerCase().contains(MagiBridge.getConfig().getString("channel", "player-list-command").toLowerCase())) return "";
-
         return message;
     }
-
 }
