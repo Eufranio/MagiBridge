@@ -20,10 +20,12 @@ public class MessageListener extends ListenerAdapter {
         String channelID = e.getChannel().getId();
         String message = processMessage(e);
 
-        boolean canUseColors = MagiBridge.getConfig().getString("channel", "color-allowed-role").equalsIgnoreCase("everyone") || e.getMember().getRoles().stream().anyMatch(r ->
-                r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "color-allowed-role")));
-
+        if(!isValidMessage(e)) return;
         if(message.isEmpty()) return;
+
+        boolean canUseColors = MagiBridge.getConfig().getString("channel", "color-allowed-role").equalsIgnoreCase("everyone")
+                || e.getMember().getRoles().stream().anyMatch(r ->
+                r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "color-allowed-role")));
 
         String name = e.getMember().getEffectiveName();
         String toprole = e.getMember().getRoles().size() >= 1 ? e.getMember().getRoles().get(0).getName() : MagiBridge.getConfig().getString("messages", "no-role-prefix");
@@ -51,7 +53,7 @@ public class MessageListener extends ListenerAdapter {
         // UltimateChat hook active
         if (MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && !MagiBridge.getConfig().getBool("channel", "use-nucleus")) {
             String chatChannel = MagiBridge.getConfig().getMap("channel", "ultimatechat").get(channelID);
-            String format = MagiBridge.getConfig().getString("messages", "server-to-discord-format");
+            String format = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format");
             if (chatChannel != null) {
                 UCHandler.handle(chatChannel, format, placeholders);
             }
@@ -59,7 +61,7 @@ public class MessageListener extends ListenerAdapter {
 
         // Nucleus hook active
         if(MagiBridge.getConfig().getBool("channel", "use-nucleus") && !MagiBridge.getConfig().getBool("channels", "use-ultimatechat")) {
-            String format = MagiBridge.getConfig().getString("messages", "discord-to-server-staff-format");
+            String format = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format");
             boolean isStaffChannel = channelID.equals(MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel"));
             NucleusHandler.handle(isStaffChannel, format, placeholders, hasAttachment, e.getMessage().getAttachments());
         }
@@ -97,5 +99,12 @@ public class MessageListener extends ListenerAdapter {
             message = message.substring(0, message.length() - 1).substring(1);
         }
         return message;
+    }
+
+    private boolean isValidMessage(MessageReceivedEvent e) {
+        String message = e.getMessage().getContent();
+        if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) || e.getAuthor().isFake()) return false;
+        if (message == null && e.getMessage().getAttachments().size() == 0 || message.trim().isEmpty() && e.getMessage().getAttachments().size() == 0) return false;
+        return true;
     }
 }
