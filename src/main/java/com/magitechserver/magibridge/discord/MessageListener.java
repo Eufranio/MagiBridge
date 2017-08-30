@@ -89,8 +89,10 @@ public class MessageListener extends ListenerAdapter {
         String message = e.getMessage().getContent();
         if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) || e.getAuthor().isFake()) return "";
         if (message == null && e.getMessage().getAttachments().size() == 0 || message.trim().isEmpty() && e.getMessage().getAttachments().size() == 0) return "";
-        if (message.length() > 120) {
-            message = message.substring(0, 120);
+        if(MagiBridge.getConfig().getBool("misc", "cut-messages")) {
+            if (message.length() > 120) {
+                message = message.substring(0, 120);
+            }
         }
         if (message.startsWith("```")) {
             message = message.substring(0, message.length() - 3).substring(3);
