@@ -38,28 +38,34 @@ public class NucleusHandler {
 
         if(messageChannel != null) {
             Text messageAsText = Text.of(msg);
+            Text prefix = Text.of();
 
-            Map<String, String> map = MagiBridge.getConfig().getMap("messages", "prefix");
-            Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(map.get("text")).toBuilder();
-            Text hover = TextSerializers.FORMATTING_CODE.deserialize(map.get("hover"));
+            // Prefix enabled
+            if(MagiBridge.getConfig().getBool("messages", "prefix", "enabled")) {
+                Map<String, String> map = MagiBridge.getConfig().getMap("messages", "prefix");
+                Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(map.get("text")).toBuilder();
+                Text hover = TextSerializers.FORMATTING_CODE.deserialize(map.get("hover"));
 
-            URL url;
-            try {
-                url = new URL(map.get("link"));
-            } catch (MalformedURLException e) {
-                MagiBridge.logger.error("Invalid prefix URL!");
-                return;
+                URL url;
+                try {
+                    url = new URL(map.get("link"));
+                } catch (MalformedURLException e) {
+                    MagiBridge.logger.error("Invalid prefix URL!");
+                    return;
+                }
+
+                prefix = text.onHover(TextActions.showText(hover))
+                        .onClick(TextActions.openUrl(url))
+                        .build();
             }
 
-            Text prefix = text.onHover(TextActions.showText(hover))
-                    .onClick(TextActions.openUrl(url))
-                    .build();
+            Text k = prefix;
 
             if(hasAttachment) {
                 Text attachment = attachmentBuilder(attachments);
-                messageChannel.getMembers().forEach(player -> player.sendMessage(Text.of(msg).concat(attachment).concat(prefix)));
+                messageChannel.getMembers().forEach(player -> player.sendMessage(k.concat(messageAsText).concat(attachment)));
             } else {
-                messageChannel.getMembers().forEach(player -> player.sendMessage(messageAsText.concat(prefix)));
+                messageChannel.getMembers().forEach(player -> player.sendMessage(k.concat(messageAsText)));
             }
         }
     }

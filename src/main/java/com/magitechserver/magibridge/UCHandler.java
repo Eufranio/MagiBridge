@@ -30,24 +30,31 @@ public class UCHandler {
         if(MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(channel) != null) {
             format = MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(channel);
         }
+
         UCChannel uc = UCHandler.getChannelByCaseInsensitiveName(channel);
+
         if(uc != null) {
+
+            // Prefix enabled
+            Text prefix = Text.of();
             String message = ReplacerUtil.replaceEach(format, placeholders);
-            Map<String, String> map = MagiBridge.getConfig().getMap("messages", "prefix");
-            Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(map.get("text")).toBuilder();
-            Text hover = TextSerializers.FORMATTING_CODE.deserialize(map.get("hover"));
+            if(MagiBridge.getConfig().getBool("messages", "prefix", "enabled")) {
+                Map<String, String> map = MagiBridge.getConfig().getMap("messages", "prefix");
+                Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(map.get("text")).toBuilder();
+                Text hover = TextSerializers.FORMATTING_CODE.deserialize(map.get("hover"));
 
-            URL url;
-            try {
-                url = new URL(map.get("link"));
-            } catch (MalformedURLException e) {
-                MagiBridge.logger.error("Invalid prefix URL!");
-                return;
+                URL url;
+                try {
+                    url = new URL(map.get("link"));
+                } catch (MalformedURLException e) {
+                    MagiBridge.logger.error("Invalid prefix URL!");
+                    return;
+                }
+
+                prefix = text.onHover(TextActions.showText(hover))
+                        .onClick(TextActions.openUrl(url))
+                        .build();
             }
-
-            Text prefix = text.onHover(TextActions.showText(hover))
-                    .onClick(TextActions.openUrl(url))
-                    .build();
 
             uc.sendMessage(Sponge.getServer().getConsole(), prefix.concat(Text.of(message)), true);
         }
