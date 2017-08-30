@@ -9,6 +9,7 @@ import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
 import nl.riebie.mcclans.channels.ClanMessageChannelImpl;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -29,6 +30,7 @@ public class SpongeChatListener {
     public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
         if(!Sponge.getServer().getOnlinePlayers().contains(p)) return;
         if(e.getChannel().isPresent()) {
+            if(MagiBridge.getConfig().getBool("misc", "hide-vanished-chat") && p.get(Keys.VANISH).orElse(false)) return;
             MessageChannel staffChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
 
             if(Sponge.getPluginManager().isLoaded("mcclans")) {

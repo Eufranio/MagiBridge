@@ -6,6 +6,7 @@ import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.util.GroupUtil;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 
@@ -21,10 +22,10 @@ public class ChatListener {
     public void onMessage(SendChannelMessageEvent e) {
         // Tell
         if(e.getChannel() == null) return;
-
         String channel = getKey(e.getChannel().getName().toLowerCase());
-
         if(channel == null) return;
+
+        if(MagiBridge.getConfig().getBool("misc", "hide-vanished-chat") && ((Player)e.getSender()).get(Keys.VANISH).orElse(false)) return;
         String format = "server-to-discord-format";
         Map<String, String> placeholders = new HashMap<>();
             placeholders.put("%prefix%", e.getSender().getOption("prefix").orElse(""));
