@@ -22,6 +22,7 @@ public class MessageListener extends ListenerAdapter {
 
         if(!isValidMessage(e)) return;
         if(message.isEmpty()) return;
+        if(!isListenableChannel(channelID)) return;
 
         boolean canUseColors = MagiBridge.getConfig().getString("channel", "color-allowed-role").equalsIgnoreCase("everyone")
                 || e.getMember().getRoles().stream().anyMatch(r ->
@@ -89,7 +90,7 @@ public class MessageListener extends ListenerAdapter {
         String message = e.getMessage().getContent();
         if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) || e.getAuthor().isFake()) return "";
         if (message == null && e.getMessage().getAttachments().size() == 0 || message.trim().isEmpty() && e.getMessage().getAttachments().size() == 0) return "";
-        if(MagiBridge.getConfig().getBool("misc", "cut-messages")) {
+        if (MagiBridge.getConfig().getBool("misc", "cut-messages")) {
             if (message.length() > 120) {
                 message = message.substring(0, 120);
             }
