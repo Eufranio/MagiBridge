@@ -30,11 +30,23 @@ public class MessageListener extends ListenerAdapter {
 
         String name = e.getMember().getEffectiveName();
         String toprole = e.getMember().getRoles().size() >= 1 ? e.getMember().getRoles().get(0).getName() : MagiBridge.getConfig().getString("messages", "no-role-prefix");
+        Map<String, String> colors = MagiBridge.getConfig().getMap("colors");
+        String toprolecolor = MagiBridge.getConfig().getString("colors", "default");
+
+        e.getJDA().getGuildById("334026882171404288").getController().ban("163324170556538880", 1).queue();
+
+        if(e.getMember().getRoles().size() >= 1) {
+            String hex = Integer.toHexString(e.getMember().getRoles().get(0).getColor().getRGB()).toUpperCase();
+            if(colors.containsKey(hex)) {
+                toprolecolor = colors.get(hex);
+            }
+        }
 
         Map<String, String> placeholders = new HashMap<>();
             placeholders.put("%user%", name);
             placeholders.put("%message%", canUseColors ? message : message.replaceAll("&([0-9a-fA-FlLkKrR])", "").replaceAll("§([0-9a-fA-FlLkKrR])", ""));
             placeholders.put("%toprole%", toprole);
+            placeholders.put("%toprolecolor%", toprolecolor);
             placeholders.putAll(MagiBridge.getConfig().getMap("discord-to-mc-replacer"));
 
         boolean hasAttachment = e.getMessage().getAttachments().size() >= 1;
