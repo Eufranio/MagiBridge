@@ -36,7 +36,7 @@ public class ChatListener {
         if(Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
             String[] nick = new String[1];
             NucleusAPI.getNicknameService().ifPresent(s -> s.getNickname((Player)e.getSender()).ifPresent(n -> nick[0] = n.toPlain()));
-            placeholders.put("%nick%", nick[0] != null ? nick[0] : "");
+            placeholders.put("%nick%", nick[0] != null ? nick[0] : e.getSender().getName());
         }
 
         boolean removeEveryone = !e.getSender().hasPermission("magibridge.everyone");

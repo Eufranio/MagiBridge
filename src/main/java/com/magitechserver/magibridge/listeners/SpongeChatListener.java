@@ -49,7 +49,7 @@ public class SpongeChatListener {
                 placeholders.put("%player%", p.getName());
                 placeholders.put("%message%", e.getFormatter().getBody().toText().toPlain());
                 placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
-                placeholders.put("%nick%", nick[0] != null ? nick[0] : "");
+                placeholders.put("%nick%", nick[0] != null ? nick[0] : p.getName());
             boolean removeEveryone = !p.hasPermission("magibridge.everyone");
 
             DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0);

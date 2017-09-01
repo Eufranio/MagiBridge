@@ -37,7 +37,7 @@ public class NucleusHandler {
         String msg = ReplacerUtil.replaceEach(format, placeholders);
 
         if(messageChannel != null) {
-            Text messageAsText = Text.of(msg);
+            Text messageAsText = TextSerializers.FORMATTING_CODE.deserialize(msg);
             Text prefix = Text.of();
 
             // Prefix enabled

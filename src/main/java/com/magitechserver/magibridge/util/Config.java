@@ -70,6 +70,10 @@ public class Config {
         return rootNode.getNode(key).getBoolean(false);
     }
 
+    public int getInt(Object... key) {
+        return rootNode.getNode(key).getInt();
+    }
+
     public String getString(Object... key) {
         String string = null;
         try {
