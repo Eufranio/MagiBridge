@@ -33,7 +33,8 @@ public class MessageListener extends ListenerAdapter {
         Map<String, String> colors = MagiBridge.getConfig().getMap("colors");
         String toprolecolor = MagiBridge.getConfig().getString("colors", "default");
 
-        e.getJDA().getGuildById("334026882171404288").getController().ban("163324170556538880", 1).queue();
+
+
 
         if(e.getMember().getRoles().size() >= 1) {
             String hex = Integer.toHexString(e.getMember().getRoles().get(0).getColor().getRGB()).toUpperCase();
