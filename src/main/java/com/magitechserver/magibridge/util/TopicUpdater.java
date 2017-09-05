@@ -39,9 +39,9 @@ public class TopicUpdater extends Thread {
                 }
             }
 
-            int interval = MagiBridge.getConfig().getInt("misc", "topic-updater-interval");
+            int interval = MagiBridge.getConfig().getInt("misc", "topic-updater-interval") * 1000 * 60;
             try {
-                Thread.sleep(interval < 5 ? 5000 : interval * 1000);
+                Thread.sleep(interval < 5 ? 5 * 1000 * 60 : interval * 1000 * 60);
             } catch (InterruptedException e) {
                 MagiBridge.logger.error("Something interrupted the topic updater!");
             }
