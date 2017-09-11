@@ -71,7 +71,7 @@ public class NucleusHandler {
         }
     }
 
-    private static Text attachmentBuilder(List<Message.Attachment> attachments) {
+    public static Text attachmentBuilder(List<Message.Attachment> attachments) {
         Text text = Text.of();
         Text hover = TextSerializers.FORMATTING_CODE.deserialize("&bAttachment: ").concat(Text.NEW_LINE);
         for(Message.Attachment attachment : attachments) {

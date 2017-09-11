@@ -3,6 +3,7 @@ package com.magitechserver.magibridge;
 import br.net.fabiozumbi12.UltimateChat.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.API.uChatAPI;
 import com.magitechserver.magibridge.util.ReplacerUtil;
+import net.dv8tion.jda.core.entities.Message;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -10,6 +11,7 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,7 +28,7 @@ public class UCHandler {
         return null;
     }
 
-    public static void handle(String channel, String format, Map<String, String> placeholders) {
+    public static void handle(String channel, String format, Map<String, String> placeholders, boolean hasAttachment, List<Message.Attachment> attachments) {
         if(MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(channel) != null) {
             format = MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(channel);
         }
@@ -35,9 +37,11 @@ public class UCHandler {
 
         if(uc != null) {
 
+            Text message = Text.of(ReplacerUtil.replaceEach(format, placeholders));
+            Text attachment = Text.of();
+
             // Prefix enabled
             Text prefix = Text.of();
-            String message = ReplacerUtil.replaceEach(format, placeholders);
             if(MagiBridge.getConfig().getBool("messages", "prefix", "enabled")) {
                 Map<String, String> map = MagiBridge.getConfig().getMap("messages", "prefix");
                 Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(map.get("text")).toBuilder();
@@ -56,7 +60,11 @@ public class UCHandler {
                         .build();
             }
 
-            uc.sendMessage(Sponge.getServer().getConsole(), prefix.concat(Text.of(message)), true);
+            if (hasAttachment) {
+                attachment = NucleusHandler.attachmentBuilder(attachments);
+            }
+
+            uc.sendMessage(Sponge.getServer().getConsole(), prefix.concat(message).concat(attachment), true);
         }
     }
 
