@@ -5,6 +5,7 @@ import flavor.pie.boop.BoopableChannel;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import net.dv8tion.jda.core.entities.Message;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
@@ -50,7 +51,7 @@ public class NucleusHandler {
                 try {
                     url = new URL(map.get("link"));
                 } catch (MalformedURLException e) {
-                    MagiBridge.logger.error("Invalid prefix URL!");
+                    MagiBridge.logger.error("Invalid prefix URL! Fix it on your config!");
                     return;
                 }
 
@@ -72,7 +73,6 @@ public class NucleusHandler {
 
     private static Text attachmentBuilder(List<Message.Attachment> attachments) {
         Text text = Text.of();
-        Text.Builder builder = Text.builder();
         Text hover = TextSerializers.FORMATTING_CODE.deserialize("&bAttachment: ").concat(Text.NEW_LINE);
         for(Message.Attachment attachment : attachments) {
             hover = hover.concat(Text.of(attachment.getFileName())).concat(Text.NEW_LINE);
@@ -88,6 +88,12 @@ public class NucleusHandler {
                 .onClick(TextActions.openUrl(url))
                 .build();
         return text;
+    }
+
+    public static String getNick(Player p) {
+        String[] nick = new String[1];
+        NucleusAPI.getNicknameService().ifPresent(s -> s.getNickname(p).ifPresent(n -> nick[0] = n.toPlain()));
+        return nick[0] == null ? p.getName() : nick[0];
     }
 
 }

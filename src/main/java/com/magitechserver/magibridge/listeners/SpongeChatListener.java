@@ -2,6 +2,7 @@ package com.magitechserver.magibridge.listeners;
 
 import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
+import com.magitechserver.magibridge.NucleusHandler;
 import com.magitechserver.magibridge.util.Config;
 import com.magitechserver.magibridge.util.GroupUtil;
 import com.magitechserver.magibridge.util.Webhooking;
@@ -39,9 +40,6 @@ public class SpongeChatListener {
 
             boolean isStaffMessage = e.getChannel().get().getClass().equals(staffChannel.getClass());
 
-            String[] nick = new String[1];
-            NucleusAPI.getNicknameService().ifPresent(s -> s.getNickname(p).ifPresent(n -> nick[0] = n.toPlain()));
-
             String channel = isStaffMessage ? MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel") : MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel");
             String format = e.getChannel().get().getClass().equals(staffChannel.getClass()) ? "server-to-discord-staff-format" : "server-to-discord-format";
             Map<String, String> placeholders = new HashMap<>();
@@ -49,7 +47,7 @@ public class SpongeChatListener {
                 placeholders.put("%player%", p.getName());
                 placeholders.put("%message%", e.getFormatter().getBody().toText().toPlain());
                 placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
-                placeholders.put("%nick%", nick[0] != null ? nick[0] : p.getName());
+                placeholders.put("%nick%", NucleusHandler.getNick(p));
             boolean removeEveryone = !p.hasPermission("magibridge.everyone");
 
             DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0);

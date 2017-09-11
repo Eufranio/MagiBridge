@@ -33,9 +33,6 @@ public class MessageListener extends ListenerAdapter {
         Map<String, String> colors = MagiBridge.getConfig().getMap("colors");
         String toprolecolor = MagiBridge.getConfig().getString("colors", "default");
 
-
-
-
         if(e.getMember().getRoles().size() >= 1) {
             String hex = Integer.toHexString(e.getMember().getRoles().get(0).getColor().getRGB()).toUpperCase();
             if(colors.containsKey(hex)) {

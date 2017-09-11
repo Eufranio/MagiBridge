@@ -144,6 +144,7 @@ public class DiscordHandler {
     }
 
     private static boolean canUseCommand(Member m, String command) {
+        if (MagiBridge.getConfig().getMap("channel", "commands-role-override") == null) return false;
         if(MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command) != null) {
             if (MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command).equalsIgnoreCase("everyone")) {
                 return true;

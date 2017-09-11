@@ -3,6 +3,7 @@ package com.magitechserver.magibridge.listeners;
 import br.net.fabiozumbi12.UltimateChat.API.SendChannelMessageEvent;
 import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
+import com.magitechserver.magibridge.NucleusHandler;
 import com.magitechserver.magibridge.util.GroupUtil;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import org.spongepowered.api.Sponge;
@@ -34,9 +35,7 @@ public class ChatListener {
             placeholders.put("%topgroup%", GroupUtil.getHighestGroup((Player)e.getSender()));
 
         if(Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
-            String[] nick = new String[1];
-            NucleusAPI.getNicknameService().ifPresent(s -> s.getNickname((Player)e.getSender()).ifPresent(n -> nick[0] = n.toPlain()));
-            placeholders.put("%nick%", nick[0] != null ? nick[0] : e.getSender().getName());
+            placeholders.put("%nick%", NucleusHandler.getNick((Player)e.getSender()));
         }
 
         boolean removeEveryone = !e.getSender().hasPermission("magibridge.everyone");
