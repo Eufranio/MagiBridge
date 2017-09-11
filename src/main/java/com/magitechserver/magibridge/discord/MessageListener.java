@@ -66,7 +66,7 @@ public class MessageListener extends ListenerAdapter {
             String chatChannel = MagiBridge.getConfig().getMap("channel", "ultimatechat").get(channelID);
             String format = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format");
             if (chatChannel != null) {
-                UCHandler.handle(chatChannel, format, placeholders);
+                UCHandler.handle(chatChannel, format, placeholders, hasAttachment, e.getMessage().getAttachments());
             }
         }
 
