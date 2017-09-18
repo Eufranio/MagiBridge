@@ -4,6 +4,7 @@ import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.NucleusHandler;
 import com.magitechserver.magibridge.util.GroupUtil;
+import com.magitechserver.magibridge.util.ReplacerUtil;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -31,11 +32,8 @@ public class SpongeLoginListener {
         placeholders.put("%prefix%", p.getOption("prefix").orElse(""));
         placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
 
-        DiscordHandler.sendMessageToDiscord(MagiBridge.getConfig().getString("channel", "main-discord-channel"),
-                "player-join-message",
-                placeholders,
-                false,
-                0);
+        DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"),
+                ReplacerUtil.replaceEach(MagiBridge.getConfig().getString("messages", "player-join-message"), placeholders));
     }
 
     @Listener(order = Order.LAST)
@@ -46,11 +44,8 @@ public class SpongeLoginListener {
         placeholders.put("%prefix%", p.getOption("prefix").orElse(""));
         placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
 
-        DiscordHandler.sendMessageToDiscord(MagiBridge.getConfig().getString("channel", "main-discord-channel"),
-                "player-quit-message",
-                placeholders,
-                false,
-                0);
+        DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"),
+                ReplacerUtil.replaceEach(MagiBridge.getConfig().getString("messages", "player-quit-message"), placeholders));
     }
 
 }
