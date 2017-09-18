@@ -4,6 +4,8 @@ import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.NucleusHandler;
 import com.magitechserver.magibridge.UCHandler;
+import com.magitechserver.magibridge.util.ReplacerUtil;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import java.util.HashMap;
@@ -34,9 +36,12 @@ public class MessageListener extends ListenerAdapter {
         String toprolecolor = MagiBridge.getConfig().getString("colors", "default");
 
         if(e.getMember().getRoles().size() >= 1) {
-            String hex = Integer.toHexString(e.getMember().getRoles().get(0).getColor().getRGB()).toUpperCase();
-            if(colors.containsKey(hex)) {
-                toprolecolor = colors.get(hex);
+            Role firstRole = e.getMember().getRoles().get(0);
+            if (firstRole.getColor() != null) {
+                String hex = Integer.toHexString(firstRole.getColor().getRGB()).toUpperCase();
+                if (colors.containsKey(hex)) {
+                    toprolecolor = colors.get(hex);
+                }
             }
         }
 
@@ -45,7 +50,6 @@ public class MessageListener extends ListenerAdapter {
             placeholders.put("%message%", canUseColors ? message : message.replaceAll("&([0-9a-fA-FlLkKrR])", "").replaceAll("§([0-9a-fA-FlLkKrR])", ""));
             placeholders.put("%toprole%", toprole);
             placeholders.put("%toprolecolor%", toprolecolor);
-            placeholders.putAll(MagiBridge.getConfig().getMap("discord-to-mc-replacer"));
 
         boolean hasAttachment = e.getMessage().getAttachments().size() >= 1;
 
@@ -111,7 +115,7 @@ public class MessageListener extends ListenerAdapter {
         if (message.startsWith("`")) {
             message = message.substring(0, message.length() - 1).substring(1);
         }
-        return message;
+        return ReplacerUtil.replaceEach(message, MagiBridge.getConfig().getMap("discord-to-mc-replacer"));
     }
 
     private boolean isValidMessage(MessageReceivedEvent e) {

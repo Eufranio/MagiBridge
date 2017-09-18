@@ -1,11 +1,10 @@
 package com.magitechserver.magibridge.listeners;
 
-import br.net.fabiozumbi12.UltimateChat.API.SendChannelMessageEvent;
+import br.net.fabiozumbi12.UltimateChat.Sponge.API.SendChannelMessageEvent;
 import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.NucleusHandler;
 import com.magitechserver.magibridge.util.GroupUtil;
-import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;

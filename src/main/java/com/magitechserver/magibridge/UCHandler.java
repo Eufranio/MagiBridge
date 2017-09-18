@@ -1,7 +1,7 @@
 package com.magitechserver.magibridge;
 
-import br.net.fabiozumbi12.UltimateChat.UCChannel;
-import br.net.fabiozumbi12.UltimateChat.API.uChatAPI;
+import br.net.fabiozumbi12.UltimateChat.Sponge.UCChannel;
+import br.net.fabiozumbi12.UltimateChat.Sponge.UChat;
 import com.magitechserver.magibridge.util.ReplacerUtil;
 import net.dv8tion.jda.core.entities.Message;
 import org.spongepowered.api.Sponge;
@@ -21,7 +21,7 @@ public class UCHandler {
 
     // Channels can be upper/lower case
     public static UCChannel getChannelByCaseInsensitiveName(String name) {
-        for (UCChannel channel : uChatAPI.getChannels())
+        for (UCChannel channel : UChat.get().getAPI().getChannels())
             if (channel.getName().equalsIgnoreCase(name)) {
                 return channel;
             }

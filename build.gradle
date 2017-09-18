@@ -16,12 +16,13 @@ dependencies {
     compileOnly 'io.github.nucleuspowered:nucleus-api:1.1.1-S5.1'
     compile 'com.mashape.unirest:unirest-java:1.4.9'
     compile ("me.lucko.luckperms:luckperms-api:3.2")
+    compile 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.1'
     compile group: 'net.dv8tion', name: 'JDA', version:'3.2.0_241'
     compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.5'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compileOnly files('libs/boop.jar')
     compileOnly files('libs/mcclans.jar')
-    compileOnly files('libs/uchat.jar')
+    // compileOnly files('libs/uchat.jar')
 }
 
 repositories {
@@ -29,6 +30,7 @@ repositories {
     jcenter()
     maven { url = "http://repo.drnaylor.co.uk/artifactory/list/minecraft" }
     maven { url = "https://repo.lucko.me/" }
+    maven { url = "https://raw.github.com/FabioZumbi12/UltimateChat/mvn-repo/" }
 }
 
 shadowJar {
