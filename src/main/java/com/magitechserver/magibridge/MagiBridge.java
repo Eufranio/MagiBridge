@@ -10,6 +10,7 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
@@ -165,8 +166,8 @@ public class MagiBridge {
             DiscordHandler.sendMessageToChannel(getConfig().getString("channel", "main-discord-channel"), getConfig().getString("messages", "server-stopping-message"));
             if (updater != null) updater.interrupt();
             try {
-                jda.getTextChannelById(getConfig().getString("channel", "main-discord-channel")).getManager().setTopic(getConfig().getString("messages", "channel-topic-offline")).queue();
-            } catch (NullPointerException e) {}
+                jda.getTextChannelById(getConfig().getString("channel", "main-discord-channel")).getManager().setTopic(getConfig().getString("messages", "channel-topic-offline")).complete(false);
+            } catch (NullPointerException | RateLimitedException e) {}
         }
 
         logger.info("Disconnecting from Discord...");

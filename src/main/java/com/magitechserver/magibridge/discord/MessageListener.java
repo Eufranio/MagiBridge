@@ -5,6 +5,9 @@ import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.NucleusHandler;
 import com.magitechserver.magibridge.UCHandler;
 import com.magitechserver.magibridge.util.ReplacerUtil;
+import com.vdurmont.emoji.EmojiParser;
+import net.dv8tion.jda.core.entities.Emote;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -33,13 +36,13 @@ public class MessageListener extends ListenerAdapter {
         String name = e.getMember().getEffectiveName();
         String toprole = e.getMember().getRoles().size() >= 1 ? e.getMember().getRoles().get(0).getName() : MagiBridge.getConfig().getString("messages", "no-role-prefix");
         Map<String, String> colors = MagiBridge.getConfig().getMap("colors");
-        String toprolecolor = MagiBridge.getConfig().getString("colors", "default");
+        String toprolecolor = "99AAB5";
 
         if(e.getMember().getRoles().size() >= 1) {
             Role firstRole = e.getMember().getRoles().get(0);
             if (firstRole.getColor() != null) {
                 String hex = Integer.toHexString(firstRole.getColor().getRGB()).toUpperCase();
-                System.out.println("Hex: " + hex);
+                if (hex.length() == 8) hex = hex.substring(2);
                 if (colors.containsKey(hex)) {
                     toprolecolor = colors.get(hex);
                 }
@@ -102,7 +105,7 @@ public class MessageListener extends ListenerAdapter {
     }
 
     private String processMessage(MessageReceivedEvent e) {
-        String message = e.getMessage().getContent();
+        String message = e.getMessage().getStrippedContent();
         if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) || e.getAuthor().isFake()) return "";
         if (message == null && e.getMessage().getAttachments().size() == 0 || message.trim().isEmpty() && e.getMessage().getAttachments().size() == 0) return "";
         if (MagiBridge.getConfig().getBool("misc", "cut-messages")) {
@@ -116,11 +119,11 @@ public class MessageListener extends ListenerAdapter {
         if (message.startsWith("`")) {
             message = message.substring(0, message.length() - 1).substring(1);
         }
-        return ReplacerUtil.replaceEach(message, MagiBridge.getConfig().getMap("discord-to-mc-replacer"));
+        return ReplacerUtil.replaceEach(EmojiParser.parseToAliases(message), MagiBridge.getConfig().getMap("discord-to-mc-replacer"));
     }
 
     private boolean isValidMessage(MessageReceivedEvent e) {
-        String message = e.getMessage().getContent();
+        String message = e.getMessage().getStrippedContent();
         if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) || e.getAuthor().isFake()) return false;
         if (message == null && e.getMessage().getAttachments().size() == 0 || message.trim().isEmpty() && e.getMessage().getAttachments().size() == 0) return false;
         return true;

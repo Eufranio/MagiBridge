@@ -1,10 +1,7 @@
 package com.magitechserver.magibridge;
 
 import com.magitechserver.magibridge.util.*;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -20,6 +17,7 @@ public class DiscordHandler {
 
     public static void sendMessageToChannel(String channel, String message) {
         if(!isValidChannel(channel)) return;
+        message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
         List<String> usersMentioned = new ArrayList<>();
         Arrays.stream(message.split(" ")).filter(word ->
                 word.startsWith("@")).forEach(mention ->
@@ -38,6 +36,7 @@ public class DiscordHandler {
 
     public static void sendMessageToChannel(String channel, String message, long deleteTime) {
         if(!isValidChannel(channel)) return;
+        message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
         MagiBridge.jda.getTextChannelById(channel).sendMessage(message.replaceAll("&([0-9a-fA-FlLkKrR])", ""))
                 .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
     }
@@ -60,6 +59,7 @@ public class DiscordHandler {
         // Applies placeholders
         String message = ReplacerUtil.replaceEach(rawFormat, placeholders);
         message = message.replaceAll("&([0-9a-fA-FlLkKrR])", "");
+        message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
 
         if(removeEveryone) {
             message = message.replace("@everyone", "");
@@ -85,6 +85,8 @@ public class DiscordHandler {
             MagiBridge.jda.getTextChannelById(channel).sendMessage(message)
                     .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
         } else if(Config.useWebhooks()) {
+            message = translateEmojis(placeholders.get("%message%"), MagiBridge.jda.getTextChannelById(channel).getGuild());
+            placeholders.replace("%message%", message);
             Webhooking.sendWebhookMessage(ReplacerUtil.replaceEach(MagiBridge.getConfig().getString("messages", "webhook-name"), placeholders),
                     placeholders.get("%player%"),
                     placeholders.get("%message%"),
@@ -156,6 +158,13 @@ public class DiscordHandler {
         }
         return MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command) != null && m.getRoles().stream().anyMatch(role ->
                 role.getName().equalsIgnoreCase(MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command)));
+    }
+
+    private static String translateEmojis(String message, Guild guild) {
+        for (Emote emote : guild.getEmotes()) {
+            message = message.replace(":" + emote.getName() + ":", emote.getAsMention());
+        }
+        return message;
     }
 
 }

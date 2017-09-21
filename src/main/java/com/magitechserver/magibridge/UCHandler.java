@@ -37,7 +37,7 @@ public class UCHandler {
 
         if(uc != null) {
 
-            Text message = Text.of(ReplacerUtil.replaceEach(format, placeholders));
+            Text message = TextSerializers.FORMATTING_CODE.deserialize(ReplacerUtil.replaceEach(format, placeholders));
             Text attachment = Text.of();
 
             // Prefix enabled
