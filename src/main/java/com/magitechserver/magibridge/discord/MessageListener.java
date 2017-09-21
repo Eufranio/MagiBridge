@@ -39,6 +39,7 @@ public class MessageListener extends ListenerAdapter {
             Role firstRole = e.getMember().getRoles().get(0);
             if (firstRole.getColor() != null) {
                 String hex = Integer.toHexString(firstRole.getColor().getRGB()).toUpperCase();
+                System.out.println("Hex: " + hex);
                 if (colors.containsKey(hex)) {
                     toprolecolor = colors.get(hex);
                 }
