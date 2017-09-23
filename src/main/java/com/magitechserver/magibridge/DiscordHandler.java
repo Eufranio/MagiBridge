@@ -73,10 +73,18 @@ public class DiscordHandler {
                 usersMentioned.add(mention.substring(1)));
 
         if(!usersMentioned.isEmpty()) {
-            for (String user : usersMentioned) {
-                List<User> users = MagiBridge.jda.getUsersByName(user, true);
+            for (String mention : usersMentioned) {
+                List<Member> users = new ArrayList<>();
+                MagiBridge.jda.getGuilds().forEach(guild ->
+                        guild.getMembers().stream().filter(m ->
+                                m.getEffectiveName().equalsIgnoreCase(mention))
+                                .forEach(m -> users.add(m)));
+                List<Role> roles = MagiBridge.jda.getRolesByName(mention, true);
                 if(!users.isEmpty()) {
-                    message = message.replaceAll("@" + user, "<@" + users.get(0).getId() + ">");
+                    message = message.replaceAll("@" + mention, users.get(0).getAsMention());
+                }
+                if (!roles.isEmpty()) {
+                    message = message.replaceAll("@" + mention, roles.get(0).getAsMention());
                 }
             }
         }
