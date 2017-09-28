@@ -1,5 +1,6 @@
 package com.magitechserver.magibridge.config.categories;
 
+import com.google.common.collect.Maps;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
@@ -15,33 +16,31 @@ public class Colors {
     private Map<String, String> defaultValues;
 
     public Colors() {
-        defaultValues = new HashMap<>();
-
-        defaultValues.put("99AAB5", "&f");
-        defaultValues.put("1ABC9C", "&a");
-        defaultValues.put("2ECC71", "&a");
-        defaultValues.put("3498DB", "&3");
-        defaultValues.put("9B59B6", "&5");
-        defaultValues.put("E91E63", "&d");
-        defaultValues.put("F1C40F", "&e");
-        defaultValues.put("E67E22", "&6");
-        defaultValues.put("E74C3C", "&c");
-        defaultValues.put("95A5A6", "&7");
-        defaultValues.put("607D8B", "&8");
-        defaultValues.put("11806A", "&2");
-        defaultValues.put("1F8B4C", "&2");
-        defaultValues.put("206694", "&1");
-        defaultValues.put("71368A", "&5");
-        defaultValues.put("AD1457", "&d");
-        defaultValues.put("C27C0E", "&6");
-        defaultValues.put("A84300", "&6");
-        defaultValues.put("992D22", "&4");
-        defaultValues.put("979C9F", "&7");
-        defaultValues.put("546E7A", "&8");
+        COLORS.put("99AAB5", "&f");
+        COLORS.put("1ABC9C", "&a");
+        COLORS.put("2ECC71", "&a");
+        COLORS.put("3498DB", "&3");
+        COLORS.put("9B59B6", "&5");
+        COLORS.put("E91E63", "&d");
+        COLORS.put("F1C40F", "&e");
+        COLORS.put("E67E22", "&6");
+        COLORS.put("E74C3C", "&c");
+        COLORS.put("95A5A6", "&7");
+        COLORS.put("607D8B", "&8");
+        COLORS.put("11806A", "&2");
+        COLORS.put("1F8B4C", "&2");
+        COLORS.put("206694", "&1");
+        COLORS.put("71368A", "&5");
+        COLORS.put("AD1457", "&d");
+        COLORS.put("C27C0E", "&6");
+        COLORS.put("A84300", "&6");
+        COLORS.put("992D22", "&4");
+        COLORS.put("979C9F", "&7");
+        COLORS.put("546E7A", "&8");
     }
 
-    @Setting(value = "discord-to-mc-replacer", comment = "Conversor from RGB to in-game colors (for %toprolecolor%)" +
+    @Setting(value = "discord-to-mc-replacer", comment = "Conversor from RGB to in-game colors (for %toprolecolor%)\n" +
             "Format: \"RGB\" = \"IN-GAME COLOR\"")
-    public Map<String, String> COLORS = defaultValues;
+    public Map<String, String> COLORS = Maps.newHashMap();
 
 }

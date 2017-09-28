@@ -1,5 +1,6 @@
 package com.magitechserver.magibridge.config.categories;
 
+import com.google.common.collect.Maps;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
@@ -12,12 +13,9 @@ import java.util.Map;
 @ConfigSerializable
 public class Channel {
 
-    private Map<String, String> COMMANDS_OVERRIDE;
-
     public Channel() {
-        COMMANDS_OVERRIDE = new HashMap<>();
-        COMMANDS_OVERRIDE.put("stop", "admin");
-        COMMANDS_OVERRIDE.put("ban", "mod");
+        COMMANDS_ROLE_OVERRIDE.put("stop", "admin");
+        COMMANDS_ROLE_OVERRIDE.put("ban", "mod");
     }
 
     @Setting(value = "use-nucleus", comment = "Should MagiBridge use Nucleus?")
@@ -41,7 +39,7 @@ public class Channel {
     @Setting(value = "commands-role-override", comment = "If a command is defined here, it will ONLY run if the user has the defined role.\n" +
             "In this example, ONLY who have the admin role can stop the server\n" +
             "Set the role to \"everyone\" to allow everyone use the command")
-    public Map<String, String> COMMANDS_ROLE_OVERRIDE = COMMANDS_OVERRIDE;
+    public Map<String, String> COMMANDS_ROLE_OVERRIDE = Maps.newHashMap();
 
     @Setting(value = "console-command-required-role", comment = "Role that a user needs to have in order to run the console command")
     public String CONSOLE_REQUIRED_ROLE = "admin";
@@ -55,23 +53,18 @@ public class Channel {
 
     @ConfigSerializable
     public class UChatCategory {
-        private Map<String, String> UCHAT_DEFAULT_CHANNELS, UCHAT_DEFAULT_OVERRIDES;
-
         public UChatCategory() {
-            UCHAT_DEFAULT_CHANNELS = new HashMap<>();
-            UCHAT_DEFAULT_CHANNELS.put("12345678912345", "global");
-
-            UCHAT_DEFAULT_OVERRIDES = new HashMap<>();
-            UCHAT_DEFAULT_OVERRIDES.put("global", "&7[&a&lG&7] &f%user%&7: %message%");
+            UCHAT_CHANNELS.put("12345678912345", "global");
+            UCHAT_OVERRIDES.put("global", "&7[&a&lG&7] &f%user%&7: %message%");
         }
 
         @Setting(value = "channels", comment = "Format: ChannelID = IngameChannelName, Example:\n" +
                 "12345678912345 = global\n" +
                 "Replace the default value with your own channels")
-        public Map<String, String> UCHAT_CHANNELS = UCHAT_DEFAULT_CHANNELS;
+        public Map<String, String> UCHAT_CHANNELS = Maps.newHashMap();
 
         @Setting(value = "channel-overrides", comment = "Channels defined here override the global format, so you can have per-channel formats")
-        public Map<String, String> UCHAT_OVERRIDES = UCHAT_DEFAULT_OVERRIDES;
+        public Map<String, String> UCHAT_OVERRIDES = Maps.newHashMap();
     }
 
     @Setting(value = "nucleus", comment = "IGNORE IF USING ULTIMATECHAT!")

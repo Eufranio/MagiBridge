@@ -6,6 +6,7 @@ import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import com.magitechserver.magibridge.discord.MessageListener;
 import com.magitechserver.magibridge.listeners.*;
 import com.magitechserver.magibridge.util.CommandHandler;
+import com.magitechserver.magibridge.util.FormatType;
 import com.magitechserver.magibridge.util.TopicUpdater;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -165,7 +166,7 @@ public class MagiBridge {
             if (jda != null) DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STOPPING);
             if (updater != null) updater.interrupt();
             try {
-                jda.getTextChannelById(Config.CHANNELS.MAIN_CHANNEL).getManager().setTopic(Config.MESSAGES.OFFLINE_TOPIC).queue();
+                jda.getTextChannelById(Config.CHANNELS.MAIN_CHANNEL).getManager().setTopic(FormatType.OFFLINE_TOPIC_FORMAT.get()).queue();
             } catch (NullPointerException e) {}
         }
 
