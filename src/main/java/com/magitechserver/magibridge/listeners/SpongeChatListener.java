@@ -3,9 +3,8 @@ package com.magitechserver.magibridge.listeners;
 import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.NucleusHandler;
-import com.magitechserver.magibridge.util.Config;
+import com.magitechserver.magibridge.util.FormatType;
 import com.magitechserver.magibridge.util.GroupUtil;
-import com.magitechserver.magibridge.util.Webhooking;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
 import nl.riebie.mcclans.channels.ClanMessageChannelImpl;
@@ -31,7 +30,7 @@ public class SpongeChatListener {
     public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
         if(!Sponge.getServer().getOnlinePlayers().contains(p)) return;
         if(e.getChannel().isPresent()) {
-            if(MagiBridge.getConfig().getBool("misc", "hide-vanished-chat") && p.get(Keys.VANISH).orElse(false)) return;
+            if(MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT && p.get(Keys.VANISH).orElse(false)) return;
             MessageChannel staffChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
 
             if(Sponge.getPluginManager().isLoaded("mcclans")) {
@@ -40,8 +39,8 @@ public class SpongeChatListener {
 
             boolean isStaffMessage = e.getChannel().get().getClass().equals(staffChannel.getClass());
 
-            String channel = isStaffMessage ? MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel") : MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel");
-            String format = e.getChannel().get().getClass().equals(staffChannel.getClass()) ? "server-to-discord-staff-format" : "server-to-discord-format";
+            String channel = isStaffMessage ? MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL : MagiBridge.getConfig().CHANNELS.NUCLEUS.GLOBAL_CHANNEL;
+            FormatType format = e.getChannel().get().getClass().equals(staffChannel.getClass()) ? FormatType.SERVER_TO_DISCORD_STAFF_FORMAT : FormatType.SERVER_TO_DISCORD_FORMAT;
             Map<String, String> placeholders = new HashMap<>();
                 placeholders.put("%prefix%", p.getOption("prefix").orElse(""));
                 placeholders.put("%player%", p.getName());

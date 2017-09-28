@@ -17,8 +17,8 @@ public class TopicUpdater extends Thread {
     @Override
     public void run() {
         while (true) {
-            if(MagiBridge.getConfig().getBool("misc", "enable-topic-updater")) {
-                String topic = MagiBridge.getConfig().getString("messages", "channel-topic-message")
+            if(MagiBridge.getConfig().CORE.ENABLE_UPDATER) {
+                String topic = FormatType.TOPIC_FORMAT.get()
                         .replace("%players%", Integer.valueOf(Sponge.getServer().getOnlinePlayers().size()).toString())
                         .replace("%maxplayers%", Integer.valueOf(Sponge.getServer().getMaxPlayers()).toString())
                         .replace("%tps%", Long.valueOf(Math.round(Sponge.getServer().getTicksPerSecond())).toString())
@@ -27,19 +27,19 @@ public class TopicUpdater extends Thread {
 
                 try {
 
-                    if (MagiBridge.jda.getTextChannelById(MagiBridge.getConfig().getString("channel", "main-discord-channel")) == null) {
+                    if (MagiBridge.jda.getTextChannelById(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL) == null) {
                         MagiBridge.logger.error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
                         continue;
                     }
 
-                    MagiBridge.jda.getTextChannelById(MagiBridge.getConfig().getString("channel", "main-discord-channel")).getManager().setTopic(topic).queue();
+                    MagiBridge.jda.getTextChannelById(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL).getManager().setTopic(topic).queue();
 
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
             }
 
-            int interval = MagiBridge.getConfig().getInt("misc", "topic-updater-interval") * 1000;
+            int interval = MagiBridge.getConfig().CORE.UPDATER_INTERVAL * 1000;
             try {
                 Thread.sleep(interval < 10000 ? 10000 : interval);
             } catch (InterruptedException e) {

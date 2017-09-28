@@ -51,10 +51,10 @@ public class DiscordHandler {
         return true;
     }
 
-    public static void sendMessageToDiscord(String channel, String format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime) {
+    public static void sendMessageToDiscord(String channel, FormatType format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime) {
         if(!isValidChannel(channel)) return;
 
-        String rawFormat = MagiBridge.getConfig().getString("messages", format);
+        String rawFormat = format.get();
 
         // Applies placeholders
         String message = ReplacerUtil.replaceEach(rawFormat, placeholders);
@@ -81,10 +81,10 @@ public class DiscordHandler {
                                 .forEach(m -> users.add(m)));
                 List<Role> roles = MagiBridge.jda.getRolesByName(mention, true);
                 if(!users.isEmpty()) {
-                    message = message.replaceAll("@" + mention, users.get(0).getAsMention());
+                    message = message.replace("@" + mention, users.get(0).getAsMention().replace("!", ""));
                 }
                 if (!roles.isEmpty()) {
-                    message = message.replaceAll("@" + mention, roles.get(0).getAsMention());
+                    message = message.replace(mention, roles.get(0).getAsMention());
                 }
             }
         }
@@ -92,10 +92,10 @@ public class DiscordHandler {
         if(deleteTime > 0) {
             MagiBridge.jda.getTextChannelById(channel).sendMessage(message)
                     .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
-        } else if(Config.useWebhooks()) {
+        } else if(MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS) {
             message = translateEmojis(placeholders.get("%message%"), MagiBridge.jda.getTextChannelById(channel).getGuild());
             placeholders.replace("%message%", message);
-            Webhooking.sendWebhookMessage(ReplacerUtil.replaceEach(MagiBridge.getConfig().getString("messages", "webhook-name"), placeholders),
+            Webhooking.sendWebhookMessage(ReplacerUtil.replaceEach(MagiBridge.getConfig().MESSAGES.WEBHOOK_NAME, placeholders),
                     placeholders.get("%player%"),
                     placeholders.get("%message%"),
                     channel);
@@ -106,20 +106,20 @@ public class DiscordHandler {
     }
 
     public static void dispatchCommand(MessageReceivedEvent e) {
-        String args[] = e.getMessage().getContent().replace(MagiBridge.getConfig().getString("channel", "console-command") + " ", "").split(" ");
+        String args[] = e.getMessage().getContent().replace(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND + " ", "").split(" ");
 
         if (!canUseCommand(e.getMember(), args[0])) {
-            DiscordHandler.sendMessageToChannel(e.getChannel().getId(), MagiBridge.getConfig().getString("messages", "console-command-no-permission"));
+            DiscordHandler.sendMessageToChannel(e.getChannel().getId(), MagiBridge.getConfig().MESSAGES.CONSOLE_NO_PERMISSION);
             return;
         }
 
-        String cmd = e.getMessage().getContent().replace(MagiBridge.getConfig().getString("channel", "console-command") + " ", "");
+        String cmd = e.getMessage().getContent().replace(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND + " ", "");
         Sponge.getCommandManager().process(new BridgeCommandSource(e.getChannel().getId(), Sponge.getServer().getConsole()), cmd);
     }
 
     public static void dispatchList(Message m, MessageChannel c) {
         String players = "";
-        boolean shouldDelete = MagiBridge.getConfig().getBool("channel", "delete-list-message");
+        boolean shouldDelete = MagiBridge.getConfig().CHANNELS.DELETE_LIST;
         String msg;
         Collection<Player> cplayers =  new ArrayList<>();
         Sponge.getServer().getOnlinePlayers().forEach(p -> {
@@ -128,9 +128,9 @@ public class DiscordHandler {
             }
         });
         if(cplayers.size() == 0) {
-            msg = MagiBridge.getConfig().getString("messages", "no-players-message");
+            msg = MagiBridge.getConfig().MESSAGES.NO_PLAYERS;
         } else {
-            String listformat = MagiBridge.getConfig().getString("messages", "player-list-name");
+            String listformat = MagiBridge.getConfig().MESSAGES.PLAYER_LIST_NAME;
             if(cplayers.size() >= 1) {
                 for (Player player : cplayers) {
                     players = players + listformat
@@ -154,18 +154,18 @@ public class DiscordHandler {
     }
 
     private static boolean canUseCommand(Member m, String command) {
-        if (MagiBridge.getConfig().getMap("channel", "commands-role-override") == null) return false;
-        if(MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command) != null) {
-            if (MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command).equalsIgnoreCase("everyone")) {
+        if (MagiBridge.getConfig().CHANNELS.COMMANDS_ROLE_OVERRIDE == null) return false;
+        if (MagiBridge.getConfig().CHANNELS.COMMANDS_ROLE_OVERRIDE.get(command) != null) {
+            if (MagiBridge.getConfig().CHANNELS.COMMANDS_ROLE_OVERRIDE.get(command).equalsIgnoreCase("everyone")) {
                 return true;
             }
         }
         if (m.getRoles().stream().anyMatch(r ->
-                r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "console-command-required-role")))) {
+                r.getName().equalsIgnoreCase(MagiBridge.getConfig().CHANNELS.CONSOLE_REQUIRED_ROLE))) {
             return true;
         }
-        return MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command) != null && m.getRoles().stream().anyMatch(role ->
-                role.getName().equalsIgnoreCase(MagiBridge.getConfig().getMap("channel", "commands-role-override").get(command)));
+        return MagiBridge.getConfig().CHANNELS.COMMANDS_ROLE_OVERRIDE.get(command) != null && m.getRoles().stream().anyMatch(role ->
+                role.getName().equalsIgnoreCase(MagiBridge.getConfig().CHANNELS.COMMANDS_ROLE_OVERRIDE.get(command)));
     }
 
     private static String translateEmojis(String message, Guild guild) {

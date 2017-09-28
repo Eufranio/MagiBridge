@@ -1,5 +1,7 @@
 package com.magitechserver.magibridge;
 
+import com.magitechserver.magibridge.config.categories.Messages;
+import com.magitechserver.magibridge.util.FormatType;
 import com.magitechserver.magibridge.util.ReplacerUtil;
 import flavor.pie.boop.BoopableChannel;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
@@ -22,34 +24,34 @@ import java.util.Map;
  */
 public class NucleusHandler {
 
-    public static void handle(boolean isStaffChannel, String format, Map<String, String> placeholders, boolean hasAttachment, List<Message.Attachment> attachments) {
+    public static void handle(boolean isStaffChannel, FormatType format, Map<String, String> placeholders, boolean hasAttachment, List<Message.Attachment> attachments) {
         MessageChannel messageChannel;
         if(!isStaffChannel) {
-            if(Sponge.getPluginManager().getPlugin("boop").isPresent() && MagiBridge.getConfig().getBool("misc", "use-boop")) {
+            if(Sponge.getPluginManager().getPlugin("boop").isPresent() && MagiBridge.getConfig().CORE.USE_BOOP) {
                 messageChannel = new BoopableChannel(Sponge.getServer().getBroadcastChannel().getMembers());
             } else {
                 messageChannel = Sponge.getServer().getBroadcastChannel();
             }
         } else {
             messageChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
-            format = MagiBridge.getConfig().getString("messages", "discord-to-server-staff-format");
+            format = FormatType.DISCORD_TO_SERVER_STAFF_FORMAT;
         }
 
-        String msg = ReplacerUtil.replaceEach(format, placeholders);
+        String msg = ReplacerUtil.replaceEach(format.get(), placeholders);
 
         if(messageChannel != null) {
             Text messageAsText = TextSerializers.FORMATTING_CODE.deserialize(msg);
             Text prefix = Text.of();
 
             // Prefix enabled
-            if(MagiBridge.getConfig().getBool("messages", "prefix", "enabled")) {
-                Map<String, String> map = MagiBridge.getConfig().getMap("messages", "prefix");
-                Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(map.get("text")).toBuilder();
-                Text hover = TextSerializers.FORMATTING_CODE.deserialize(map.get("hover"));
+            if(MagiBridge.getConfig().MESSAGES.PREFIX.ENABLED) {
+                Messages.PrefixCategory category = MagiBridge.getConfig().MESSAGES.PREFIX;
+                Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(category.TEXT).toBuilder();
+                Text hover = TextSerializers.FORMATTING_CODE.deserialize(category.HOVER);
 
                 URL url;
                 try {
-                    url = new URL(map.get("link"));
+                    url = new URL(category.LINK);
                 } catch (MalformedURLException e) {
                     MagiBridge.logger.error("Invalid prefix URL! Fix it on your config!");
                     return;
@@ -82,7 +84,7 @@ public class NucleusHandler {
         try {
             url = new URL(attachments.get(0).getUrl());
         } catch (MalformedURLException exception) {}
-        text = Text.builder(MagiBridge.getConfig().getString("messages", "attachment-name"))
+        text = Text.builder(MagiBridge.getConfig().MESSAGES.ATTACHMENT_NAME)
                 .color(TextColors.AQUA)
                 .onHover(TextActions.showText(hover))
                 .onClick(TextActions.openUrl(url))
@@ -92,6 +94,7 @@ public class NucleusHandler {
 
     public static String getNick(Player p) {
         String[] nick = new String[1];
+        if (!Sponge.getPluginManager().getPlugin("nucleus").isPresent()) return p.getName();
         NucleusAPI.getNicknameService().ifPresent(s -> s.getNickname(p).ifPresent(n -> nick[0] = n.toPlain()));
         return nick[0] == null ? p.getName() : nick[0];
     }

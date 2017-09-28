@@ -4,6 +4,7 @@ import br.net.fabiozumbi12.UltimateChat.Sponge.API.SendChannelMessageEvent;
 import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.NucleusHandler;
+import com.magitechserver.magibridge.util.FormatType;
 import com.magitechserver.magibridge.util.GroupUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -25,8 +26,8 @@ public class ChatListener {
         String channel = getKey(e.getChannel().getName().toLowerCase());
         if(channel == null) return;
 
-        if(MagiBridge.getConfig().getBool("misc", "hide-vanished-chat") && ((Player)e.getSender()).get(Keys.VANISH).orElse(false)) return;
-        String format = "server-to-discord-format";
+        if(MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT && ((Player)e.getSender()).get(Keys.VANISH).orElse(false)) return;
+        FormatType format = FormatType.SERVER_TO_DISCORD_FORMAT;
         Map<String, String> placeholders = new HashMap<>();
             placeholders.put("%prefix%", e.getSender().getOption("prefix").orElse(""));
             placeholders.put("%player%", e.getSender().getName());
@@ -43,7 +44,7 @@ public class ChatListener {
     }
 
     private String getKey(String value) {
-        for (Map.Entry<String, String> values : MagiBridge.getConfig().getMap("channel", "ultimatechat").entrySet()) {
+        for (Map.Entry<String, String> values : MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_CHANNELS.entrySet()) {
             if(value.equals(values.getValue().toLowerCase())) {
                 return values.getKey();
             }

@@ -2,6 +2,8 @@ package com.magitechserver.magibridge;
 
 import br.net.fabiozumbi12.UltimateChat.Sponge.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.Sponge.UChat;
+import com.magitechserver.magibridge.config.categories.Messages;
+import com.magitechserver.magibridge.util.FormatType;
 import com.magitechserver.magibridge.util.ReplacerUtil;
 import net.dv8tion.jda.core.entities.Message;
 import org.spongepowered.api.Sponge;
@@ -28,28 +30,29 @@ public class UCHandler {
         return null;
     }
 
-    public static void handle(String channel, String format, Map<String, String> placeholders, boolean hasAttachment, List<Message.Attachment> attachments) {
-        if(MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(channel) != null) {
-            format = MagiBridge.getConfig().getMap("channel", "ultimatechat", "format-overrides").get(channel);
+    public static void handle(String channel, FormatType format, Map<String, String> placeholders, boolean hasAttachment, List<Message.Attachment> attachments) {
+        String rawFormat = format.get();
+        if(MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_OVERRIDES.get(channel) != null) {
+            rawFormat = MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_OVERRIDES.get(channel);
         }
 
         UCChannel uc = UCHandler.getChannelByCaseInsensitiveName(channel);
 
         if(uc != null) {
 
-            Text message = TextSerializers.FORMATTING_CODE.deserialize(ReplacerUtil.replaceEach(format, placeholders));
+            Text message = TextSerializers.FORMATTING_CODE.deserialize(ReplacerUtil.replaceEach(rawFormat, placeholders));
             Text attachment = Text.of();
 
             // Prefix enabled
             Text prefix = Text.of();
-            if(MagiBridge.getConfig().getBool("messages", "prefix", "enabled")) {
-                Map<String, String> map = MagiBridge.getConfig().getMap("messages", "prefix");
-                Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(map.get("text")).toBuilder();
-                Text hover = TextSerializers.FORMATTING_CODE.deserialize(map.get("hover"));
+            if(MagiBridge.getConfig().MESSAGES.PREFIX.ENABLED) {
+                Messages.PrefixCategory category = MagiBridge.getConfig().MESSAGES.PREFIX;
+                Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(category.TEXT).toBuilder();
+                Text hover = TextSerializers.FORMATTING_CODE.deserialize(category.HOVER);
 
                 URL url;
                 try {
-                    url = new URL(map.get("link"));
+                    url = new URL(category.LINK);
                 } catch (MalformedURLException e) {
                     MagiBridge.logger.error("Invalid prefix URL!");
                     return;

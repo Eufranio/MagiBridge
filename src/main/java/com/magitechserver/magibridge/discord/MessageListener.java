@@ -4,13 +4,17 @@ import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.NucleusHandler;
 import com.magitechserver.magibridge.UCHandler;
+import com.magitechserver.magibridge.events.MBMessageEvent;
+import com.magitechserver.magibridge.util.FormatType;
 import com.magitechserver.magibridge.util.ReplacerUtil;
 import com.vdurmont.emoji.EmojiParser;
-import net.dv8tion.jda.core.entities.Emote;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
+
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -21,6 +25,10 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent e) {
 
+        MBMessageEvent messageEvent = new MBMessageEvent(e.getGuild(), Cause.of(NamedCause.source(MagiBridge.getInstance())), e.getMessage());
+        Sponge.getEventManager().post(messageEvent);
+        if (messageEvent.isCancelled()) return;
+
         // Basics
         String channelID = e.getChannel().getId();
         String message = processMessage(e);
@@ -29,13 +37,13 @@ public class MessageListener extends ListenerAdapter {
         if(message.isEmpty()) return;
         if(!isListenableChannel(channelID)) return;
 
-        boolean canUseColors = MagiBridge.getConfig().getString("channel", "color-allowed-role").equalsIgnoreCase("everyone")
+        boolean canUseColors = MagiBridge.getConfig().CHANNELS.COLOR_REQUIRED_ROLE.equalsIgnoreCase("everyone")
                 || e.getMember().getRoles().stream().anyMatch(r ->
-                r.getName().equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "color-allowed-role")));
+                r.getName().equalsIgnoreCase(MagiBridge.getConfig().CHANNELS.COLOR_REQUIRED_ROLE));
 
         String name = e.getMember().getEffectiveName();
-        String toprole = e.getMember().getRoles().size() >= 1 ? e.getMember().getRoles().get(0).getName() : MagiBridge.getConfig().getString("messages", "no-role-prefix");
-        Map<String, String> colors = MagiBridge.getConfig().getMap("colors");
+        String toprole = e.getMember().getRoles().size() >= 1 ? e.getMember().getRoles().get(0).getName() : MagiBridge.getConfig().MESSAGES.NO_ROLE_PLACEHOLDER;
+        Map<String, String> colors = MagiBridge.getConfig().COLORS.COLORS;
         String toprolecolor = "99AAB5";
 
         if(e.getMember().getRoles().size() >= 1) {
@@ -58,46 +66,46 @@ public class MessageListener extends ListenerAdapter {
         boolean hasAttachment = e.getMessage().getAttachments().size() >= 1;
 
         // Handle console command
-        if(message.startsWith(MagiBridge.getConfig().getString("channel", "console-command")) && isListenableChannel(channelID)) {
+        if(message.startsWith(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND) && isListenableChannel(channelID)) {
             DiscordHandler.dispatchCommand(e);
             return;
         }
 
         // Handle player list command
-        if(message.equalsIgnoreCase(MagiBridge.getConfig().getString("channel", "player-list-command")) && isListenableChannel(channelID)) {
+        if(message.equalsIgnoreCase(MagiBridge.getConfig().CHANNELS.LIST_COMMAND) && isListenableChannel(channelID)) {
             DiscordHandler.dispatchList(e.getMessage(), e.getChannel());
             return;
         }
 
         // UltimateChat hook active
-        if (MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && !MagiBridge.getConfig().getBool("channel", "use-nucleus")) {
-            String chatChannel = MagiBridge.getConfig().getMap("channel", "ultimatechat").get(channelID);
-            String format = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format");
+        if (MagiBridge.getConfig().CHANNELS.USE_UCHAT && !MagiBridge.getConfig().CHANNELS.USE_NUCLEUS) {
+            String chatChannel = MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_CHANNELS.get(channelID);
+            FormatType format = FormatType.DISCORD_TO_SERVER_FORMAT;
             if (chatChannel != null) {
                 UCHandler.handle(chatChannel, format, placeholders, hasAttachment, e.getMessage().getAttachments());
             }
         }
 
         // Nucleus hook active
-        if(MagiBridge.getConfig().getBool("channel", "use-nucleus") && !MagiBridge.getConfig().getBool("channels", "use-ultimatechat")) {
-            String format = MagiBridge.getConfig().getString("messages", "discord-to-server-global-format");
-            boolean isStaffChannel = channelID.equals(MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel"));
+        if(MagiBridge.getConfig().CHANNELS.USE_NUCLEUS && !MagiBridge.getConfig().CHANNELS.USE_UCHAT) {
+            FormatType format = FormatType.DISCORD_TO_SERVER_FORMAT;
+            boolean isStaffChannel = channelID.equals(MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL);
             NucleusHandler.handle(isStaffChannel, format, placeholders, hasAttachment, e.getMessage().getAttachments());
         }
     }
 
     private boolean isListenableChannel(String channel) {
-        if(MagiBridge.getConfig().getBool("channel", "use-ultimatechat") && MagiBridge.getConfig().getMap("channel", "ultimatechat").containsKey(channel)) {
+        if(MagiBridge.getConfig().CHANNELS.USE_UCHAT && MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_CHANNELS.containsKey(channel)) {
             return true;
         }
 
-        if(MagiBridge.getConfig().getBool("channel", "use-nucleus") && (
-                MagiBridge.getConfig().getString("channel", "nucleus", "global-discord-channel").equals(channel)
-             || MagiBridge.getConfig().getString("channel", "nucleus", "staff-discord-channel").equals(channel))) {
+        if(MagiBridge.getConfig().CHANNELS.USE_NUCLEUS && (
+                MagiBridge.getConfig().CHANNELS.NUCLEUS.GLOBAL_CHANNEL.equals(channel)
+             || MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL.equals(channel))) {
             return true;
         }
 
-        if(MagiBridge.getConfig().getString("channel", "main-discord-channel").equals(channel)) {
+        if(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL.equals(channel)) {
             return true;
         }
 
@@ -108,7 +116,7 @@ public class MessageListener extends ListenerAdapter {
         String message = e.getMessage().getStrippedContent();
         if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) || e.getAuthor().isFake()) return "";
         if (message == null && e.getMessage().getAttachments().size() == 0 || message.trim().isEmpty() && e.getMessage().getAttachments().size() == 0) return "";
-        if (MagiBridge.getConfig().getBool("misc", "cut-messages")) {
+        if (MagiBridge.getConfig().CORE.CUT_MESSAGES) {
             if (message.length() > 120) {
                 message = message.substring(0, 120);
             }
@@ -119,7 +127,7 @@ public class MessageListener extends ListenerAdapter {
         if (message.startsWith("`")) {
             message = message.substring(0, message.length() - 1).substring(1);
         }
-        return ReplacerUtil.replaceEach(EmojiParser.parseToAliases(message), MagiBridge.getConfig().getMap("discord-to-mc-replacer"));
+        return ReplacerUtil.replaceEach(EmojiParser.parseToAliases(message), MagiBridge.getConfig().REPLACER.REPLACER);
     }
 
     private boolean isValidMessage(MessageReceivedEvent e) {

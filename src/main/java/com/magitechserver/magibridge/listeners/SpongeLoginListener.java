@@ -3,6 +3,7 @@ package com.magitechserver.magibridge.listeners;
 import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.NucleusHandler;
+import com.magitechserver.magibridge.util.FormatType;
 import com.magitechserver.magibridge.util.GroupUtil;
 import com.magitechserver.magibridge.util.ReplacerUtil;
 import org.spongepowered.api.entity.living.player.Player;
@@ -19,33 +20,36 @@ import java.util.Map;
  */
 public class SpongeLoginListener {
 
-    @Listener(order = Order.LAST)
+    @Listener
     public void onLogin(ClientConnectionEvent.Join event, @First Player p) {
         if(!p.hasPlayedBefore()) {
-            DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"), MagiBridge.getConfig().getString("messages", "new-players-message").replace("%player%", p.getName()));
+            DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL, FormatType.NEW_PLAYERS_MESSAGE.get().replace("%player%", p.getName()));
             return;
         }
 
+        if (p.hasPermission("magibridge.silentjoin")) return;
+
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("%player%", p.getName());
         placeholders.put("%nick%", NucleusHandler.getNick(p));
         placeholders.put("%prefix%", p.getOption("prefix").orElse(""));
         placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
 
-        DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"),
-                ReplacerUtil.replaceEach(MagiBridge.getConfig().getString("messages", "player-join-message"), placeholders));
+        DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL,
+                ReplacerUtil.replaceEach(FormatType.JOIN_MESSAGE.get(), placeholders));
     }
 
-    @Listener(order = Order.LAST)
+    @Listener
     public void onQuit(ClientConnectionEvent.Disconnect event, @First Player p) {
+        if (p.hasPermission("magibridge.silentquit")) return;
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("%player%", p.getName());
         placeholders.put("%nick%", NucleusHandler.getNick(p));
         placeholders.put("%prefix%", p.getOption("prefix").orElse(""));
         placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
 
-        DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().getString("channel", "main-discord-channel"),
-                ReplacerUtil.replaceEach(MagiBridge.getConfig().getString("messages", "player-quit-message"), placeholders));
+        DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL,
+                ReplacerUtil.replaceEach(FormatType.QUIT_MESSAGE.get(), placeholders));
     }
 
 }

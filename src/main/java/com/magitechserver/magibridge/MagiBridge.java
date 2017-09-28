@@ -1,16 +1,17 @@
 package com.magitechserver.magibridge;
 
 import com.google.inject.Inject;
+import com.magitechserver.magibridge.config.ConfigManager;
+import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import com.magitechserver.magibridge.discord.MessageListener;
 import com.magitechserver.magibridge.listeners.*;
-import com.magitechserver.magibridge.util.Config;
 import com.magitechserver.magibridge.util.CommandHandler;
 import com.magitechserver.magibridge.util.TopicUpdater;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
@@ -24,6 +25,7 @@ import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
 import javax.security.auth.login.LoginException;
+import java.io.File;
 import java.nio.file.Path;
 
 /**
@@ -51,22 +53,19 @@ public class MagiBridge {
 
     @Inject
     @DefaultConfig(sharedRoot = false)
-    private Path configFile;
+    public Path configFile;
 
     @Inject
     @ConfigDir(sharedRoot = false)
-    private Path configDir;
+    public File configDir;
 
     @Inject
     public MagiBridge(Logger logger) {
         this.logger = logger;
     }
 
-    private Config config;
-
-    public static Config getConfig() {
-        return instance.config;
-    }
+    @Inject
+    public GuiceObjectMapperFactory factory;
 
     public static MagiBridge getInstance() { return instance; }
 
@@ -75,6 +74,7 @@ public class MagiBridge {
     public static SpongeLoginListener LoginListener;
     public static com.magitechserver.magibridge.listeners.AchievementListener AchievementListener;
     public static com.magitechserver.magibridge.listeners.DeathListener DeathListener;
+    public static ConfigCategory Config;
 
     public static JDA jda;
 
@@ -111,28 +111,27 @@ public class MagiBridge {
         try {
             logger.info("MagiBridge is starting!");
 
-            config = new Config(this, configFile, configDir);
-            config.load();
+            Config = new ConfigManager(instance, configFile).loadConfig();
 
             if(!initJDA()) return;
 
             // Registering listeners
-            if(getConfig().getBool("channel", "use-nucleus") && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
+            if (Config.CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
                 Sponge.getEventManager().registerListeners(this, NucleusListener);
                 logger.info("Hooking into Nucleus");
-            } else if(getConfig().getBool("channel", "use-ultimatechat") && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
+            } else if(Config.CHANNELS.USE_UCHAT && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
                 Sponge.getEventManager().registerListeners(this, UCListener);
                 logger.info("Hooking into UltimateChat");
             }
-            if(getConfig().getBool("misc", "death-messages-enabled")) {
+            if(Config.CORE.DEATH_MESSAGES_ENABLED) {
                 Sponge.getEventManager().registerListeners(this, DeathListener);
             }
-            if(getConfig().getBool("misc", "achievement-messages-enabled")) {
+            if(Config.CORE.ACHIEVEMENT_MESSAGES_ENABLED) {
                 Sponge.getEventManager().registerListeners(this, AchievementListener);
             }
             Sponge.getEventManager().registerListeners(this, LoginListener);
-            if(!getConfig().getString("messages", "bot-game-status").isEmpty()) {
-                jda.getPresence().setGame(Game.of(getConfig().getString("messages", "bot-game-status")));
+            if(!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
+                jda.getPresence().setGame(Game.of(Config.MESSAGES.BOT_GAME_STATUS));
             }
 
         } catch (Exception e) {
@@ -140,7 +139,7 @@ public class MagiBridge {
         }
 
         if(!fake) {
-            DiscordHandler.sendMessageToChannel(getConfig().getString("channel", "main-discord-channel"), getConfig().getString("messages", "server-starting-message"));
+            DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STARTING);
             CommandHandler.registerBroadcastCommand();
 
             if (updater != null) {
@@ -163,39 +162,39 @@ public class MagiBridge {
     public void stopStuff(Boolean fake) {
 
         if(!fake) {
-            DiscordHandler.sendMessageToChannel(getConfig().getString("channel", "main-discord-channel"), getConfig().getString("messages", "server-stopping-message"));
+            DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STOPPING);
             if (updater != null) updater.interrupt();
             try {
-                jda.getTextChannelById(getConfig().getString("channel", "main-discord-channel")).getManager().setTopic(getConfig().getString("messages", "channel-topic-offline")).complete(false);
-            } catch (NullPointerException | RateLimitedException e) {}
+                jda.getTextChannelById(Config.CHANNELS.MAIN_CHANNEL).getManager().setTopic(Config.MESSAGES.OFFLINE_TOPIC).queue();
+            } catch (NullPointerException e) {}
         }
 
         logger.info("Disconnecting from Discord...");
         try {
-            jda.shutdown(false);
+            jda.shutdownNow();
         } catch (NullPointerException | NoClassDefFoundError e) {}
 
         // Unregistering listeners
-        if(getConfig().getBool("channel", "use-nucleus") && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
+        if(Config.CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
             Sponge.getEventManager().unregisterListeners(NucleusListener);
-        } else if(getConfig().getBool("channel", "use-ultimatechat") && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
+        } else if(Config.CHANNELS.USE_UCHAT && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
             Sponge.getEventManager().unregisterListeners(UCListener);
         }
-        if(getConfig().getBool("misc", "death-messages-enabled")) {
+        if(Config.CORE.DEATH_MESSAGES_ENABLED) {
             Sponge.getEventManager().unregisterListeners(DeathListener);
         }
-        if(getConfig().getBool("misc", "achievement-messages-enabled")) {
+        if(Config.CORE.ACHIEVEMENT_MESSAGES_ENABLED) {
             Sponge.getEventManager().unregisterListeners(AchievementListener);
         }
         Sponge.getEventManager().unregisterListeners(LoginListener);
-        config = null;
+        Config = null;
         logger.info("Plugin stopped successfully!");
 
     }
 
     private boolean initJDA() {
         try {
-            jda = new JDABuilder(AccountType.BOT).setToken(getConfig().getString("bot", "token")).buildBlocking();
+            jda = new JDABuilder(AccountType.BOT).setToken(Config.CORE.BOT_TOKEN).buildBlocking();
             jda.addEventListener(new MessageListener());
         } catch (LoginException e) {
             logger.error("ERROR STARTING THE PLUGIN:");
@@ -208,5 +207,9 @@ public class MagiBridge {
             return false;
         }
         return true;
+    }
+
+    public static ConfigCategory getConfig() {
+        return Config;
     }
 }
