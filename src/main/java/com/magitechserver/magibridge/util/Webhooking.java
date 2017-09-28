@@ -38,7 +38,7 @@ public class Webhooking {
             }
         }
 
-        sendWebhook(webhook, WebhookContent.of(MagiBridge.getConfig().MESSAGES.WEBHOOK_PICTURE_URL.replace("%player%", player), player, content));
+        sendWebhook(webhook, WebhookContent.of(MagiBridge.getConfig().MESSAGES.WEBHOOK_PICTURE_URL.replace("%player%", player), hook, content));
     }
 
     public static void sendWebhook(String channel_id, WebhookContent webhook) {
