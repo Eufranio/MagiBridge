@@ -52,7 +52,7 @@ public class Channel {
     public UChatCategory UCHAT = new UChatCategory();
 
     @ConfigSerializable
-    public class UChatCategory {
+    public static class UChatCategory {
         public UChatCategory() {
             UCHAT_CHANNELS.put("12345678912345", "global");
             UCHAT_OVERRIDES.put("global", "&7[&a&lG&7] &f%user%&7: %message%");
@@ -71,7 +71,7 @@ public class Channel {
     public NucleusCategory NUCLEUS = new NucleusCategory();
 
     @ConfigSerializable
-    public class NucleusCategory {
+    public static class NucleusCategory {
         @Setting(value = "global-discord-channel", comment = "Discord Channel ID which global messages are sent to")
         public String GLOBAL_CHANNEL = "GLOBAL_DISCORD_CHANNEL_ID_HERE";
 

@@ -13,7 +13,7 @@ public class Messages {
     public PrefixCategory PREFIX = new PrefixCategory();
 
     @ConfigSerializable
-    public class PrefixCategory {
+    public static class PrefixCategory {
 
         @Setting(value = "enabled")
         public boolean ENABLED = true;
