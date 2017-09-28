@@ -42,7 +42,7 @@ import java.nio.file.Path;
 
 public class MagiBridge {
 
-    private static MagiBridge instance = null;
+    public static MagiBridge instance = null;
 
     private TopicUpdater updater;
 
@@ -57,7 +57,7 @@ public class MagiBridge {
 
     @Inject
     @ConfigDir(sharedRoot = false)
-    public File configDir;
+    public Path configDir;
 
     @Inject
     public MagiBridge(Logger logger) {
@@ -111,7 +111,7 @@ public class MagiBridge {
         try {
             logger.info("MagiBridge is starting!");
 
-            Config = new ConfigManager(instance, configFile).loadConfig();
+            Config = new ConfigManager(instance, configDir).loadConfig();
 
             if(!initJDA()) return;
 
@@ -162,7 +162,7 @@ public class MagiBridge {
     public void stopStuff(Boolean fake) {
 
         if(!fake) {
-            DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STOPPING);
+            if (jda != null) DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STOPPING);
             if (updater != null) updater.interrupt();
             try {
                 jda.getTextChannelById(Config.CHANNELS.MAIN_CHANNEL).getManager().setTopic(Config.MESSAGES.OFFLINE_TOPIC).queue();

@@ -7,13 +7,13 @@ import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
  * Created by Frani on 27/09/2017.
  */
 @ConfigSerializable
-public class Messages extends ConfigCategory {
+public class Messages {
 
     @Setting(value = "prefix", comment = "Prefix that will be sent before the actual message, with a hover and clickable link")
     public PrefixCategory PREFIX = new PrefixCategory();
 
     @ConfigSerializable
-    public class PrefixCategory extends ConfigCategory {
+    public class PrefixCategory {
 
         @Setting(value = "enabled")
         public boolean ENABLED = true;

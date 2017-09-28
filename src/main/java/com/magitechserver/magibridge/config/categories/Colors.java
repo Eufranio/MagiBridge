@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by Frani on 27/09/2017.
  */
 @ConfigSerializable
-public class Colors extends ConfigCategory {
+public class Colors {
 
     private Map<String, String> defaultValues;
 

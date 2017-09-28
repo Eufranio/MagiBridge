@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by Frani on 27/09/2017.
  */
 @ConfigSerializable
-public class Replacer extends ConfigCategory {
+public class Replacer {
 
     private Map<String, String> defaultValues;
 

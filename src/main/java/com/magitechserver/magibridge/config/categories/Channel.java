@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by Frani on 27/09/2017.
  */
 @ConfigSerializable
-public class Channel extends ConfigCategory {
+public class Channel {
 
     private Map<String, String> COMMANDS_OVERRIDE;
 
@@ -54,7 +54,7 @@ public class Channel extends ConfigCategory {
     public UChatCategory UCHAT = new UChatCategory();
 
     @ConfigSerializable
-    public class UChatCategory extends ConfigCategory {
+    public class UChatCategory {
         private Map<String, String> UCHAT_DEFAULT_CHANNELS, UCHAT_DEFAULT_OVERRIDES;
 
         public UChatCategory() {
@@ -78,7 +78,7 @@ public class Channel extends ConfigCategory {
     public NucleusCategory NUCLEUS = new NucleusCategory();
 
     @ConfigSerializable
-    public class NucleusCategory extends ConfigCategory {
+    public class NucleusCategory {
         @Setting(value = "global-discord-channel", comment = "Discord Channel ID which global messages are sent to")
         public String GLOBAL_CHANNEL = "GLOBAL_DISCORD_CHANNEL_ID_HERE";
 

@@ -7,7 +7,7 @@ import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
  * Created by Frani on 27/09/2017.
  */
 @ConfigSerializable
-public class ConfigCategory {
+public final class ConfigCategory {
 
     @Setting(value = "core")
     public CoreCategory CORE = new CoreCategory();

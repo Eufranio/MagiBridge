@@ -10,6 +10,7 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created by Frani on 27/09/2017.
@@ -36,20 +37,22 @@ public class ConfigManager {
             "     %nick% -> nickname of the player. If no nick is assigned to the player, his name will be used instead\n" +
             "     %message% -> message that the player sent";
 
-    private Path configDir;
+    public Path configDir;
     private MagiBridge instance;
 
     public ConfigManager(MagiBridge instance, Path configDir) {
         this.configDir = configDir;
         this.instance = instance;
-        if (!instance.configDir.exists()) {
-            instance.configDir.mkdirs();
+        if (!configDir.toFile().exists()) {
+            try {
+                configDir.toFile().createNewFile();
+            } catch (Exception e) {}
         }
     }
 
     public ConfigCategory loadConfig() {
         try {
-            File file = new File(this.configDir.toFile(), "MagiBridge.conf");
+            File file = new File(configDir.toFile(), "MagiBridge.conf");
             if (!file.exists()) {
                 file.createNewFile();
             }
