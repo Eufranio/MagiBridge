@@ -12,18 +12,17 @@ mainClassName = 'com.magitechserver.magibridge.MagiBridge'
 compileJava.options.encoding = 'UTF-8'
 
 dependencies {
-    compile 'org.spongepowered:spongeapi:6.0.0'
+    compileOnly 'org.spongepowered:spongeapi:6.0.0'
     compileOnly 'io.github.nucleuspowered:nucleus-api:1.1.1-S5.1'
-    compile 'com.mashape.unirest:unirest-java:1.4.9'
-    compile 'me.lucko.luckperms:luckperms-api:3.2'
-    compile 'com.vdurmont:emoji-java:3.3.0'
+    compileOnly 'me.lucko.luckperms:luckperms-api:3.2'
     compileOnly 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.1'
-    compile group: 'net.dv8tion', name: 'JDA', version:'3.3.1_284'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.5'
-    compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compileOnly files('libs/boop.jar')
     compileOnly files('libs/mcclans.jar')
-    // compileOnly files('libs/uchat.jar')
+
+    compile 'com.mashape.unirest:unirest-java:1.4.9'
+    compile 'net.dv8tion:JDA:3.3.1_284'
+    compile 'com.vdurmont:emoji-java:3.3.0'
+    compile 'org.json:json:20160810'
 }
 
 repositories {
@@ -38,7 +37,10 @@ shadowJar {
     relocate 'org.apache', 'shaded.apache'
     relocate 'org.json', 'shaded.org.json'
     dependencies {
-        exclude(dependency('org.spongepowered:spongeapi:6.0.0'))
+        include(dependency('net.dv8tion:JDA:3.3.1_284'))
+        include(dependency('com.vdurmont:emoji-java:3.3.0'))
+        include(dependency('com.mashape.unirest:unirest-java:1.4.9'))
+        include(dependency('org.json:json:20160810'))
     }
     baseName = 'MagiBridge'
 }

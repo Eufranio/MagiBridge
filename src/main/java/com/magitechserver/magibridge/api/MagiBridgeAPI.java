@@ -41,7 +41,7 @@ public class MagiBridgeAPI {
      * @param reply The reply for that message
      */
     public void replyTo(Message message, String reply) {
-        message.getChannel().sendMessage(reply);
+        message.getChannel().sendMessage(reply).queue();
     }
 
     /**
