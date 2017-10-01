@@ -19,7 +19,7 @@ public class GroupUtil {
             PermissionService ps = Sponge.getGame().getServiceManager().getRegistration(PermissionService.class).get().getProvider();
             for (Subject sub : player.getParents()) {
                 if (sub.getContainingCollection().equals(ps.getGroupSubjects())) {
-                    if (LuckPerms.getApiSafe().isPresent()) {
+                    if (Sponge.getPluginManager().getPlugin("luckperms").isPresent() && LuckPerms.getApiSafe().isPresent()) {
                         return LuckPerms.getApiSafe().get().getGroup(sub.getIdentifier()).getFriendlyName();
                     }
                     return sub.getIdentifier();

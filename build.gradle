@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.magitechserver.magibridge'
-version = '2.4'
+version = '2.4.1'
 description = 'A utility Discord <-> Minecraft chat relay plugin'
 mainClassName = 'com.magitechserver.magibridge.MagiBridge'
 compileJava.options.encoding = 'UTF-8'
