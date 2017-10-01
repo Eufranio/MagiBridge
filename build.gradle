@@ -23,6 +23,7 @@ dependencies {
     compile 'net.dv8tion:JDA:3.3.1_284'
     compile 'com.vdurmont:emoji-java:3.3.0'
     compile 'org.json:json:20160810'
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
 }
 
 repositories {
@@ -41,6 +42,7 @@ shadowJar {
         include(dependency('com.vdurmont:emoji-java:3.3.0'))
         include(dependency('com.mashape.unirest:unirest-java:1.4.9'))
         include(dependency('org.json:json:20160810'))
+        include(dependency('com.squareup.okhttp3:okhttp:3.8.1'))
     }
     baseName = 'MagiBridge'
 }
