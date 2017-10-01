@@ -12,18 +12,16 @@ mainClassName = 'com.magitechserver.magibridge.MagiBridge'
 compileJava.options.encoding = 'UTF-8'
 
 dependencies {
-    compileOnly 'org.spongepowered:spongeapi:6.0.0'
-    compileOnly 'io.github.nucleuspowered:nucleus-api:1.1.1-S5.1'
-    compileOnly 'me.lucko.luckperms:luckperms-api:3.2'
-    compileOnly 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.1'
-    compileOnly files('libs/boop.jar')
-    compileOnly files('libs/mcclans.jar')
+    shadow 'org.spongepowered:spongeapi:6.0.0'
+    shadow 'io.github.nucleuspowered:nucleus-api:1.1.1-S5.1'
+    shadow 'me.lucko.luckperms:luckperms-api:3.2'
+    shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.1'
+    shadow files('libs/boop.jar')
+    shadow files('libs/mcclans.jar')
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
     compile 'net.dv8tion:JDA:3.3.1_284'
     compile 'com.vdurmont:emoji-java:3.3.0'
-    compile 'org.json:json:20160810'
-    compile 'com.squareup.okhttp3:okhttp:3.8.1'
 }
 
 repositories {
@@ -38,11 +36,9 @@ shadowJar {
     relocate 'org.apache', 'shaded.apache'
     relocate 'org.json', 'shaded.org.json'
     dependencies {
-        include(dependency('net.dv8tion:JDA:3.3.1_284'))
-        include(dependency('com.vdurmont:emoji-java:3.3.0'))
-        include(dependency('com.mashape.unirest:unirest-java:1.4.9'))
-        include(dependency('org.json:json:20160810'))
-        include(dependency('com.squareup.okhttp3:okhttp:3.8.1'))
+        exclude(dependency('net.sf.trove4j:trove4j'))
+        exclude(dependency('org.slf4j:slf4j-api'))
+        exclude(dependency('net.java.dev.jna:jna'))
     }
     baseName = 'MagiBridge'
 }
