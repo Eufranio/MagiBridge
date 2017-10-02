@@ -53,10 +53,6 @@ public class MagiBridge {
     public static final String AUTHOR = "Eufranio";
 
     @Inject
-    @DefaultConfig(sharedRoot = false)
-    public Path configFile;
-
-    @Inject
     @ConfigDir(sharedRoot = false)
     public Path configDir;
 

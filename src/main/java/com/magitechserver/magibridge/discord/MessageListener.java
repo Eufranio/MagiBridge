@@ -34,7 +34,7 @@ public class MessageListener extends ListenerAdapter {
         String message = processMessage(e);
 
         if(!isValidMessage(e)) return;
-        if(message.isEmpty()) return;
+        if(message.isEmpty() && e.getMessage().getAttachments().isEmpty()) return;
         if(!isListenableChannel(channelID)) return;
 
         boolean canUseColors = MagiBridge.getConfig().CHANNELS.COLOR_REQUIRED_ROLE.equalsIgnoreCase("everyone")

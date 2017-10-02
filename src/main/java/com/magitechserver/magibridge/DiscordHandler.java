@@ -70,7 +70,7 @@ public class DiscordHandler {
         List<String> usersMentioned = new ArrayList<>();
         Arrays.stream(message.split(" ")).filter(word ->
                 word.startsWith("@")).forEach(mention ->
-                usersMentioned.add(mention.substring(1)));
+                usersMentioned.add(mention));
 
         if(!usersMentioned.isEmpty()) {
             for (String mention : usersMentioned) {
@@ -81,7 +81,7 @@ public class DiscordHandler {
                                 .forEach(m -> users.add(m)));
                 List<Role> roles = MagiBridge.jda.getRolesByName(mention, true);
                 if(!users.isEmpty()) {
-                    message = message.replace("@" + mention, users.get(0).getAsMention().replace("!", ""));
+                    message = message.replace(mention, users.get(0).getAsMention().replace("!", ""));
                 }
                 if (!roles.isEmpty()) {
                     message = message.replace(mention, roles.get(0).getAsMention());

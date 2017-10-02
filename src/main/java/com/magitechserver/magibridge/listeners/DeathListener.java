@@ -19,6 +19,7 @@ import java.util.Map;
  */
 public class DeathListener {
 
+    @Listener
     public void onDeath(DestructEntityEvent.Death event) {
         if (event.getMessage().toPlain().isEmpty()) return;
         if (event.getTargetEntity() instanceof Player) {

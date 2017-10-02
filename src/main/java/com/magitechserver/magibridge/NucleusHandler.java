@@ -84,10 +84,10 @@ public class NucleusHandler {
         try {
             url = new URL(attachments.get(0).getUrl());
         } catch (MalformedURLException exception) {}
-        text = Text.builder(MagiBridge.getConfig().MESSAGES.ATTACHMENT_NAME)
-                .color(TextColors.AQUA)
+        text = Text.builder()
                 .onHover(TextActions.showText(hover))
                 .onClick(TextActions.openUrl(url))
+                .append(TextSerializers.FORMATTING_CODE.deserialize(MagiBridge.getConfig().MESSAGES.ATTACHMENT_NAME))
                 .build();
         return text;
     }
