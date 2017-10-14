@@ -1,0 +1,44 @@
+plugins {
+    id 'org.spongepowered.plugin' version '0.8.1'
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
+    id 'java'
+    id 'application'
+}
+
+group = 'com.magitechserver.magibridge'
+version = '2.4.1'
+description = 'A utility Discord <-> Minecraft chat relay plugin'
+mainClassName = 'com.magitechserver.magibridge.MagiBridge'
+compileJava.options.encoding = 'UTF-8'
+
+dependencies {
+    shadow 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
+    shadow 'io.github.nucleuspowered:nucleus-api:1.1.1-S5.1'
+    shadow 'me.lucko.luckperms:luckperms-api:3.2'
+    shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.1'
+    shadow files('libs/boop.jar')
+    shadow files('libs/mcclans.jar')
+
+    compile 'com.mashape.unirest:unirest-java:1.4.9'
+    compile 'net.dv8tion:JDA:3.3.1_284'
+    compile 'com.vdurmont:emoji-java:3.3.0'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url = "http://repo.drnaylor.co.uk/artifactory/list/minecraft" }
+    maven { url = "https://repo.lucko.me/" }
+    maven { url = "https://raw.github.com/FabioZumbi12/UltimateChat/mvn-repo/" }
+}
+
+shadowJar {
+    relocate 'org.apache', 'shaded.apache'
+    relocate 'org.json', 'shaded.org.json'
+    dependencies {
+        exclude(dependency('net.sf.trove4j:trove4j'))
+        exclude(dependency('org.slf4j:slf4j-api'))
+        exclude(dependency('net.java.dev.jna:jna'))
+    }
+    baseName = 'MagiBridge-API7'
+}
