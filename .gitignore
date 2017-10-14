@@ -28,3 +28,4 @@ build/
 gradle/
 out/
 src/test/
+'.idea' 
