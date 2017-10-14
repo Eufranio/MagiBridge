@@ -13,8 +13,6 @@ import java.util.Map;
 @ConfigSerializable
 public class Colors {
 
-    private Map<String, String> defaultValues;
-
     public Colors() {
         COLORS.put("99AAB5", "&f");
         COLORS.put("1ABC9C", "&a");

@@ -13,8 +13,6 @@ import java.util.Map;
 @ConfigSerializable
 public class Replacer {
 
-    private Map<String, String> defaultValues;
-
     public Replacer() {
         REPLACER.put(":smiley:", ":)");
         REPLACER.put(":smile:", ":D");

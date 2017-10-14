@@ -54,7 +54,7 @@ public class MagiBridge {
 
     @Inject
     @ConfigDir(sharedRoot = false)
-    public Path configDir;
+    public File configDir;
 
     @Inject
     public MagiBridge(Logger logger) {
@@ -108,7 +108,7 @@ public class MagiBridge {
         try {
             logger.info("MagiBridge is starting!");
 
-            Config = new ConfigManager(instance, configDir).loadConfig();
+            Config = new ConfigManager(instance).loadConfig();
 
             if(!initJDA()) return;
 

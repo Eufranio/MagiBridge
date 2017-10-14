@@ -9,6 +9,8 @@ import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 @ConfigSerializable
 public class Messages {
 
+    public Messages(){}
+
     @Setting(value = "prefix", comment = "Prefix that will be sent before the actual message, with a hover and clickable link")
     public PrefixCategory PREFIX = new PrefixCategory();
 
