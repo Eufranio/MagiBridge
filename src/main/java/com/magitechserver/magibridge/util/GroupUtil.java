@@ -1,11 +1,14 @@
 package com.magitechserver.magibridge.util;
 
-import me.lucko.luckperms.LuckPerms;
-import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.Subject;
+import org.spongepowered.api.service.permission.SubjectReference;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -17,15 +20,15 @@ public class GroupUtil {
         try {
             if (!Sponge.getGame().getServiceManager().getRegistration(PermissionService.class).isPresent()) return "";
             PermissionService ps = Sponge.getGame().getServiceManager().getRegistration(PermissionService.class).get().getProvider();
-            for (Subject sub : player.getParents()) {
-                if (sub.getContainingCollection().equals(ps.getGroupSubjects())) {
-                    if (Sponge.getPluginManager().getPlugin("luckperms").isPresent() && LuckPerms.getApiSafe().isPresent()) {
-                        return LuckPerms.getApiSafe().get().getGroup(sub.getIdentifier()).getFriendlyName();
-                    }
-                    return sub.getIdentifier();
+            HashMap<Integer, Subject> subs = new HashMap<Integer, Subject>();
+            for (SubjectReference sub : player.getParents()){
+                if (sub.getCollectionIdentifier().equals(ps.getGroupSubjects().getIdentifier()) && (sub.getSubjectIdentifier() != null)){
+                    Subject subj = sub.resolve().get();
+                    subs.put(subj.getParents().size(), subj);
                 }
             }
-        } catch (ClassCastException e) {}
+            return subs.isEmpty() ? "" : subs.get(Collections.max(subs.keySet())).getFriendlyIdentifier().isPresent() ? subs.get(Collections.max(subs.keySet())).getFriendlyIdentifier().get() : "";
+        } catch (InterruptedException | ExecutionException e) {}
         return "";
     }
 

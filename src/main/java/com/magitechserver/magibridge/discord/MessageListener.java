@@ -13,8 +13,6 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
-
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -25,7 +23,7 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent e) {
 
-        MBMessageEvent messageEvent = new MBMessageEvent(e.getGuild(), Cause.of(NamedCause.source(MagiBridge.getInstance())), e.getMessage());
+        MBMessageEvent messageEvent = new MBMessageEvent(e.getGuild(), Sponge.getCauseStackManager().getCurrentCause(), e.getMessage());
         Sponge.getEventManager().post(messageEvent);
         if (messageEvent.isCancelled()) return;
 

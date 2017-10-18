@@ -12,10 +12,9 @@ mainClassName = 'com.magitechserver.magibridge.MagiBridge'
 compileJava.options.encoding = 'UTF-8'
 
 dependencies {
-    shadow 'org.spongepowered:spongeapi:6.0.0'
-    shadow 'io.github.nucleuspowered:nucleus-api:1.1.5-LTS-S5.1'
-    shadow 'me.lucko.luckperms:luckperms-api:3.2'
-    shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.3'
+    shadow 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
+    shadow 'io.github.nucleuspowered:nucleus-api:1.2.0-PR2-S7.0'
+    shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.4'
     shadow files('libs/boop.jar')
     shadow files('libs/mcclans.jar')
 
@@ -40,5 +39,5 @@ shadowJar {
         exclude(dependency('org.slf4j:slf4j-api'))
         exclude(dependency('net.java.dev.jna:jna'))
     }
-    baseName = 'MagiBridge'
+    baseName = 'MagiBridge-API7'
 }

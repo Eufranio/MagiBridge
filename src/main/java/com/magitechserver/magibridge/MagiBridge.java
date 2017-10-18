@@ -123,9 +123,9 @@ public class MagiBridge {
             if(Config.CORE.DEATH_MESSAGES_ENABLED) {
                 Sponge.getEventManager().registerListeners(this, DeathListener);
             }
-            if(Config.CORE.ACHIEVEMENT_MESSAGES_ENABLED) {
-                Sponge.getEventManager().registerListeners(this, AchievementListener);
-            }
+            //if(Config.CORE.ACHIEVEMENT_MESSAGES_ENABLED) {
+            //    Sponge.getEventManager().registerListeners(this, AchievementListener);
+            //}
             Sponge.getEventManager().registerListeners(this, LoginListener);
             if(!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
                 jda.getPresence().setGame(Game.of(Config.MESSAGES.BOT_GAME_STATUS));
