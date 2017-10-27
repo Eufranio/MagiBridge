@@ -13,6 +13,9 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.message.MessageChannelEvent;
+import org.spongepowered.api.scheduler.Task;
+
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -22,7 +25,10 @@ public class MessageListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent e) {
+        Task.builder().execute(task -> proccess(e)).submit(MagiBridge.getInstance());
+    }
 
+    private void proccess(MessageReceivedEvent e) {
         MBMessageEvent messageEvent = new MBMessageEvent(e.getGuild(), Sponge.getCauseStackManager().getCurrentCause(), e.getMessage());
         Sponge.getEventManager().post(messageEvent);
         if (messageEvent.isCancelled()) return;
@@ -56,10 +62,10 @@ public class MessageListener extends ListenerAdapter {
         }
 
         Map<String, String> placeholders = new HashMap<>();
-            placeholders.put("%user%", name);
-            placeholders.put("%message%", canUseColors ? message : message.replaceAll("&([0-9a-fA-FlLkKrR])", "").replaceAll("§([0-9a-fA-FlLkKrR])", ""));
-            placeholders.put("%toprole%", toprole);
-            placeholders.put("%toprolecolor%", toprolecolor);
+        placeholders.put("%user%", name);
+        placeholders.put("%message%", canUseColors ? message : message.replaceAll("&([0-9a-fA-FlLkKrR])", "").replaceAll("§([0-9a-fA-FlLkKrR])", ""));
+        placeholders.put("%toprole%", toprole);
+        placeholders.put("%toprolecolor%", toprolecolor);
 
         boolean hasAttachment = e.getMessage().getAttachments().size() >= 1;
 
