@@ -17,7 +17,9 @@ public enum FormatType {
     TOPIC_FORMAT                        (MagiBridge.getConfig().MESSAGES.TOPIC_MESSAGE),
     OFFLINE_TOPIC_FORMAT                (MagiBridge.getConfig().MESSAGES.OFFLINE_TOPIC),
     JOIN_MESSAGE                        (MagiBridge.getConfig().MESSAGES.PLAYER_JOIN),
-    QUIT_MESSAGE                        (MagiBridge.getConfig().MESSAGES.PLAYER_QUIT);
+    QUIT_MESSAGE                        (MagiBridge.getConfig().MESSAGES.PLAYER_QUIT),
+    GOING_AFK                           (MagiBridge.getConfig().MESSAGES.AFK.GOING),
+    RETURNING_AFK                       (MagiBridge.getConfig().MESSAGES.AFK.RETURNING);
 
     private String s;
     FormatType(String s){

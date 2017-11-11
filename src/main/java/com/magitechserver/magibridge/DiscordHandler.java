@@ -51,7 +51,7 @@ public class DiscordHandler {
         return true;
     }
 
-    public static void sendMessageToDiscord(String channel, FormatType format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime) {
+    public static void sendMessageToDiscord(String channel, FormatType format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime, boolean withWebhook) {
         if(!isValidChannel(channel)) return;
 
         String rawFormat = format.get();
@@ -92,7 +92,7 @@ public class DiscordHandler {
         if(deleteTime > 0) {
             MagiBridge.jda.getTextChannelById(channel).sendMessage(message)
                     .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
-        } else if(MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS) {
+        } else if(MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS && withWebhook) {
             message = translateEmojis(placeholders.get("%message%"), MagiBridge.jda.getTextChannelById(channel).getGuild());
             placeholders.replace("%message%", message);
             Webhooking.sendWebhookMessage(ReplacerUtil.replaceEach(MagiBridge.getConfig().MESSAGES.WEBHOOK_NAME, placeholders),
@@ -102,7 +102,10 @@ public class DiscordHandler {
         } else {
             MagiBridge.jda.getTextChannelById(channel).sendMessage(message).queue();
         }
+    }
 
+    public static void sendMessageToDiscord(String channel, FormatType format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime) {
+        sendMessageToDiscord(channel, format, placeholders, removeEveryone, deleteTime, true);
     }
 
     public static void dispatchCommand(MessageReceivedEvent e) {
