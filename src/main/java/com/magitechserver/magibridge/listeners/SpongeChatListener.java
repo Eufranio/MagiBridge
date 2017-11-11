@@ -6,6 +6,7 @@ import com.magitechserver.magibridge.NucleusHandler;
 import com.magitechserver.magibridge.util.FormatType;
 import com.magitechserver.magibridge.util.GroupUtil;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
+import io.github.nucleuspowered.nucleus.api.events.NucleusAFKEvent;
 import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
 import nl.riebie.mcclans.channels.ClanMessageChannelImpl;
 import org.spongepowered.api.Sponge;
@@ -28,9 +29,12 @@ public class SpongeChatListener {
 
     @Listener(order = Order.LAST)
     public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
-        if(!Sponge.getServer().getOnlinePlayers().contains(p)) return;
+        if(!Sponge.getServer().getOnlinePlayers().contains(p) || e.isMessageCancelled()) return;
         if(e.getChannel().isPresent()) {
             if(MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT && p.get(Keys.VANISH).orElse(false)) return;
+            if (!NucleusAPI.getStaffChatService().isPresent()) {
+                MagiBridge.logger.error("The staff chat module is disabled in the Nucleus config! Please enable it!");
+            }
             MessageChannel staffChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
 
             if(Sponge.getPluginManager().isLoaded("mcclans")) {
@@ -50,6 +54,23 @@ public class SpongeChatListener {
             boolean removeEveryone = !p.hasPermission("magibridge.everyone");
 
             DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0);
+        }
+    }
+
+    @Listener
+    public void onAfk(NucleusAFKEvent e) {
+        if (MagiBridge.getConfig().MESSAGES.AFK.AFK_ENABLED) {
+            FormatType format = e instanceof NucleusAFKEvent.GoingAFK ? FormatType.GOING_AFK : e instanceof NucleusAFKEvent.ReturningFromAFK ? FormatType.RETURNING_AFK : null;
+            if (format != null) {
+                Player p = e.getTargetEntity();
+                String channel = MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL;
+                Map<String, String> placeholders = new HashMap<>();
+                placeholders.put("%prefix%", p.getOption("prefix").orElse(""));
+                placeholders.put("%player%", p.getName());
+                placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
+                placeholders.put("%nick%", NucleusHandler.getNick(p));
+                DiscordHandler.sendMessageToDiscord(channel, format, placeholders, false, 0, false);
+            }
         }
     }
 

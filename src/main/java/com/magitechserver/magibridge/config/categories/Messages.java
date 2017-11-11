@@ -101,4 +101,21 @@ public class Messages {
 
     @Setting(value = "attachment-name", comment = "Name of the attachment tag shown in-game when someone sends an attachment to the Discord channel")
     public String ATTACHMENT_NAME = "[Attachment]";
+
+    @Setting(value = "afk", comment = "Messages sent to Discord when a player goes/retuns AFK, if enabled")
+    public AFKCategory AFK = new AFKCategory();
+
+    @ConfigSerializable
+    public static class AFKCategory {
+
+        @Setting(value = "enabled")
+        public boolean AFK_ENABLED = false;
+
+        @Setting(value = "going", comment = "Message sent when a player goes AFK")
+        public String GOING = "%player% is now AFK";
+
+        @Setting(value = "returning", comment = "Message sent when a player is not AFK anymore")
+        public String RETURNING = "%player% is not AFK anymore";
+
+    }
 }
