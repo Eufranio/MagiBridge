@@ -24,7 +24,7 @@ public class Messages {
         public String TEXT = "&6[Discord]";
 
         @Setting(value = "hover")
-        public String HOVER = "&bClick do join our Discord!";
+        public String HOVER = "&bClick to join our Discord!";
 
         @Setting(value = "link")
         public String LINK = "https://github.com/Eufranio/MagiBridge";
@@ -115,7 +115,7 @@ public class Messages {
         public String GOING = "%player% is now AFK";
 
         @Setting(value = "returning", comment = "Message sent when a player is not AFK anymore")
-        public String RETURNING = "%player% is not AFK anymore";
+        public String RETURNING = "%player% is no longer AFK";
 
     }
 }
