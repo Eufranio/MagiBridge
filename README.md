@@ -22,8 +22,15 @@ MagiBridge is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, 
 * Sends death messages to Discord
 * Supports getting the player's prefix in messages
 * Supports Webhooks: if enabled, instead a bot sending the messages, webhooks will. They will have the player's skin and name. Try it out!
+* AFK messages: send messages on AFK events to Discord!
 
 **Note**: almost all messages and/or commands are completely translatable/modifiables. You can change them by modifying the message string of the message in the config!
+
+### Permissions
+* `magibridge.silentjoin` - doesn't trigger a join message when the player joins the server
+* `magibridge.silentquit` - doesn't trigger a quit message when the player leaves the server
+* `magibridge.everyone` - allow the player to use @everyone on messages sent to Discord
+* `magibridge.admin.broadcast` - allows the use of the `/mb <channel> <message>` command to send messages to Discord
 
 ### Supported plugins:
 [UltimateChat, from FabioZumbi12](https://forums.spongepowered.org/t/thought-balloon-ultimatechat-v-1-7-0-api-5-6), [Nucleus, from dualspiral](https://ore.spongepowered.org/Nucleus/Nucleus)
@@ -36,3 +43,7 @@ You can download MagiBridge from the [releases tab](https://github.com/Eufranio/
 
 ### Issues / Suggestions
 You can suggest additions or report issues by [creating a ticket](https://github.com/Eufranio/MagiBridge/issues/new) in the Issues tab, and I'll try to fix it asap.
+
+### Support me!
+If you like the plugin, consider donating via PayPal to frani@magitechserver.com
+
