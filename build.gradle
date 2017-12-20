@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.magitechserver.magibridge'
-version = '2.4.2' + ((System.getenv("BUILD_NUMBER") != null || System.getProperty("BUILD_NUMBER") != null) ? ("-b" + (System.getenv("BUILD_NUMBER") ?: System.getProperty("BUILD_NUMBER"))) : "")
+version = '2.4.3' + ((System.getenv("BUILD_NUMBER") != null || System.getProperty("BUILD_NUMBER") != null) ? ("-b" + (System.getenv("BUILD_NUMBER") ?: System.getProperty("BUILD_NUMBER"))) : "")
 description = 'A utility Discord <-> Minecraft chat relay plugin'
 mainClassName = 'com.magitechserver.magibridge.MagiBridge'
 compileJava.options.encoding = 'UTF-8'
@@ -20,7 +20,7 @@ dependencies {
     shadow files('libs/mcclans.jar')
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
-    compile 'net.dv8tion:JDA:3.3.1_284'
+    compile 'net.dv8tion:JDA:3.4.0_317'
     compile 'com.vdurmont:emoji-java:3.3.0'
 }
 
@@ -35,8 +35,8 @@ repositories {
 shadowJar {
     relocate 'org.apache', 'shaded.apache'
     relocate 'org.json', 'shaded.org.json'
+    relocate 'gnu.trove', 'shaded.gnu.trove'
     dependencies {
-        exclude(dependency('net.sf.trove4j:trove4j'))
         exclude(dependency('org.slf4j:slf4j-api'))
         exclude(dependency('net.java.dev.jna:jna'))
     }
