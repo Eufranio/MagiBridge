@@ -7,7 +7,6 @@
 *.iml
 out
 gen### Gradle template
-.gradle
 /build/
 
 # Ignore Gradle GUI config
