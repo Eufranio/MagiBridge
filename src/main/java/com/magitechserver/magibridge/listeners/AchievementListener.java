@@ -20,6 +20,7 @@ public class AchievementListener {
 
     @Listener
     public void onAchievement(GrantAchievementEvent.TargetPlayer event, @Root Player p) {
+
         Map<String, String> placeholders = new HashMap<>();
             placeholders.put("%player%", p.getName());
             placeholders.put("%nick%", NucleusHandler.getNick(p));
@@ -29,5 +30,6 @@ public class AchievementListener {
 
         DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL,
                 ReplacerUtil.replaceEach(FormatType.ACHIEVEMENT_MESSAGE.get(), placeholders));
+
     }
 }

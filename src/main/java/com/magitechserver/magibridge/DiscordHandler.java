@@ -69,8 +69,7 @@ public class DiscordHandler {
         // Mention discord users if they're mentioned in the message
         List<String> usersMentioned = new ArrayList<>();
         Arrays.stream(message.split(" ")).filter(word ->
-                word.startsWith("@")).forEach(mention ->
-                usersMentioned.add(mention));
+                word.startsWith("@")).forEach(usersMentioned::add);
 
         if(!usersMentioned.isEmpty()) {
             for (String mention : usersMentioned) {
@@ -78,7 +77,7 @@ public class DiscordHandler {
                 MagiBridge.jda.getGuilds().forEach(guild ->
                         guild.getMembers().stream().filter(m ->
                                 m.getEffectiveName().equalsIgnoreCase(mention))
-                                .forEach(m -> users.add(m)));
+                                .forEach(users::add));
                 List<Role> roles = MagiBridge.jda.getRolesByName(mention, true);
                 if(!users.isEmpty()) {
                     message = message.replace(mention, users.get(0).getAsMention().replace("!", ""));
