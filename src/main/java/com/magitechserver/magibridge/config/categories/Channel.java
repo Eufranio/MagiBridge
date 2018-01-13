@@ -18,10 +18,10 @@ public class Channel {
         COMMANDS_ROLE_OVERRIDE.put("ban", "mod");
     }
 
-    @Setting(value = "use-nucleus", comment = "Should MagiBridge use Nucleus?")
+    @Setting(value = "use-nucleus", comment = "Should MagiBridge use Nucleus? If this and use-ultimatechat are both false, MagiBridge will use the vanilla chat system")
     public boolean USE_NUCLEUS = true;
 
-    @Setting(value = "use-ultimatechat", comment = "Should MagiBridge use UltimateChat instead?")
+    @Setting(value = "use-ultimatechat", comment = "Should MagiBridge use UltimateChat instead? If this and use-nucleus are both false, MagiBridge will use the vanilla chat system")
     public boolean USE_UCHAT = false;
 
     @Setting(value = "use-webhooks", comment = "Should MagiBridge send messages trough Webhooks instead a bot?")

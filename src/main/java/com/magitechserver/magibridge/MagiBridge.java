@@ -71,6 +71,7 @@ public class MagiBridge {
     public static SpongeLoginListener LoginListener;
     public static com.magitechserver.magibridge.listeners.AchievementListener AchievementListener;
     public static com.magitechserver.magibridge.listeners.DeathListener DeathListener;
+    public static VanillaChatListener VanillaListener;
     public static ConfigCategory Config;
 
     public static JDA jda;
@@ -84,6 +85,7 @@ public class MagiBridge {
         LoginListener = new SpongeLoginListener();
         AchievementListener = new AchievementListener();
         DeathListener = new DeathListener();
+        VanillaListener = new VanillaChatListener();
     }
 
     @Listener
@@ -110,24 +112,41 @@ public class MagiBridge {
 
             Config = new ConfigManager(instance).loadConfig();
 
-            if(!initJDA()) return;
+            if (!initJDA()) return;
 
             // Registering listeners
-            if (Config.CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
-                Sponge.getEventManager().registerListeners(this, NucleusListener);
-                logger.info("Hooking into Nucleus");
-            } else if(Config.CHANNELS.USE_UCHAT && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
-                Sponge.getEventManager().registerListeners(this, UCListener);
-                logger.info("Hooking into UltimateChat");
+            if (Config.CHANNELS.USE_NUCLEUS) {
+                if (Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
+                    Sponge.getEventManager().registerListeners(this, NucleusListener);
+                    logger.info("Hooking into Nucleus");
+                } else {
+                    logger.error(" ");
+                    logger.error(" MagiBridge is configured to hook into Nucleus, but it isn't loaded! Please disable using-nucleus or load Nucleus on your server!");
+                    logger.error(" ");
+                }
+            } else if (Config.CHANNELS.USE_UCHAT) {
+                if (Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
+                    Sponge.getEventManager().registerListeners(this, UCListener);
+                    logger.info("Hooking into UltimateChat");
+                } else {
+                    logger.error(" ");
+                    logger.error(" MagiBridge is configured to hook into UltimateChat, but it isn't loaded! Please disable using-ultimatechat or load UltimateChat on your server!");
+                    logger.error(" ");
+                }
+            } else {
+                Sponge.getEventManager().registerListeners(this, VanillaListener);
+                logger.info(" No Chat Hook enabled, hooking into the vanilla chat system");
+                logger.info(" Some features may not work, and there will be no staff chat. If you want a more complete chat handling, use either Nucleus or UltimateChat.");
             }
-            if(Config.CORE.DEATH_MESSAGES_ENABLED) {
+
+            if (Config.CORE.DEATH_MESSAGES_ENABLED) {
                 Sponge.getEventManager().registerListeners(this, DeathListener);
             }
             //if(Config.CORE.ACHIEVEMENT_MESSAGES_ENABLED) {
             //    Sponge.getEventManager().registerListeners(this, AchievementListener);
             //}
             Sponge.getEventManager().registerListeners(this, LoginListener);
-            if(!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
+            if (!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
                 jda.getPresence().setGame(Game.of(Config.MESSAGES.BOT_GAME_STATUS));
             }
 
@@ -135,7 +154,7 @@ public class MagiBridge {
             e.printStackTrace();
         }
 
-        if(!fake) {
+        if (!fake) {
             DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STARTING);
             CommandHandler.registerBroadcastCommand();
 
@@ -182,11 +201,12 @@ public class MagiBridge {
         }
         if(Config.CORE.ACHIEVEMENT_MESSAGES_ENABLED) {
             Sponge.getEventManager().unregisterListeners(AchievementListener);
+        } else {
+            Sponge.getEventManager().unregisterListeners(VanillaListener);
         }
         Sponge.getEventManager().unregisterListeners(LoginListener);
         Config = null;
         logger.info("Plugin stopped successfully!");
-
     }
 
     private boolean initJDA() {
