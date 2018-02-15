@@ -24,7 +24,6 @@ gradle-app.setting
 .gradle/
 .idea/
 build/
-gradle/
 out/
 src/test/
 '.idea' 
