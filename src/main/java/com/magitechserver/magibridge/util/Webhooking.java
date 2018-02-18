@@ -8,6 +8,8 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.Webhook;
 import org.json.JSONObject;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +40,9 @@ public class Webhooking {
             }
         }
 
-        sendWebhook(webhook, WebhookContent.of(MagiBridge.getConfig().MESSAGES.WEBHOOK_PICTURE_URL.replace("%player%", player), hook, content));
+        Player p = Sponge.getServer().getPlayer(player).get();
+        String format = MagiBridge.getConfig().MESSAGES.WEBHOOK_PICTURE_URL.replace("%player%", player).replace("%uuid%", p.getUniqueId().toString());
+        sendWebhook(webhook, WebhookContent.of(format, hook, content));
     }
 
     public static void sendWebhook(String channel_id, WebhookContent webhook) {

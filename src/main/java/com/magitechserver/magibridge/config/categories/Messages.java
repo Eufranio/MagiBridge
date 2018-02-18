@@ -90,7 +90,7 @@ public class Messages {
     @Setting(value = "webhook-picture-url", comment = "URL that webhooks should get the skin picture from\n" +
             "Note: the link SHOULD return a valid .png picture from the request!\n" +
             "Supports %player%")
-    public String WEBHOOK_PICTURE_URL = "https://crafatar.com/avatars/%player%?default=MHF_Alex";
+    public String WEBHOOK_PICTURE_URL = "https://crafatar.com/avatars/%uuid%?default=MHF_Alex";
 
     @Setting(value = "no-role-placeholder", comment = "Text that will be used in %toprole% when the user don't have any roles (besides @everyone)\n" +
             "Use only if you need. If you don't, leave this option as \"\"")
