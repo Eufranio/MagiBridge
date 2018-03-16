@@ -45,7 +45,7 @@ public class MBMessageEvent extends MBDiscordEvent implements DiscordEvent.Messa
 
     @Override
     public String getRawMessage() {
-        return message.getRawContent();
+        return message.getContentRaw();
     }
 
 }

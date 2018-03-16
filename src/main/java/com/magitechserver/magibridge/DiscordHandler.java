@@ -16,17 +16,17 @@ import java.util.concurrent.TimeUnit;
 public class DiscordHandler {
 
     public static void sendMessageToChannel(String channel, String message) {
-        if(!isValidChannel(channel)) return;
+        if (!isValidChannel(channel)) return;
         message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
         List<String> usersMentioned = new ArrayList<>();
         Arrays.stream(message.split(" ")).filter(word ->
                 word.startsWith("@")).forEach(mention ->
                 usersMentioned.add(mention.substring(1)));
 
-        if(!usersMentioned.isEmpty()) {
+        if (!usersMentioned.isEmpty()) {
             for (String user : usersMentioned) {
                 List<User> users = MagiBridge.jda.getUsersByName(user, true);
-                if(!users.isEmpty()) {
+                if (!users.isEmpty()) {
                     message = message.replaceAll("@" + user, "<@" + users.get(0).getId() + ">");
                 }
             }
@@ -35,15 +35,15 @@ public class DiscordHandler {
     }
 
     public static void sendMessageToChannel(String channel, String message, long deleteTime) {
-        if(!isValidChannel(channel)) return;
+        if (!isValidChannel(channel)) return;
         message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
         MagiBridge.jda.getTextChannelById(channel).sendMessage(message.replaceAll("&([0-9a-fA-FlLkKrR])", ""))
                 .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
     }
 
     private static boolean isValidChannel(String channel) {
-        if(MagiBridge.jda == null) return false;
-        if(MagiBridge.jda.getTextChannelById(channel) == null) {
+        if (MagiBridge.jda == null) return false;
+        if (MagiBridge.jda.getTextChannelById(channel) == null) {
             MagiBridge.logger.error("The channel " + channel + " defined in the config isn't a valid Discord Channel ID!");
             MagiBridge.logger.error("Replace it with a valid one then reload the plugin!");
             return false;
@@ -52,7 +52,7 @@ public class DiscordHandler {
     }
 
     public static void sendMessageToDiscord(String channel, FormatType format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime, boolean withWebhook) {
-        if(!isValidChannel(channel)) return;
+        if (!isValidChannel(channel)) return;
 
         String rawFormat = format.get();
 
@@ -61,7 +61,7 @@ public class DiscordHandler {
         message = message.replaceAll("&([0-9a-fA-FlLkKrR])", "");
         message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
 
-        if(removeEveryone) {
+        if (removeEveryone) {
             message = message.replace("@everyone", "");
             message = message.replace("@here", "");
         }
@@ -71,7 +71,7 @@ public class DiscordHandler {
         Arrays.stream(message.split(" ")).filter(word ->
                 word.startsWith("@")).forEach(usersMentioned::add);
 
-        if(!usersMentioned.isEmpty()) {
+        if (!usersMentioned.isEmpty()) {
             for (String mention : usersMentioned) {
                 List<Member> users = new ArrayList<>();
                 MagiBridge.jda.getGuilds().forEach(guild ->
@@ -79,7 +79,7 @@ public class DiscordHandler {
                                 m.getEffectiveName().equalsIgnoreCase(mention))
                                 .forEach(users::add));
                 List<Role> roles = MagiBridge.jda.getRolesByName(mention, true);
-                if(!users.isEmpty()) {
+                if (!users.isEmpty()) {
                     message = message.replace(mention, users.get(0).getAsMention().replace("!", ""));
                 }
                 if (!roles.isEmpty()) {
@@ -88,10 +88,10 @@ public class DiscordHandler {
             }
         }
 
-        if(deleteTime > 0) {
+        if (deleteTime > 0) {
             MagiBridge.jda.getTextChannelById(channel).sendMessage(message)
                     .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
-        } else if(MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS && withWebhook) {
+        } else if (MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS && withWebhook) {
             message = translateEmojis(placeholders.get("%message%"), MagiBridge.jda.getTextChannelById(channel).getGuild());
             placeholders.replace("%message%", message);
             Webhooking.sendWebhookMessage(ReplacerUtil.replaceEach(MagiBridge.getConfig().MESSAGES.WEBHOOK_NAME, placeholders),
@@ -108,14 +108,14 @@ public class DiscordHandler {
     }
 
     public static void dispatchCommand(MessageReceivedEvent e) {
-        String args[] = e.getMessage().getContent().replace(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND + " ", "").split(" ");
+        String args[] = e.getMessage().getContentDisplay().replace(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND + " ", "").split(" ");
 
         if (!canUseCommand(e.getMember(), args[0])) {
             DiscordHandler.sendMessageToChannel(e.getChannel().getId(), MagiBridge.getConfig().MESSAGES.CONSOLE_NO_PERMISSION);
             return;
         }
 
-        String cmd = e.getMessage().getContent().replace(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND + " ", "");
+        String cmd = e.getMessage().getContentDisplay().replace(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND + " ", "");
         Sponge.getCommandManager().process(new BridgeCommandSource(e.getChannel().getId(), Sponge.getServer().getConsole()), cmd);
     }
 
@@ -123,17 +123,17 @@ public class DiscordHandler {
         String players = "";
         boolean shouldDelete = MagiBridge.getConfig().CHANNELS.DELETE_LIST;
         String msg;
-        Collection<Player> cplayers =  new ArrayList<>();
+        Collection<Player> cplayers = new ArrayList<>();
         Sponge.getServer().getOnlinePlayers().forEach(p -> {
-            if(!p.get(Keys.VANISH).orElse(false)) {
+            if (!p.get(Keys.VANISH).orElse(false)) {
                 cplayers.add(p);
             }
         });
-        if(cplayers.size() == 0) {
+        if (cplayers.size() == 0) {
             msg = MagiBridge.getConfig().MESSAGES.NO_PLAYERS;
         } else {
             String listformat = MagiBridge.getConfig().MESSAGES.PLAYER_LIST_NAME;
-            if(cplayers.size() >= 1) {
+            if (cplayers.size() >= 1) {
                 for (Player player : cplayers) {
                     players = players + listformat
                             .replace("%player%", player.getName())
@@ -147,7 +147,7 @@ public class DiscordHandler {
             msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
                     + "```" + players + "```";
         }
-        if(shouldDelete) {
+        if (shouldDelete) {
             m.delete().queueAfter(10, TimeUnit.SECONDS);
             sendMessageToChannel(c.getId(), msg, 10);
         } else {

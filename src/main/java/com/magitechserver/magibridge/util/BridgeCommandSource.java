@@ -3,9 +3,9 @@ package com.magitechserver.magibridge.util;
 import com.magitechserver.magibridge.DiscordHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.service.context.Context;
-import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.SubjectCollection;
 import org.spongepowered.api.service.permission.SubjectData;
+import org.spongepowered.api.service.permission.SubjectReference;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.util.Tristate;
@@ -30,9 +30,19 @@ public class BridgeCommandSource implements CommandSource {
 
     @Override
     public void sendMessage(Text message) {
-        if(message.toPlain().equals("") || message.toPlain().trim().isEmpty()) return;
+        if (message.toPlain().equals("") || message.toPlain().trim().isEmpty()) return;
         String msg = "```" + message.toPlain() + "```";
         DiscordHandler.sendMessageToChannel(channel, msg);
+    }
+
+    @Override
+    public boolean isSubjectDataPersisted() {
+        return this.actualSource.isSubjectDataPersisted();
+    }
+
+    @Override
+    public SubjectReference asSubjectReference() {
+        return this.actualSource.asSubjectReference();
     }
 
     @Override
@@ -96,22 +106,22 @@ public class BridgeCommandSource implements CommandSource {
     }
 
     @Override
-    public boolean isChildOf(Subject parent) {
+    public boolean isChildOf(SubjectReference parent) {
         return this.actualSource.isChildOf(parent);
     }
 
     @Override
-    public boolean isChildOf(Set<Context> contexts, Subject parent) {
+    public boolean isChildOf(Set<Context> contexts, SubjectReference parent) {
         return this.actualSource.isChildOf(contexts, parent);
     }
 
     @Override
-    public List<Subject> getParents() {
+    public List<SubjectReference> getParents() {
         return this.actualSource.getParents();
     }
 
     @Override
-    public List<Subject> getParents(Set<Context> contexts) {
+    public List<SubjectReference> getParents(Set<Context> contexts) {
         return this.actualSource.getParents(contexts);
     }
 

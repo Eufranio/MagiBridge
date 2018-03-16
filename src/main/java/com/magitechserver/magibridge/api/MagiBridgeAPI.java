@@ -50,7 +50,7 @@ public class MagiBridgeAPI {
      * @param status The game (you lost)
      */
     public void setBotStatus(String status) {
-        getJDA().getPresence().setGame(Game.of(status));
+        getJDA().getPresence().setGame(Game.playing(status));
     }
 
     /**

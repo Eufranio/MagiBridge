@@ -29,12 +29,12 @@ public class Webhooking {
         List<String> usersMentioned = new ArrayList<>();
         Arrays.stream(content.split(" ")).filter(word ->
                 word.startsWith("@")).forEach(mention ->
-                    usersMentioned.add(mention.substring(1)));
+                usersMentioned.add(mention.substring(1)));
 
-        if(!usersMentioned.isEmpty()) {
+        if (!usersMentioned.isEmpty()) {
             for (String user : usersMentioned) {
                 List<User> users = MagiBridge.jda.getUsersByName(user, true);
-                if(!users.isEmpty()) {
+                if (!users.isEmpty()) {
                     content = content.replaceAll("@" + user, "<@" + users.get(0).getId() + ">");
                 }
             }
@@ -67,7 +67,7 @@ public class Webhooking {
 
     private static Webhook getWebhook(String channelID) {
         TextChannel channel = MagiBridge.jda.getTextChannelById(channelID);
-        if(!channel.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+        if (!channel.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
             MagiBridge.logger.error("The bot does not have the MANAGE WEBHOOKS permission, so it can't create webhooks!");
             MagiBridge.logger.error("Please give it or disable the use-webhooks feature!");
             return null;
@@ -77,8 +77,8 @@ public class Webhooking {
                 .getWebhooks().complete().stream().filter(wh ->
                         wh.getName().equals("MB: " + channel.getName())).findFirst().orElse(null);
 
-        if(webhook == null) {
-            webhook = channel.getGuild().getController().createWebhook(channel, "MB: " + channel.getName()).complete();
+        if (webhook == null) {
+            webhook = channel.createWebhook("MB: " + channel.getName()).complete();
         }
 
         return webhook;
