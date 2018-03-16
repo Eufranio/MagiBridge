@@ -11,7 +11,6 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
-import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.net.MalformedURLException;
@@ -26,8 +25,8 @@ public class NucleusHandler {
 
     public static void handle(boolean isStaffChannel, FormatType format, Map<String, String> placeholders, boolean hasAttachment, List<Message.Attachment> attachments) {
         MessageChannel messageChannel;
-        if(!isStaffChannel) {
-            if(Sponge.getPluginManager().getPlugin("boop").isPresent() && MagiBridge.getConfig().CORE.USE_BOOP) {
+        if (!isStaffChannel) {
+            if (Sponge.getPluginManager().getPlugin("boop").isPresent() && MagiBridge.getConfig().CORE.USE_BOOP) {
                 messageChannel = new BoopableChannel(Sponge.getServer().getBroadcastChannel().getMembers());
             } else {
                 messageChannel = Sponge.getServer().getBroadcastChannel();
@@ -39,12 +38,12 @@ public class NucleusHandler {
 
         String msg = ReplacerUtil.replaceEach(format.get(), placeholders);
 
-        if(messageChannel != null) {
+        if (messageChannel != null) {
             Text messageAsText = TextSerializers.FORMATTING_CODE.deserialize(msg);
             Text prefix = Text.of();
 
             // Prefix enabled
-            if(MagiBridge.getConfig().MESSAGES.PREFIX.ENABLED) {
+            if (MagiBridge.getConfig().MESSAGES.PREFIX.ENABLED) {
                 Messages.PrefixCategory category = MagiBridge.getConfig().MESSAGES.PREFIX;
                 Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(category.TEXT).toBuilder();
                 Text hover = TextSerializers.FORMATTING_CODE.deserialize(category.HOVER);
@@ -64,7 +63,7 @@ public class NucleusHandler {
 
             Text k = prefix;
 
-            if(hasAttachment) {
+            if (hasAttachment) {
                 Text attachment = attachmentBuilder(attachments);
                 messageChannel.getMembers().forEach(player -> player.sendMessage(k.concat(messageAsText).concat(attachment)));
             } else {
@@ -76,14 +75,15 @@ public class NucleusHandler {
     public static Text attachmentBuilder(List<Message.Attachment> attachments) {
         Text text = Text.of();
         Text hover = TextSerializers.FORMATTING_CODE.deserialize("&bAttachment: ").concat(Text.NEW_LINE);
-        for(Message.Attachment attachment : attachments) {
+        for (Message.Attachment attachment : attachments) {
             hover = hover.concat(Text.of(attachment.getFileName())).concat(Text.NEW_LINE);
         }
         hover = hover.concat(TextSerializers.FORMATTING_CODE.deserialize("&bClick to open the attachment!"));
         URL url = null;
         try {
             url = new URL(attachments.get(0).getUrl());
-        } catch (MalformedURLException exception) {}
+        } catch (MalformedURLException exception) {
+        }
         text = Text.builder()
                 .onHover(TextActions.showText(hover))
                 .onClick(TextActions.openUrl(url))

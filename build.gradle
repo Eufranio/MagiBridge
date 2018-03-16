@@ -40,6 +40,6 @@ shadowJar {
         exclude(dependency('org.slf4j:slf4j-api'))
         exclude(dependency('net.java.dev.jna:jna'))
     }
-    baseName = 'MagiBridge-API7'
+    baseName = 'MagiBridge'
     classifier = null
 }

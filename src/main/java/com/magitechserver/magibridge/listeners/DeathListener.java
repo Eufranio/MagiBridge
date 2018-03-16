@@ -8,7 +8,6 @@ import com.magitechserver.magibridge.util.GroupUtil;
 import com.magitechserver.magibridge.util.ReplacerUtil;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 
 import java.util.HashMap;
@@ -23,7 +22,7 @@ public class DeathListener {
     public void onDeath(DestructEntityEvent.Death event) {
         if (event.getMessage().toPlain().isEmpty()) return;
         if (event.getTargetEntity() instanceof Player) {
-            Player p = (Player)event.getTargetEntity();
+            Player p = (Player) event.getTargetEntity();
 
             Map<String, String> placeholders = new HashMap<>();
             placeholders.put("%player%", p.getName());

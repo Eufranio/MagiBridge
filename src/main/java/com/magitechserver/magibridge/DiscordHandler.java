@@ -120,7 +120,7 @@ public class DiscordHandler {
     }
 
     public static void dispatchList(Message m, MessageChannel c) {
-        String players = "";
+        StringBuilder players = new StringBuilder();
         boolean shouldDelete = MagiBridge.getConfig().CHANNELS.DELETE_LIST;
         String msg;
         Collection<Player> cplayers = new ArrayList<>();
@@ -135,14 +135,13 @@ public class DiscordHandler {
             String listformat = MagiBridge.getConfig().MESSAGES.PLAYER_LIST_NAME;
             if (cplayers.size() >= 1) {
                 for (Player player : cplayers) {
-                    players = players + listformat
+                    players.append(listformat
                             .replace("%player%", player.getName())
                             .replace("%topgroup%", GroupUtil.getHighestGroup(player))
                             .replace("%prefix%", player.getOption("prefix")
-                                    .orElse("")) +
-                            ", ";
+                                    .orElse(""))).append(", ");
                 }
-                players = players.substring(0, players.length() - 2);
+                players = new StringBuilder(players.substring(0, players.length() - 2));
             }
             msg = "**Players online (" + Sponge.getServer().getOnlinePlayers().size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
                     + "```" + players + "```";

@@ -29,16 +29,17 @@ public class SpongeChatListener {
 
     @Listener(order = Order.LAST)
     public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
-        if(!Sponge.getServer().getOnlinePlayers().contains(p) || e.isMessageCancelled()) return;
-        if(e.getChannel().isPresent()) {
-            if(MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT && p.get(Keys.VANISH).orElse(false)) return;
+        if (!Sponge.getServer().getOnlinePlayers().contains(p) || e.isMessageCancelled()) return;
+        if (e.getChannel().isPresent()) {
+            if (MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT && p.get(Keys.VANISH).orElse(false)) return;
             if (!NucleusAPI.getStaffChatService().isPresent()) {
                 MagiBridge.logger.error("The staff chat module is disabled in the Nucleus config! Please enable it!");
             }
             MessageChannel staffChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
 
-            if(Sponge.getPluginManager().isLoaded("mcclans")) {
-                if(e.getChannel().get() instanceof AllyMessageChannelImpl || e.getChannel().get() instanceof ClanMessageChannelImpl) return;
+            if (Sponge.getPluginManager().isLoaded("mcclans")) {
+                if (e.getChannel().get() instanceof AllyMessageChannelImpl || e.getChannel().get() instanceof ClanMessageChannelImpl)
+                    return;
             }
 
             boolean isStaffMessage = e.getChannel().get().getClass().equals(staffChannel.getClass());
@@ -46,11 +47,11 @@ public class SpongeChatListener {
             String channel = isStaffMessage ? MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL : MagiBridge.getConfig().CHANNELS.NUCLEUS.GLOBAL_CHANNEL;
             FormatType format = e.getChannel().get().getClass().equals(staffChannel.getClass()) ? FormatType.SERVER_TO_DISCORD_STAFF_FORMAT : FormatType.SERVER_TO_DISCORD_FORMAT;
             Map<String, String> placeholders = new HashMap<>();
-                placeholders.put("%prefix%", p.getOption("prefix").orElse(""));
-                placeholders.put("%player%", p.getName());
-                placeholders.put("%message%", e.getFormatter().getBody().toText().toPlain());
-                placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
-                placeholders.put("%nick%", NucleusHandler.getNick(p));
+            placeholders.put("%prefix%", p.getOption("prefix").orElse(""));
+            placeholders.put("%player%", p.getName());
+            placeholders.put("%message%", e.getFormatter().getBody().toText().toPlain());
+            placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
+            placeholders.put("%nick%", NucleusHandler.getNick(p));
             boolean removeEveryone = !p.hasPermission("magibridge.everyone");
 
             DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0);

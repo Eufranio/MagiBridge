@@ -8,7 +8,6 @@ import com.magitechserver.magibridge.util.GroupUtil;
 import com.magitechserver.magibridge.util.ReplacerUtil;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
@@ -22,7 +21,7 @@ public class SpongeLoginListener {
 
     @Listener
     public void onLogin(ClientConnectionEvent.Join event, @First Player p) {
-        if(!p.hasPlayedBefore()) {
+        if (!p.hasPlayedBefore()) {
             DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL, FormatType.NEW_PLAYERS_MESSAGE.get().replace("%player%", p.getName()));
             return;
         }

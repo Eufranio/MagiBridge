@@ -56,7 +56,7 @@ public class MagiBridge {
 
     @Inject
     public MagiBridge(Logger logger) {
-        this.logger = logger;
+        MagiBridge.logger = logger;
     }
 
     @Inject

@@ -9,7 +9,8 @@ import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 @ConfigSerializable
 public class CoreCategory {
 
-    public CoreCategory(){}
+    public CoreCategory() {
+    }
 
     @Setting(value = "bot-token", comment = "Bot Token of the Bot User that you want to be used when sending messages to Discord")
     public String BOT_TOKEN = "";
