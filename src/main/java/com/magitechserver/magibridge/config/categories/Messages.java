@@ -40,7 +40,7 @@ public class Messages {
     public String NO_PLAYERS = "**There are no players online!**";
 
     @Setting(value = "console-command-no-permisson", comment = "No permission message (for console command)")
-    public String CONSOLE_NO_PERMISSION = "**You don't have permission to use this command!";
+    public String CONSOLE_NO_PERMISSION = "**You don't have permission to use this command!**";
 
     @Setting(value = "server-to-discord-format", comment = "Format of messages sent FROM the server TO discord")
     public String SERVER_TO_DISCORD_FORMAT = "**%player%**: %message%";
@@ -78,9 +78,9 @@ public class Messages {
     @Setting(value = "death-message", comment = "Message that will be sent to the main discord channel when a player dies")
     public String DEATH_MESSAGE = "**Bad day for %player%: %deathmessage%**";
 
-    @Setting(value = "achievement-message", comment = "Message that will be sent to the main discord channel when a player grants a achievement\n" +
-            "Supports %achievement%")
-    public String ACHIEVEMENT_MESSAGE = "**%player% got a new achievement: %achievement%**";
+    @Setting(value = "advancement-message", comment = "Message that will be sent to the main discord channel when a player receives an advancement\n" +
+            "Supports %advancement%")
+    public String ADVANCEMENT_MESSAGE = "**%player% got a new advancement: %advancement%**";
 
     @Setting(value = "new-players-message", comment = " Message that will be sent to the main discord channel when a new player joins the server")
     public String NEW_PLAYERS_MESSAGE = "**Enjoy playing on our server, %player%!**";

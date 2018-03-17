@@ -69,7 +69,7 @@ public class MagiBridge {
     public static ChatListener UCListener;
     public static SpongeChatListener NucleusListener;
     public static SpongeLoginListener LoginListener;
-    public static com.magitechserver.magibridge.listeners.AchievementListener AchievementListener;
+    public static com.magitechserver.magibridge.listeners.AdvancementListener AdvancementListener;
     public static com.magitechserver.magibridge.listeners.DeathListener DeathListener;
     public static VanillaChatListener VanillaListener;
     public static ConfigCategory Config;
@@ -83,7 +83,7 @@ public class MagiBridge {
         UCListener = new ChatListener();
         NucleusListener = new SpongeChatListener();
         LoginListener = new SpongeLoginListener();
-        AchievementListener = new AchievementListener();
+        AdvancementListener = new AdvancementListener();
         DeathListener = new DeathListener();
         VanillaListener = new VanillaChatListener();
     }
@@ -142,9 +142,9 @@ public class MagiBridge {
             if (Config.CORE.DEATH_MESSAGES_ENABLED) {
                 Sponge.getEventManager().registerListeners(this, DeathListener);
             }
-            //if(Config.CORE.ACHIEVEMENT_MESSAGES_ENABLED) {
-            //    Sponge.getEventManager().registerListeners(this, AchievementListener);
-            //}
+            if(Config.CORE.ADVANCEMENT_MESSAGES_ENABLED) {
+                Sponge.getEventManager().registerListeners(this, AdvancementListener);
+            }
             Sponge.getEventManager().registerListeners(this, LoginListener);
             if (!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
                 jda.getPresence().setGame(Game.playing(Config.MESSAGES.BOT_GAME_STATUS));
@@ -204,8 +204,8 @@ public class MagiBridge {
         if (Config.CORE.DEATH_MESSAGES_ENABLED) {
             Sponge.getEventManager().unregisterListeners(DeathListener);
         }
-        if (Config.CORE.ACHIEVEMENT_MESSAGES_ENABLED) {
-            Sponge.getEventManager().unregisterListeners(AchievementListener);
+        if (Config.CORE.ADVANCEMENT_MESSAGES_ENABLED) {
+            Sponge.getEventManager().unregisterListeners(AdvancementListener);
         } else {
             Sponge.getEventManager().unregisterListeners(VanillaListener);
         }

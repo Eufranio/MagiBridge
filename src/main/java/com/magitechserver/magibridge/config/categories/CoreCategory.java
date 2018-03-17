@@ -18,8 +18,8 @@ public class CoreCategory {
     @Setting(value = "death-messages-enabled", comment = "Should MagiBridge send death messages to Discord?")
     public boolean DEATH_MESSAGES_ENABLED = true;
 
-    @Setting(value = "achievement-messages-enabled", comment = "Should MagiBridge send achievement get messages to Discord?")
-    public boolean ACHIEVEMENT_MESSAGES_ENABLED = true;
+    @Setting(value = "advancement-messages-enabled", comment = "Should MagiBridge send advancement messages to Discord?")
+    public boolean ADVANCEMENT_MESSAGES_ENABLED = true;
 
     @Setting(value = "use-boop", comment = "Should MagiBridge enable Boop support? Will only work if Boop is installed and updated")
     public boolean USE_BOOP = false;
