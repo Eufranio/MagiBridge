@@ -49,8 +49,8 @@ public class MagiBridge {
     public static ChatListener UCListener;
     public static SpongeChatListener NucleusListener;
     public static SpongeLoginListener LoginListener;
-    public static com.magitechserver.magibridge.listeners.AdvancementListener AdvancementListener;
-    public static com.magitechserver.magibridge.listeners.DeathListener DeathListener;
+    public static AdvancementListener AdvancementListener;
+    public static DeathListener DeathListener;
     public static VanillaChatListener VanillaListener;
     public static ConfigCategory Config;
     public static JDA jda;

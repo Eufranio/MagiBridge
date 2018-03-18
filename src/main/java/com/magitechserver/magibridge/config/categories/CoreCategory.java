@@ -27,7 +27,4 @@ public class CoreCategory {
     @Setting(value = "enable-topic-updater", comment = "Should MagiBridge enable the Topic Updater, updating the topic of the main Discord channel?")
     public boolean ENABLE_UPDATER = true;
 
-    public CoreCategory() {
-    }
-
 }

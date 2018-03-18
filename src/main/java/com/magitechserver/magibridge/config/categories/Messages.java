@@ -64,9 +64,6 @@ public class Messages {
     @Setting(value = "afk", comment = "Messages sent to Discord when a player goes/retuns AFK, if enabled")
     public AFKCategory AFK = new AFKCategory();
 
-    public Messages() {
-    }
-
     @ConfigSerializable
     public static class PrefixCategory {
 

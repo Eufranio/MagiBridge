@@ -37,9 +37,8 @@ public class SpongeChatListener {
             }
             MessageChannel staffChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
 
-            if (Sponge.getPluginManager().isLoaded("mcclans")) {
-                if (e.getChannel().get() instanceof AllyMessageChannelImpl || e.getChannel().get() instanceof ClanMessageChannelImpl)
-                    return;
+            if (Sponge.getPluginManager().isLoaded("mcclans") && e.getChannel().get() instanceof AllyMessageChannelImpl || e.getChannel().get() instanceof ClanMessageChannelImpl) {
+                return;
             }
 
             boolean isStaffMessage = e.getChannel().get().getClass().equals(staffChannel.getClass());
