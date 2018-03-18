@@ -41,31 +41,11 @@ import java.io.File;
 
 public class MagiBridge {
 
-    public static MagiBridge instance = null;
-
-    private TopicUpdater updater;
-
     public static final String ID = "magibridge";
     public static final String NAME = "MagiBridge";
     public static final String DESCRIPTION = "A utility Discord <-> Minecraft chat relay plugin";
     public static final String AUTHOR = "Eufranio";
-
-    @Inject
-    @ConfigDir(sharedRoot = false)
-    public File configDir;
-
-    @Inject
-    public MagiBridge(Logger logger) {
-        MagiBridge.logger = logger;
-    }
-
-    @Inject
-    public GuiceObjectMapperFactory factory;
-
-    public static MagiBridge getInstance() {
-        return instance;
-    }
-
+    public static MagiBridge instance = null;
     public static ChatListener UCListener;
     public static SpongeChatListener NucleusListener;
     public static SpongeLoginListener LoginListener;
@@ -73,10 +53,27 @@ public class MagiBridge {
     public static com.magitechserver.magibridge.listeners.DeathListener DeathListener;
     public static VanillaChatListener VanillaListener;
     public static ConfigCategory Config;
-
     public static JDA jda;
-
     public static Logger logger;
+    @Inject
+    @ConfigDir(sharedRoot = false)
+    public File configDir;
+    @Inject
+    public GuiceObjectMapperFactory factory;
+    private TopicUpdater updater;
+
+    @Inject
+    public MagiBridge(Logger logger) {
+        MagiBridge.logger = logger;
+    }
+
+    public static MagiBridge getInstance() {
+        return instance;
+    }
+
+    public static ConfigCategory getConfig() {
+        return Config;
+    }
 
     @Listener
     public void rlyInit(GameInitializationEvent event) {
@@ -142,7 +139,7 @@ public class MagiBridge {
             if (Config.CORE.DEATH_MESSAGES_ENABLED) {
                 Sponge.getEventManager().registerListeners(this, DeathListener);
             }
-            if(Config.CORE.ADVANCEMENT_MESSAGES_ENABLED) {
+            if (Config.CORE.ADVANCEMENT_MESSAGES_ENABLED) {
                 Sponge.getEventManager().registerListeners(this, AdvancementListener);
             }
             Sponge.getEventManager().registerListeners(this, LoginListener);
@@ -229,9 +226,5 @@ public class MagiBridge {
             return false;
         }
         return true;
-    }
-
-    public static ConfigCategory getConfig() {
-        return Config;
     }
 }

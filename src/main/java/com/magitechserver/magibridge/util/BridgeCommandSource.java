@@ -19,14 +19,13 @@ import java.util.Set;
  */
 public class BridgeCommandSource implements CommandSource {
 
+    private CommandSource actualSource;
+    private String channel;
+
     public BridgeCommandSource(String channel, CommandSource actualSource) {
         this.channel = channel;
         this.actualSource = actualSource;
     }
-
-    private CommandSource actualSource;
-
-    private String channel;
 
     @Override
     public void sendMessage(Text message) {

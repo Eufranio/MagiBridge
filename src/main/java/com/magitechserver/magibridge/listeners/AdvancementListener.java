@@ -13,6 +13,7 @@ import org.spongepowered.api.event.filter.cause.Root;
 
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * Created by Frani on 14/07/2017.
  */
@@ -22,11 +23,11 @@ public class AdvancementListener {
     public void onAdvancement(AdvancementEvent event, @Root Player p) {
 
         Map<String, String> placeholders = new HashMap<>();
-            placeholders.put("%player%", p.getName());
-            placeholders.put("%nick%", NucleusHandler.getNick(p));
-            placeholders.put("%advancement%", event.getAdvancement().getName());
-            placeholders.put("%prefix%", p.getOption("prefix").orElse(""));
-            placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
+        placeholders.put("%player%", p.getName());
+        placeholders.put("%nick%", NucleusHandler.getNick(p));
+        placeholders.put("%advancement%", event.getAdvancement().getName());
+        placeholders.put("%prefix%", p.getOption("prefix").orElse(""));
+        placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
 
         DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL,
                 ReplacerUtil.replaceEach(FormatType.ADVANCEMENT_MESSAGE.get(), placeholders));

@@ -12,6 +12,10 @@ import java.util.Map;
 @ConfigSerializable
 public class Replacer {
 
+    @Setting(value = "discord-to-mc-replacer", comment = "Text that will be replaced in messages sent TO the game\n" +
+            "Format: \"word-to-replace\" = \"word-replaced\"")
+    public Map<String, String> REPLACER = Maps.newHashMap();
+
     public Replacer() {
         REPLACER.put(":smiley:", ":)");
         REPLACER.put(":smile:", ":D");
@@ -31,9 +35,5 @@ public class Replacer {
         REPLACER.put(":kissing:", ":*");
         REPLACER.put(":heart:", "<3");
     }
-
-    @Setting(value = "discord-to-mc-replacer", comment = "Text that will be replaced in messages sent TO the game\n" +
-            "Format: \"word-to-replace\" = \"word-replaced\"")
-    public Map<String, String> REPLACER = Maps.newHashMap();
 
 }
