@@ -32,20 +32,20 @@ public class UCHandler {
 
     public static void handle(String channel, FormatType format, Map<String, String> placeholders, boolean hasAttachment, List<Message.Attachment> attachments) {
         String rawFormat = format.get();
-        if(MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_OVERRIDES.get(channel) != null) {
+        if (MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_OVERRIDES.get(channel) != null) {
             rawFormat = MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_OVERRIDES.get(channel);
         }
 
         UCChannel uc = UCHandler.getChannelByCaseInsensitiveName(channel);
 
-        if(uc != null) {
+        if (uc != null) {
 
             Text message = TextSerializers.FORMATTING_CODE.deserialize(ReplacerUtil.replaceEach(rawFormat, placeholders));
             Text attachment = Text.of();
 
             // Prefix enabled
             Text prefix = Text.of();
-            if(MagiBridge.getConfig().MESSAGES.PREFIX.ENABLED) {
+            if (MagiBridge.getConfig().MESSAGES.PREFIX.ENABLED) {
                 Messages.PrefixCategory category = MagiBridge.getConfig().MESSAGES.PREFIX;
                 Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(category.TEXT).toBuilder();
                 Text hover = TextSerializers.FORMATTING_CODE.deserialize(category.HOVER);

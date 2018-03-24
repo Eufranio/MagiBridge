@@ -38,7 +38,7 @@ public class MagiBridgeAPI {
      * message channels without having to open a new channel every time
      *
      * @param message The message you want to reply
-     * @param reply The reply for that message
+     * @param reply   The reply for that message
      */
     public void replyTo(Message message, String reply) {
         message.getChannel().sendMessage(reply).queue();
@@ -50,7 +50,7 @@ public class MagiBridgeAPI {
      * @param status The game (you lost)
      */
     public void setBotStatus(String status) {
-        getJDA().getPresence().setGame(Game.of(status));
+        getJDA().getPresence().setGame(Game.playing(status));
     }
 
     /**

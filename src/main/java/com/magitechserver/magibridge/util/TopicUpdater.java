@@ -17,7 +17,7 @@ public class TopicUpdater extends Thread {
     @Override
     public void run() {
         while (true) {
-            if(MagiBridge.getConfig().CORE.ENABLE_UPDATER) {
+            if (MagiBridge.getConfig().CORE.ENABLE_UPDATER) {
                 String topic = FormatType.TOPIC_FORMAT.get()
                         .replace("%players%", Integer.valueOf(Sponge.getServer().getOnlinePlayers().size()).toString())
                         .replace("%maxplayers%", Integer.valueOf(Sponge.getServer().getMaxPlayers()).toString())

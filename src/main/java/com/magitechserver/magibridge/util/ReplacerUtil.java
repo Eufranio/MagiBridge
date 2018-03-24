@@ -8,7 +8,7 @@ import java.util.Map;
 public class ReplacerUtil {
 
     // Thanks @AdrianTodt
-    public static String replaceEach(String text, Map<String,String> replacements) {
+    public static String replaceEach(String text, Map<String, String> replacements) {
         String[] k = new String[replacements.size()], v = new String[replacements.size()];
         int i = -1;
         for (Map.Entry<String, String> entry : replacements.entrySet()) {

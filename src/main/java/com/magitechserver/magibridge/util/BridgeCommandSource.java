@@ -3,7 +3,6 @@ package com.magitechserver.magibridge.util;
 import com.magitechserver.magibridge.DiscordHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.service.context.Context;
-import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.SubjectCollection;
 import org.spongepowered.api.service.permission.SubjectData;
 import org.spongepowered.api.service.permission.SubjectReference;
@@ -20,18 +19,17 @@ import java.util.Set;
  */
 public class BridgeCommandSource implements CommandSource {
 
+    private CommandSource actualSource;
+    private String channel;
+
     public BridgeCommandSource(String channel, CommandSource actualSource) {
         this.channel = channel;
         this.actualSource = actualSource;
     }
 
-    private CommandSource actualSource;
-
-    private String channel;
-
     @Override
     public void sendMessage(Text message) {
-        if(message.toPlain().equals("") || message.toPlain().trim().isEmpty()) return;
+        if (message.toPlain().equals("") || message.toPlain().trim().isEmpty()) return;
         String msg = "```" + message.toPlain() + "```";
         DiscordHandler.sendMessageToChannel(channel, msg);
     }

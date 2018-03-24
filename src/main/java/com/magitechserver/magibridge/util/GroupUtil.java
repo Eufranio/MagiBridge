@@ -16,19 +16,20 @@ import java.util.concurrent.ExecutionException;
  */
 public class GroupUtil {
 
-    public static String getHighestGroup(Player player){
+    public static String getHighestGroup(Player player) {
         try {
             if (!Sponge.getGame().getServiceManager().getRegistration(PermissionService.class).isPresent()) return "";
             PermissionService ps = Sponge.getGame().getServiceManager().getRegistration(PermissionService.class).get().getProvider();
             HashMap<Integer, Subject> subs = new HashMap<Integer, Subject>();
-            for (SubjectReference sub : player.getParents()){
-                if (sub.getCollectionIdentifier().equals(ps.getGroupSubjects().getIdentifier()) && (sub.getSubjectIdentifier() != null)){
+            for (SubjectReference sub : player.getParents()) {
+                if (sub.getCollectionIdentifier().equals(ps.getGroupSubjects().getIdentifier()) && (sub.getSubjectIdentifier() != null)) {
                     Subject subj = sub.resolve().get();
                     subs.put(subj.getParents().size(), subj);
                 }
             }
             return subs.isEmpty() ? "" : subs.get(Collections.max(subs.keySet())).getFriendlyIdentifier().isPresent() ? subs.get(Collections.max(subs.keySet())).getFriendlyIdentifier().get() : "";
-        } catch (InterruptedException | ExecutionException e) {}
+        } catch (InterruptedException | ExecutionException e) {
+        }
         return "";
     }
 

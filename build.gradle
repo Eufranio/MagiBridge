@@ -1,6 +1,6 @@
 plugins {
     id 'org.spongepowered.plugin' version '0.8.1'
-    id 'com.github.johnrengelman.shadow' version '2.0.1'
+    id 'com.github.johnrengelman.shadow' version '2.0.2'
     id 'java'
     id 'application'
 }
@@ -12,15 +12,16 @@ mainClassName = 'com.magitechserver.magibridge.MagiBridge'
 compileJava.options.encoding = 'UTF-8'
 
 dependencies {
-    shadow 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
-    shadow 'io.github.nucleuspowered:nucleus-api:1.2.0-PR2-S7.0'
+    shadow 'org.spongepowered:spongeapi:7.+'
+    shadow 'io.github.nucleuspowered:nucleus-api:+'
+    shadow 'me.lucko.luckperms:luckperms-api:4.1'
     shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.4'
     shadow files('libs/boop.jar')
     shadow files('libs/mcclans.jar')
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
-    compile 'net.dv8tion:JDA:3.4.0_317'
-    compile 'com.vdurmont:emoji-java:3.3.0'
+    compile 'net.dv8tion:JDA:3.5.1_339'
+    compile 'com.vdurmont:emoji-java:4.0.0'
 }
 
 repositories {
@@ -39,6 +40,6 @@ shadowJar {
         exclude(dependency('org.slf4j:slf4j-api'))
         exclude(dependency('net.java.dev.jna:jna'))
     }
-    baseName = 'MagiBridge-API7'
+    baseName = 'MagiBridge'
     classifier = null
 }
