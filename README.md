@@ -6,6 +6,15 @@
 # MagiBridge, by Eufranio
 MagiBridge is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, forwarding messages from/to both sides, through JDA and supported chat plugins.
 
+## How to MagiBridge:
+1) Go to https://discordapp.com/developers/applications/me and create a new app
+2) Scroll down and click on "Create a Bot User"
+3) Reveal the Token and copy-paste it into the bot-token=" " field in the config
+4) Enable Discord Developer Mode and copy-paste the channel ID you want to use into the main-discord-channel=" "
+5) Make sure you have the compatibility features enabled and properly configured for Nucleus, UltimateChat and Boop if you're using them
+6) Configure the rest of the stuffs you want and reload the plugin/start the server
+7) Profit
+
 ## Features:
 * Link Nucleus/UltimateChat channels to discord channels (sends messages from the in-game chat to discord and vice versa)
 * Link as many UltimateChat channels you want
