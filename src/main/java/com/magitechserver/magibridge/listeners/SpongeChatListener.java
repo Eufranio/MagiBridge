@@ -7,8 +7,6 @@ import com.magitechserver.magibridge.util.FormatType;
 import com.magitechserver.magibridge.util.GroupUtil;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import io.github.nucleuspowered.nucleus.api.events.NucleusAFKEvent;
-import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
-import nl.riebie.mcclans.channels.ClanMessageChannelImpl;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -36,10 +34,6 @@ public class SpongeChatListener {
                 MagiBridge.logger.error("The staff chat module is disabled in the Nucleus config! Please enable it!");
             }
             MessageChannel staffChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
-
-            if (Sponge.getPluginManager().isLoaded("mcclans") && e.getChannel().get() instanceof AllyMessageChannelImpl || e.getChannel().get() instanceof ClanMessageChannelImpl) {
-                return;
-            }
 
             boolean isStaffMessage = e.getChannel().get().getClass().equals(staffChannel.getClass());
 
