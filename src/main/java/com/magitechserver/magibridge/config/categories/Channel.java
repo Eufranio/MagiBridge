@@ -65,7 +65,7 @@ public class Channel {
         @Setting(value = "global-discord-channel", comment = "Discord Channel ID which global messages are sent to")
         public String GLOBAL_CHANNEL = "GLOBAL_DISCORD_CHANNEL_ID_HERE";
 
-        @Setting(value = "staff-discord-channel", comment = "Discord Channel ID which messages from the staff chat are sent to")
+        @Setting(value = "staff-discord-channel", comment = "Discord Channel ID which messages from the staff chat are sent to (NEVER same as main-discord-channel, leave empty for single channel)")
         public String STAFF_CHANNEL = "STAFF_DISCORD_CHANNEL_ID_HERE";
     }
 
