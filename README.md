@@ -2,6 +2,7 @@
   <img src="https://user-images.githubusercontent.com/2921172/28250066-27f28466-6a2f-11e7-81fb-98cfee3a7313.png" width="300" alt="MagiBridge Logo"/>
 </p>
 <p align="center">MagiBridge logo, made by <a href="https://github.com/fcpwiz">fcpwiz</a></p>
+<p align="center"><a href="https://discord.gg/YttMwEr">MagiBridge discord server</a></p>
 
 # MagiBridge, by Eufranio
 MagiBridge is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, forwarding messages from/to both sides, through JDA and supported chat plugins.
