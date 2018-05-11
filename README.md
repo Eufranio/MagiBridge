@@ -8,13 +8,18 @@
 MagiBridge is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, forwarding messages from/to both sides, through JDA and supported chat plugins.
 
 ## How to MagiBridge:
-1) Go to https://discordapp.com/developers/applications/me and create a new app
+1) Go to https://discordapp.com/developers/applications/me and create a new App
 2) Scroll down and click on "Create a Bot User"
-3) Reveal the Token and copy-paste it into the bot-token=" " field in the config
-4) Enable Discord Developer Mode and copy-paste the channel ID you want to use into the main-discord-channel=" "
-5) Make sure you have the compatibility features enabled and properly configured for Nucleus, UltimateChat and Boop if you're using them
-6) Configure the rest of the stuffs you want and reload the plugin/start the server
-7) Profit
+3) Reveal the Token and copy-paste it into the bot-token="..." field in the `config/magibridge/MagiBridge.conf` file
+4) Create a new Discord Server.  It will have a #general channel.  You can create other channels.
+5) Add the bot to your server: Find the Client ID of the new App, and replace the CLIENTID in the following link with your bot's client ID in
+https://discordapp.com/oauth2/authorize?client_id=CLIENTID&scope=bot (for example, if you bot's Client ID is 168682538028630017, your link would be https://discordapp.com/oauth2/authorize?client_id=168682538028630017&scope=bot), select Your Server from the drop-down menu, and Authorize. You must have the Manage Server permission to add a bot to a server!
+6) On _Server Settings_, in _Roles_, create a _New Role_ named e.g. "bot", give it the _Manage Channels_ permission, and in _Members_ [grant your Bot that role](https://support.discordapp.com/hc/en-us/articles/206029707).
+7) [Enable Discord Developer Mode](https://discordia.me/developer-mode) and [copy-paste the channel ID you want to use](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-) into the main-discord-channel=" "
+
+8) Make sure you have the compatibility features enabled and properly configured in `MagiBridge.conf` for Nucleus, UltimateChat and Boop if you're using them
+9) Configure the rest of the stuff you want and reload the plugin/start the server
+10) Profit
 
 ## Features:
 * Link Nucleus/UltimateChat channels to discord channels (sends messages from the in-game chat to discord and vice versa)
