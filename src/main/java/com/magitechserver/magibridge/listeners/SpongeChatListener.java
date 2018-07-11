@@ -37,8 +37,10 @@ public class SpongeChatListener {
             }
             MessageChannel staffChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
 
-            if(Sponge.getPluginManager().isLoaded("mcclans")) {
-                if(e.getChannel().get() instanceof AllyMessageChannelImpl || e.getChannel().get() instanceof ClanMessageChannelImpl) return;
+            if ( Sponge.getPluginManager().isLoaded("mcclans")
+              && ( (e.getChannel().get() instanceof AllyMessageChannelImpl)
+                || (e.getChannel().get() instanceof ClanMessageChannelImpl) ) ) {
+                return;
             }
 
             boolean isStaffMessage = e.getChannel().get().getClass().equals(staffChannel.getClass());
@@ -60,7 +62,8 @@ public class SpongeChatListener {
     @Listener
     public void onAfk(NucleusAFKEvent e) {
         if (MagiBridge.getConfig().MESSAGES.AFK.AFK_ENABLED) {
-            FormatType format = e instanceof NucleusAFKEvent.GoingAFK ? FormatType.GOING_AFK : e instanceof NucleusAFKEvent.ReturningFromAFK ? FormatType.RETURNING_AFK : null;
+            FormatType format = (e instanceof NucleusAFKEvent.GoingAFK) ? FormatType.GOING_AFK
+                                                                        : (e instanceof NucleusAFKEvent.ReturningFromAFK) ? FormatType.RETURNING_AFK : null;
             if (format != null) {
                 Player p = e.getTargetEntity();
                 String channel = MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL;
