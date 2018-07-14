@@ -10,6 +10,7 @@ import net.dv8tion.jda.core.entities.Webhook;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.scheduler.Task;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,9 +22,6 @@ import java.util.List;
 public class Webhooking {
 
     public static void sendWebhookMessage(String hook, String player, String message, String channelID) {
-
-        Webhook webhook = getWebhook(channelID);
-        if (webhook == null) return;
 
         String content = message.replaceAll("&([0-9a-fA-FlLkKrR])", "");
         List<String> usersMentioned = new ArrayList<>();
@@ -42,11 +40,22 @@ public class Webhooking {
 
         Player p = Sponge.getServer().getPlayer(player).get();
         String format = MagiBridge.getConfig().MESSAGES.WEBHOOK_PICTURE_URL.replace("%player%", player).replace("%uuid%", p.getUniqueId().toString());
-        sendWebhook(webhook, WebhookContent.of(format, hook, content));
+        final String c = content;
+        Task.builder()
+                .async()
+                .execute(() -> {
+                    Webhook webhook = getWebhook(channelID);
+                    if (webhook == null) return;
+                    sendWebhook(webhook, WebhookContent.of(format, hook, c));
+                })
+                .submit(MagiBridge.getInstance());
     }
 
     public static void sendWebhook(String channel_id, WebhookContent webhook) {
-        sendWebhook(getWebhook(channel_id), webhook);
+        Task.builder()
+                .async()
+                .execute(() -> sendWebhook(getWebhook(channel_id), webhook))
+                .submit(MagiBridge.getInstance());
     }
 
     public static void sendWebhook(Webhook webhook, WebhookContent content) {
