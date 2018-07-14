@@ -69,7 +69,7 @@ public class Webhooking {
                     .body(json)
                     .asJsonAsync();
         } catch (Exception e) {
-            MagiBridge.logger.error("Error delivering Webhook request: ");
+            MagiBridge.getLogger().error("Error delivering Webhook request: ");
             e.printStackTrace();
         }
     }
@@ -77,8 +77,8 @@ public class Webhooking {
     private static Webhook getWebhook(String channelID) {
         TextChannel channel = MagiBridge.jda.getTextChannelById(channelID);
         if (!channel.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
-            MagiBridge.logger.error("The bot does not have the MANAGE WEBHOOKS permission, so it can't create webhooks!");
-            MagiBridge.logger.error("Please give it or disable the use-webhooks feature!");
+            MagiBridge.getLogger().error("The bot does not have the MANAGE WEBHOOKS permission, so it can't create webhooks!");
+            MagiBridge.getLogger().error("Please give it or disable the use-webhooks feature!");
             return null;
         }
 

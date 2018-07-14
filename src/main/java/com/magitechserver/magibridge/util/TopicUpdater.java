@@ -28,7 +28,7 @@ public class TopicUpdater extends Thread {
                 try {
 
                     if (MagiBridge.jda.getTextChannelById(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL) == null) {
-                        MagiBridge.logger.error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
+                        MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
                         continue;
                     }
 
@@ -43,7 +43,7 @@ public class TopicUpdater extends Thread {
             try {
                 Thread.sleep(interval < 10000 ? 10000 : interval);
             } catch (InterruptedException e) {
-                MagiBridge.logger.error("Something interrupted the topic updater!");
+                MagiBridge.getLogger().error("The topic updater was interrupted!");
             }
         }
     }

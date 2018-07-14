@@ -52,7 +52,7 @@ public class NucleusHandler {
                 try {
                     url = new URL(category.LINK);
                 } catch (MalformedURLException e) {
-                    MagiBridge.logger.error("Invalid prefix URL! Fix it on your config!");
+                    MagiBridge.getLogger().error("Invalid prefix URL! Fix it on your config!");
                     return;
                 }
 

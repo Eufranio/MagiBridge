@@ -44,8 +44,8 @@ public class DiscordHandler {
     private static boolean isValidChannel(String channel) {
         if (MagiBridge.jda == null) return false;
         if (MagiBridge.jda.getTextChannelById(channel) == null) {
-            MagiBridge.logger.error("The channel " + channel + " defined in the config isn't a valid Discord Channel ID!");
-            MagiBridge.logger.error("Replace it with a valid one then reload the plugin!");
+            MagiBridge.getLogger().error("The channel " + channel + " defined in the config isn't a valid Discord Channel ID!");
+            MagiBridge.getLogger().error("Replace it with a valid one then reload the plugin!");
             return false;
         }
         return true;
@@ -95,7 +95,8 @@ public class DiscordHandler {
             message = ReplacerUtil.replaceEach(placeholders.get("%message%"), placeholders);
             message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
             if (removeEveryone) {
-                message = message.replace("@everyone", "").replace("@here", "");
+                message = message.replace("@everyone", "");
+                message = message.replace("@here", "");
             }
             Webhooking.sendWebhookMessage(ReplacerUtil.replaceEach(MagiBridge.getConfig().MESSAGES.WEBHOOK_NAME, placeholders),
                     placeholders.get("%player%"),

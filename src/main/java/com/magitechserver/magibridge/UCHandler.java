@@ -54,7 +54,7 @@ public class UCHandler {
                 try {
                     url = new URL(category.LINK);
                 } catch (MalformedURLException e) {
-                    MagiBridge.logger.error("Invalid prefix URL!");
+                    MagiBridge.getLogger().error("Invalid prefix URL!");
                     return;
                 }
 

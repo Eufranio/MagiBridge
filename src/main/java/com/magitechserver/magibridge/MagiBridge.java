@@ -31,41 +31,32 @@ import java.io.File;
  * Created by Frani on 22/06/2017.
  */
 
-@Plugin(id = MagiBridge.ID,
-        name = MagiBridge.NAME,
-        description = MagiBridge.DESCRIPTION,
-        authors = {MagiBridge.AUTHOR},
-        dependencies = {@Dependency(id = "ultimatechat", optional = true),
+@Plugin(id = "magibridge",
+        name = "MagiBridge",
+        description = "A utility Discord <-> Minecraft chat relay plugin",
+        authors = { "Eufranio" },
+        dependencies = {
+                @Dependency(id = "ultimatechat", optional = true),
                 @Dependency(id = "nucleus", optional = true),
                 @Dependency(id = "boop", version = "[1.5.0,)", optional = true)})
 
 public class MagiBridge {
 
-    public static final String ID = "magibridge";
-    public static final String NAME = "MagiBridge";
-    public static final String DESCRIPTION = "A utility Discord <-> Minecraft chat relay plugin";
-    public static final String AUTHOR = "Eufranio";
     public static MagiBridge instance = null;
-    public static ChatListener UCListener;
-    public static SpongeChatListener NucleusListener;
-    public static SpongeLoginListener LoginListener;
-    public static AdvancementListener AdvancementListener;
-    public static DeathListener DeathListener;
-    public static VanillaChatListener VanillaListener;
     public static ConfigCategory Config;
     public static JDA jda;
-    public static Logger logger;
+
     @Inject
     @ConfigDir(sharedRoot = false)
     public File configDir;
-    @Inject
-    public GuiceObjectMapperFactory factory;
-    private TopicUpdater updater;
 
     @Inject
-    public MagiBridge(Logger logger) {
-        MagiBridge.logger = logger;
-    }
+    public GuiceObjectMapperFactory factory;
+
+    @Inject
+    private Logger logger;
+
+    private TopicUpdater updater;
 
     public static MagiBridge getInstance() {
         return instance;
@@ -73,16 +64,6 @@ public class MagiBridge {
 
     public static ConfigCategory getConfig() {
         return Config;
-    }
-
-    @Listener
-    public void rlyInit(GameInitializationEvent event) {
-        UCListener = new ChatListener();
-        NucleusListener = new SpongeChatListener();
-        LoginListener = new SpongeLoginListener();
-        AdvancementListener = new AdvancementListener();
-        DeathListener = new DeathListener();
-        VanillaListener = new VanillaChatListener();
     }
 
     @Listener
@@ -106,43 +87,11 @@ public class MagiBridge {
     public void initStuff(Boolean fake) {
         try {
             logger.info("MagiBridge is starting!");
-
             Config = new ConfigManager(instance).loadConfig();
-
             if (!initJDA()) return;
 
-            // Registering listeners
-            if (Config.CHANNELS.USE_NUCLEUS) {
-                if (Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
-                    Sponge.getEventManager().registerListeners(this, NucleusListener);
-                    logger.info("Hooking into Nucleus");
-                } else {
-                    logger.error(" ");
-                    logger.error(" MagiBridge is configured to hook into Nucleus, but it isn't loaded! Please disable using-nucleus or load Nucleus on your server!");
-                    logger.error(" ");
-                }
-            } else if (Config.CHANNELS.USE_UCHAT) {
-                if (Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
-                    Sponge.getEventManager().registerListeners(this, UCListener);
-                    logger.info("Hooking into UltimateChat");
-                } else {
-                    logger.error(" ");
-                    logger.error(" MagiBridge is configured to hook into UltimateChat, but it isn't loaded! Please disable using-ultimatechat or load UltimateChat on your server!");
-                    logger.error(" ");
-                }
-            } else {
-                Sponge.getEventManager().registerListeners(this, VanillaListener);
-                logger.info(" No Chat Hook enabled, hooking into the vanilla chat system");
-                logger.info(" Some features may not work, and there will be no staff chat. If you want a more complete chat handling, use either Nucleus or UltimateChat.");
-            }
+            this.registerListeners();
 
-            if (Config.CORE.DEATH_MESSAGES_ENABLED) {
-                Sponge.getEventManager().registerListeners(this, DeathListener);
-            }
-            if (Config.CORE.ADVANCEMENT_MESSAGES_ENABLED) {
-                Sponge.getEventManager().registerListeners(this, AdvancementListener);
-            }
-            Sponge.getEventManager().registerListeners(this, LoginListener);
             if (!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
                 jda.getPresence().setGame(Game.playing(Config.MESSAGES.BOT_GAME_STATUS));
             }
@@ -173,42 +122,34 @@ public class MagiBridge {
     }
 
     public void stopStuff(Boolean fake) {
-
         if (!fake) {
-            if (jda != null)
+            if (jda != null) {
                 DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STOPPING);
-            if (updater != null) updater.interrupt();
-            try {
+                if (updater != null) updater.interrupt();
                 jda.getTextChannelById(Config.CHANNELS.MAIN_CHANNEL).getManager().setTopic(FormatType.OFFLINE_TOPIC_FORMAT.get()).queue();
-            } catch (NullPointerException e) {
+                jda.shutdown();
+                long time = System.currentTimeMillis();
+                while ((System.currentTimeMillis() - time < 10000) && (jda != null && jda.getStatus() != JDA.Status.SHUTDOWN)) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return;
             }
         }
 
         logger.info("Disconnecting from Discord...");
-        try {
+        if (jda != null && jda.getStatus() != JDA.Status.SHUTDOWN && jda.getStatus() != JDA.Status.SHUTTING_DOWN) {
             jda.shutdownNow();
-        } catch (NullPointerException | NoClassDefFoundError e) {
         }
 
         // Unregistering listeners
-        if (Config.CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
-            Sponge.getEventManager().unregisterListeners(NucleusListener);
-        } else if (Config.CHANNELS.USE_UCHAT && Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
-            Sponge.getEventManager().unregisterListeners(UCListener);
-        } else {
-            Sponge.getEventManager().unregisterListeners(VanillaListener);
-        }
-        if (Config.CORE.DEATH_MESSAGES_ENABLED) {
-            Sponge.getEventManager().unregisterListeners(DeathListener);
-        }
-        if (Config.CORE.ADVANCEMENT_MESSAGES_ENABLED) {
-            Sponge.getEventManager().unregisterListeners(AdvancementListener);
-        } else {
-            Sponge.getEventManager().unregisterListeners(VanillaListener);
-        }
-        Sponge.getEventManager().unregisterListeners(LoginListener);
+        Sponge.getEventManager().unregisterPluginListeners(this);
+        Sponge.getEventManager().registerListeners(this, this);
+
         Config = null;
-        logger.info("Plugin stopped successfully!");
     }
 
     private boolean initJDA() {
@@ -226,5 +167,45 @@ public class MagiBridge {
             return false;
         }
         return true;
+    }
+
+    private void registerListeners() {
+        if (Config.CHANNELS.USE_NUCLEUS) {
+            if (Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
+                Sponge.getEventManager().registerListeners(this, new SpongeChatListener());
+                logger.info("Hooking into Nucleus");
+            } else {
+                logger.error(" ");
+                logger.error(" MagiBridge is configured to hook into Nucleus, but it isn't loaded! Please disable using-nucleus or load Nucleus on your server!");
+                logger.error(" ");
+            }
+        } else if (Config.CHANNELS.USE_UCHAT) {
+            if (Sponge.getPluginManager().getPlugin("ultimatechat").isPresent()) {
+                Sponge.getEventManager().registerListeners(this, new ChatListener());
+                logger.info("Hooking into UltimateChat");
+            } else {
+                logger.error(" ");
+                logger.error(" MagiBridge is configured to hook into UltimateChat, but it isn't loaded! Please disable using-ultimatechat or load UltimateChat on your server!");
+                logger.error(" ");
+            }
+        } else {
+            Sponge.getEventManager().registerListeners(this, new VanillaChatListener());
+            logger.info(" No Chat Hook enabled, hooking into the vanilla chat system");
+            logger.info(" Some features may not work, and there will be no staff chat. If you want a more complete chat handling, use either Nucleus or UltimateChat.");
+        }
+
+        if (Config.CORE.DEATH_MESSAGES_ENABLED) {
+            Sponge.getEventManager().registerListeners(this, new DeathListener());
+        }
+
+        if (Config.CORE.ADVANCEMENT_MESSAGES_ENABLED) {
+            Sponge.getEventManager().registerListeners(this, new AdvancementListener());
+        }
+
+        Sponge.getEventManager().registerListeners(this, new SpongeLoginListener());
+    }
+
+    public static Logger getLogger() {
+        return instance.logger;
     }
 }

@@ -33,7 +33,7 @@ public class SpongeChatListener {
         if (e.getChannel().isPresent()) {
             if (MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT && p.get(Keys.VANISH).orElse(false)) return;
             if (!NucleusAPI.getStaffChatService().isPresent()) {
-                MagiBridge.logger.error("The staff chat module is disabled in the Nucleus config! Please enable it!");
+                MagiBridge.getLogger().error("The staff chat module is disabled in the Nucleus config! Please enable it!");
             }
             MessageChannel staffChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
 

@@ -54,7 +54,7 @@ public class ConfigManager {
             loader.save(config);
             return root;
         } catch (Exception e) {
-            MagiBridge.logger.error("Could not load config.", e);
+            MagiBridge.getLogger().error("Could not load config.", e);
             return root;
         }
     }
