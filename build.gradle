@@ -43,6 +43,6 @@ shadowJar {
         exclude(dependency('net.java.dev.jna:jna'))
     }
     exclude 'natives/**', 'tomp2p/**'
-    baseName = 'MagiBridge'
+    baseName = 'MagiBridge-API7'
     classifier = null
 }
