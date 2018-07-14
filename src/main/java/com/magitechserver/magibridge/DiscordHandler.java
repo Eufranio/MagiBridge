@@ -1,6 +1,7 @@
 package com.magitechserver.magibridge;
 
 import com.magitechserver.magibridge.util.*;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.spongepowered.api.Sponge;
@@ -43,6 +44,7 @@ public class DiscordHandler {
 
     private static boolean isValidChannel(String channel) {
         if (MagiBridge.jda == null) return false;
+        if (MagiBridge.jda.getStatus() != JDA.Status.CONNECTED) return false;
         if (MagiBridge.jda.getTextChannelById(channel) == null) {
             MagiBridge.getLogger().error("The channel " + channel + " defined in the config isn't a valid Discord Channel ID!");
             MagiBridge.getLogger().error("Replace it with a valid one then reload the plugin!");
