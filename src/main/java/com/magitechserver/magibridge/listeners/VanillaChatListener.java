@@ -1,5 +1,6 @@
 package com.magitechserver.magibridge.listeners;
 
+import com.arckenver.nations.channel.NationMessageChannel;
 import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.util.FormatType;
@@ -20,6 +21,12 @@ public class VanillaChatListener {
     @Listener
     public void onMessageChannelEvent(MessageChannelEvent.Chat e, @Root Player p) {
         if (!Sponge.getServer().getOnlinePlayers().contains(p) || e.isMessageCancelled()) return;
+        if (e.getChannel().isPresent() && Sponge.getPluginManager().isLoaded("nations")) {
+            if (e.getChannel().get() instanceof NationMessageChannel) {
+                return; // don't want to send private nation messages to Discord
+            }
+        }
+
         FormatType format = FormatType.SERVER_TO_DISCORD_FORMAT;
         String channel = MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL;
 

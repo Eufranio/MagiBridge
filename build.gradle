@@ -18,6 +18,7 @@ dependencies {
     shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.4'
     shadow files('libs/boop.jar')
     shadow files('libs/mcclans.jar')
+    shadow 'com.github.Arckenver:Nations:v2.11_api7'
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
     compile 'net.dv8tion:JDA:3.5.1_339'
@@ -30,6 +31,7 @@ repositories {
     maven { url = "http://repo.drnaylor.co.uk/artifactory/list/minecraft" }
     maven { url = "https://repo.lucko.me/" }
     maven { url = "https://raw.github.com/FabioZumbi12/UltimateChat/mvn-repo/" }
+    maven { url 'https://jitpack.io' }
 }
 
 shadowJar {

@@ -1,5 +1,6 @@
 package com.magitechserver.magibridge.listeners;
 
+import com.arckenver.nations.channel.NationMessageChannel;
 import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.NucleusHandler;
