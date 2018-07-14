@@ -15,7 +15,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.filter.cause.Root;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.text.channel.MessageChannel;
 
@@ -29,9 +29,16 @@ import java.util.Map;
 public class SpongeChatListener {
 
     @Listener(order = Order.LAST)
-    public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
+    public void onSpongeMessage(MessageChannelEvent.Chat e, @First Player p) {
         if (!Sponge.getServer().getOnlinePlayers().contains(p) || e.isMessageCancelled()) return;
         if (e.getChannel().isPresent()) {
+
+            if (e.getChannel().isPresent() && Sponge.getPluginManager().isLoaded("nations")) {
+                if (e.getChannel().get() instanceof NationMessageChannel) {
+                    return; // don't want to send private nation messages to Discord
+                }
+            }
+
             if (MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT && p.get(Keys.VANISH).orElse(false)) return;
             if (!NucleusAPI.getStaffChatService().isPresent()) {
                 MagiBridge.getLogger().error("The staff chat module is disabled in the Nucleus config! Please enable it!");
@@ -47,6 +54,21 @@ public class SpongeChatListener {
             boolean isStaffMessage = e.getChannel().get().getClass().equals(staffChannel.getClass());
 
             String channel = isStaffMessage ? MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL : MagiBridge.getConfig().CHANNELS.NUCLEUS.GLOBAL_CHANNEL;
+
+            boolean ignoreRoot = false;
+            if (MagiBridge.getConfig().CORE.SEND_HELPOP) {
+                if (e.getChannel().get().getClass().getName().equals("io.github.nucleuspowered.util.PermissionMessageChannel")) {
+                    ignoreRoot = true;
+                    channel = MagiBridge.getConfig().CHANNELS.NUCLEUS.HELPOP_CHANNEL.isEmpty() ? channel : MagiBridge.getConfig().CHANNELS.NUCLEUS.HELPOP_CHANNEL;
+                }
+            }
+
+            if (!ignoreRoot) {
+                if (!(e.getSource() instanceof Player)) {
+                    return;
+                }
+            }
+
             FormatType format = e.getChannel().get().getClass().equals(staffChannel.getClass()) ? FormatType.SERVER_TO_DISCORD_STAFF_FORMAT : FormatType.SERVER_TO_DISCORD_FORMAT;
             Map<String, String> placeholders = new HashMap<>();
             placeholders.put("%prefix%", p.getOption("prefix").orElse(""));

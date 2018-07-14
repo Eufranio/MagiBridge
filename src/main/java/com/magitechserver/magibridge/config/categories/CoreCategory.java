@@ -27,4 +27,8 @@ public class CoreCategory {
     @Setting(value = "enable-topic-updater", comment = "Should MagiBridge enable the Topic Updater, updating the topic of the main Discord channel?")
     public boolean ENABLE_UPDATER = true;
 
+    @Setting(value = "send-helpop", comment = "Should MagiBridge send Nucleus' HelpOp messages to Discord? The channel that the messages will be sent\n" +
+            "SHOULD be defined in the Channels section if this is enabled!")
+    public boolean SEND_HELPOP = false;
+
 }

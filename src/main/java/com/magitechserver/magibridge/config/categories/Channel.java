@@ -67,6 +67,9 @@ public class Channel {
 
         @Setting(value = "staff-discord-channel", comment = "Discord Channel ID which messages from the staff chat are sent to")
         public String STAFF_CHANNEL = "STAFF_DISCORD_CHANNEL_ID_HERE";
+
+        @Setting(value = "helpop-channel", comment = "Channel that HelpOp messages will be sent to (if enabled)")
+        public String HELPOP_CHANNEL = "";
     }
 
 }
