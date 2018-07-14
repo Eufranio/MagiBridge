@@ -92,11 +92,14 @@ public class DiscordHandler {
             MagiBridge.jda.getTextChannelById(channel).sendMessage(message)
                     .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
         } else if (MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS && withWebhook) {
-            message = translateEmojis(placeholders.get("%message%"), MagiBridge.jda.getTextChannelById(channel).getGuild());
-            placeholders.replace("%message%", message);
+            message = ReplacerUtil.replaceEach(placeholders.get("%message%"), placeholders);
+            message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
+            if (removeEveryone) {
+                message = message.replace("@everyone", "").replace("@here", "");
+            }
             Webhooking.sendWebhookMessage(ReplacerUtil.replaceEach(MagiBridge.getConfig().MESSAGES.WEBHOOK_NAME, placeholders),
                     placeholders.get("%player%"),
-                    placeholders.get("%message%"),
+                    message,
                     channel);
         } else {
             MagiBridge.jda.getTextChannelById(channel).sendMessage(message).queue();
