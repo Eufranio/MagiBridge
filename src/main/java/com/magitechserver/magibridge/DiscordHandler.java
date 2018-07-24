@@ -140,6 +140,7 @@ public class DiscordHandler {
         } else {
             String listformat = MagiBridge.getConfig().MESSAGES.PLAYER_LIST_NAME;
             if (cplayers.size() >= 1) {
+                ((ArrayList<Player>) cplayers).sort(Comparator.comparing(Player::getName));
                 for (Player player : cplayers) {
                     players.append(listformat
                             .replace("%player%", player.getName())
