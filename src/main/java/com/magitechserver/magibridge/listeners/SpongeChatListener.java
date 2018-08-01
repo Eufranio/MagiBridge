@@ -54,6 +54,7 @@ public class SpongeChatListener {
             boolean isStaffMessage = e.getChannel().get().getClass().equals(staffChannel.getClass());
 
             String channel = isStaffMessage ? MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL : MagiBridge.getConfig().CHANNELS.NUCLEUS.GLOBAL_CHANNEL;
+            if (channel.isEmpty()) return;
 
             boolean ignoreRoot = false;
             if (MagiBridge.getConfig().CORE.SEND_HELPOP) {
