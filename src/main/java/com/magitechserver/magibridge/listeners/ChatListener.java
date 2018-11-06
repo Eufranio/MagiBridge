@@ -21,6 +21,7 @@ public class ChatListener {
 
     @Listener
     public void onMessage(SendChannelMessageEvent e) {
+        if (!e.getSender().hasPermission("magibridge.chat")) return;
         // Tell
         if (e.getChannel() == null) return;
         String channel = getKey(e.getChannel().getName().toLowerCase());

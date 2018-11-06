@@ -21,6 +21,7 @@ public class VanillaChatListener {
 
     @Listener
     public void onMessageChannelEvent(MessageChannelEvent.Chat e, @First Player p) {
+        if (!p.hasPermission("magibridge.chat")) return;
         if (!Sponge.getServer().getOnlinePlayers().contains(p) || e.isMessageCancelled()) return;
         if (e.getChannel().isPresent() && Sponge.getPluginManager().isLoaded("nations")) {
             if (e.getChannel().get() instanceof NationMessageChannel) {

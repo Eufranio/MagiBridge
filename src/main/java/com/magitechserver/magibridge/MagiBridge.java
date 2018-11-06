@@ -1,5 +1,6 @@
 package com.magitechserver.magibridge;
 
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.magitechserver.magibridge.config.ConfigManager;
 import com.magitechserver.magibridge.config.categories.ConfigCategory;
@@ -23,6 +24,8 @@ import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.service.permission.PermissionService;
+import org.spongepowered.api.util.Tristate;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -70,6 +73,9 @@ public class MagiBridge {
     public void init(GamePostInitializationEvent event) {
         instance = this;
         initStuff(false);
+        Sponge.getServiceManager().provide(PermissionService.class).ifPresent(svc -> {
+            svc.getDefaults().getTransientSubjectData().setPermission(Sets.newHashSet(), "magibridge.chat", Tristate.TRUE);
+        });
     }
 
     @Listener

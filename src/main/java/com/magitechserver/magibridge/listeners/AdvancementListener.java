@@ -21,7 +21,7 @@ public class AdvancementListener {
 
     @Listener
     public void onAdvancement(AdvancementEvent event, @Root Player p) {
-
+        if (!p.hasPermission("magibridge.chat")) return;
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("%player%", p.getName());
         placeholders.put("%nick%", NucleusHandler.getNick(p));

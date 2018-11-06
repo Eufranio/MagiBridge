@@ -30,6 +30,7 @@ public class SpongeChatListener {
 
     @Listener(order = Order.LAST)
     public void onSpongeMessage(MessageChannelEvent.Chat e, @First Player p) {
+        if (!p.hasPermission("magibridge.chat")) return;
         if (!Sponge.getServer().getOnlinePlayers().contains(p) || e.isMessageCancelled()) return;
         if (e.getChannel().isPresent()) {
 
@@ -85,6 +86,7 @@ public class SpongeChatListener {
 
     @Listener
     public void onAfk(NucleusAFKEvent e) {
+        if (!e.getTargetEntity().hasPermission("magibridge.chat")) return;
         if (MagiBridge.getConfig().MESSAGES.AFK.AFK_ENABLED) {
             FormatType format = (e instanceof NucleusAFKEvent.GoingAFK) ? FormatType.GOING_AFK
                                                                         : (e instanceof NucleusAFKEvent.ReturningFromAFK) ? FormatType.RETURNING_AFK : null;

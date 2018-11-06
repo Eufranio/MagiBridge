@@ -21,6 +21,7 @@ public class SpongeLoginListener {
 
     @Listener
     public void onLogin(ClientConnectionEvent.Join event, @First Player p) {
+        if (!p.hasPermission("magibridge.chat")) return;
         if (!p.hasPlayedBefore()) {
             DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL, FormatType.NEW_PLAYERS_MESSAGE.get().replace("%player%", p.getName()));
             return;

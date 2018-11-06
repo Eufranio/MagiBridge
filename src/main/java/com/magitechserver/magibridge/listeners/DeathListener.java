@@ -23,6 +23,7 @@ public class DeathListener {
         if (event.getMessage().toPlain().isEmpty()) return;
         if (event.getTargetEntity() instanceof Player) {
             Player p = (Player) event.getTargetEntity();
+            if (!p.hasPermission("magibridge.chat")) return;
 
             Map<String, String> placeholders = new HashMap<>();
             placeholders.put("%player%", p.getName());
