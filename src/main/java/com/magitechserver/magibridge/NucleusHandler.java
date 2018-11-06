@@ -61,13 +61,10 @@ public class NucleusHandler {
                         .build();
             }
 
-            Text k = prefix;
-
             if (hasAttachment) {
-                Text attachment = attachmentBuilder(attachments);
-                messageChannel.getMembers().forEach(player -> player.sendMessage(k.concat(messageAsText).concat(attachment)));
+                messageChannel.send(Text.of(prefix, messageAsText, attachmentBuilder(attachments)));
             } else {
-                messageChannel.getMembers().forEach(player -> player.sendMessage(k.concat(messageAsText)));
+                messageChannel.send(Text.of(prefix, messageAsText));
             }
         }
     }

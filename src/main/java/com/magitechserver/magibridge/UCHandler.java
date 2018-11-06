@@ -67,7 +67,7 @@ public class UCHandler {
                 attachment = NucleusHandler.attachmentBuilder(attachments);
             }
 
-            uc.sendMessage(Sponge.getServer().getConsole(), prefix.concat(message).concat(attachment), true);
+            uc.sendMessage(Sponge.getServer().getConsole(), Text.of(prefix, message, attachment), true);
         }
     }
 
