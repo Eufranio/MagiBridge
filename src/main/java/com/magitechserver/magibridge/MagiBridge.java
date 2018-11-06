@@ -24,11 +24,14 @@ import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.util.Tristate;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 /**
  * Created by Frani on 22/06/2017.
@@ -91,40 +94,34 @@ public class MagiBridge {
     }
 
     public void initStuff(Boolean fake) {
-        try {
-            logger.info("MagiBridge is starting!");
-            Config = new ConfigManager(instance).loadConfig();
-            if (!initJDA()) return;
-
+        logger.info("MagiBridge is starting!");
+        Config = new ConfigManager(instance).loadConfig();
+        CompletableFuture.runAsync(this::initJDA).thenAccept(v -> {
             this.registerListeners();
 
             if (!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
                 jda.getPresence().setGame(Game.playing(Config.MESSAGES.BOT_GAME_STATUS));
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            if (!fake) {
+                DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STARTING);
+                CommandHandler.registerBroadcastCommand();
 
-        if (!fake) {
-            DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STARTING);
-            CommandHandler.registerBroadcastCommand();
-
-            if (updater != null) {
-                if (updater.getState() == Thread.State.NEW) {
-                    updater.start();
+                if (updater != null) {
+                    if (updater.getState() == Thread.State.NEW) {
+                        updater.start();
+                    } else {
+                        updater.interrupt();
+                        updater = new TopicUpdater();
+                        updater.start();
+                    }
                 } else {
-                    updater.interrupt();
                     updater = new TopicUpdater();
                     updater.start();
                 }
-            } else {
-                updater = new TopicUpdater();
-                updater.start();
+
             }
-
-        }
-
+        });
     }
 
     public void stopStuff(Boolean fake) {
