@@ -42,7 +42,7 @@ public class ChatListener {
 
         boolean removeEveryone = !e.getSender().hasPermission("magibridge.everyone");
 
-        DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0);
+        DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0, e.getSender().hasPermission("magibridge.mention"));
     }
 
     private String getKey(String value) {

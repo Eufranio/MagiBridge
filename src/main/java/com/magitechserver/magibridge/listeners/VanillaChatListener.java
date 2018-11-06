@@ -46,7 +46,7 @@ public class VanillaChatListener {
         placeholders.put("%message%", e.getFormatter().getBody().toText().toPlain());
 
         boolean removeEveryone = !p.hasPermission("magibridge.everyone");
-        DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0);
+        DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0, p.hasPermission("magibridge.mention"));
     }
 
 }

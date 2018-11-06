@@ -80,7 +80,7 @@ public class SpongeChatListener {
             placeholders.put("%nick%", NucleusHandler.getNick(p));
             boolean removeEveryone = !p.hasPermission("magibridge.everyone");
 
-            DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0);
+            DiscordHandler.sendMessageToDiscord(channel, format, placeholders, removeEveryone, 0, p.hasPermission("magibridge.mention"));
         }
     }
 

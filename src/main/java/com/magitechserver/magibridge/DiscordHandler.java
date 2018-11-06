@@ -53,7 +53,10 @@ public class DiscordHandler {
         return true;
     }
 
-    public static void sendMessageToDiscord(String channel, FormatType format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime, boolean withWebhook) {
+    public static void sendMessageToDiscord(
+            String channel, FormatType format, Map<String, String> placeholders,
+            boolean removeEveryone, long deleteTime, boolean withWebhook,
+            boolean withMentions) {
         if (!isValidChannel(channel)) return;
 
         String rawFormat = format.get();
@@ -73,7 +76,7 @@ public class DiscordHandler {
         Arrays.stream(message.split(" ")).filter(word ->
                 word.startsWith("@")).forEach(usersMentioned::add);
 
-        if (!usersMentioned.isEmpty()) {
+        if (!usersMentioned.isEmpty() && withMentions) {
             for (String mention : usersMentioned) {
                 List<Member> users = new ArrayList<>();
                 MagiBridge.jda.getGuilds().forEach(guild ->
@@ -109,8 +112,12 @@ public class DiscordHandler {
         }
     }
 
+    public static void sendMessageToDiscord(String channel, FormatType format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime, boolean withMentions) {
+        sendMessageToDiscord(channel, format, placeholders, removeEveryone, deleteTime, true, withMentions);
+    }
+
     public static void sendMessageToDiscord(String channel, FormatType format, Map<String, String> placeholders, boolean removeEveryone, long deleteTime) {
-        sendMessageToDiscord(channel, format, placeholders, removeEveryone, deleteTime, true);
+        sendMessageToDiscord(channel, format, placeholders, removeEveryone, deleteTime, true, true);
     }
 
     public static void dispatchCommand(MessageReceivedEvent e) {

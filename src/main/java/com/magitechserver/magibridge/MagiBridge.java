@@ -78,6 +78,7 @@ public class MagiBridge {
         initStuff(false);
         Sponge.getServiceManager().provide(PermissionService.class).ifPresent(svc -> {
             svc.getDefaults().getTransientSubjectData().setPermission(Sets.newHashSet(), "magibridge.chat", Tristate.TRUE);
+            svc.getDefaults().getTransientSubjectData().setPermission(Sets.newHashSet(), "magibridge.mention", Tristate.TRUE);
         });
     }
 
