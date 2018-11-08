@@ -22,8 +22,9 @@ public class TopicUpdater extends Thread {
                         .replace("%players%", Integer.valueOf(Sponge.getServer().getOnlinePlayers().size()).toString())
                         .replace("%maxplayers%", Integer.valueOf(Sponge.getServer().getMaxPlayers()).toString())
                         .replace("%tps%", Long.valueOf(Math.round(Sponge.getServer().getTicksPerSecond())).toString())
-                        .replace("%hoursonline%", Long.valueOf(ManagementFactory.getRuntimeMXBean().getUptime() / 3600000).toString())
-                        .replace("%minutesonline%", Long.valueOf(ManagementFactory.getRuntimeMXBean().getUptime() / 60000).toString());
+                        .replace("%daysonline%", Long.valueOf(ManagementFactory.getRuntimeMXBean().getUptime() / (24 * 3600 * 1000)).toString())
+                        .replace("%hoursonline%", Long.valueOf(ManagementFactory.getRuntimeMXBean().getUptime() % (24 * 3600 * 1000)).toString())
+                        .replace("%minutesonline%", Long.valueOf(ManagementFactory.getRuntimeMXBean().getUptime() % (3600 * 1000)).toString());
 
                 try {
 
