@@ -44,6 +44,7 @@ public class TopicUpdater extends Thread {
                 Thread.sleep(interval < 10000 ? 10000 : interval);
             } catch (InterruptedException e) {
                 MagiBridge.getLogger().error("The topic updater was interrupted!");
+                e.printStackTrace();
             }
         }
     }

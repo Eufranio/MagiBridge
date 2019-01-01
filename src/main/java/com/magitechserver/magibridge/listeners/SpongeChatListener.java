@@ -7,6 +7,7 @@ import com.magitechserver.magibridge.NucleusHandler;
 import com.magitechserver.magibridge.util.FormatType;
 import com.magitechserver.magibridge.util.GroupUtil;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
+import io.github.nucleuspowered.nucleus.api.chat.NucleusChatChannel;
 import io.github.nucleuspowered.nucleus.api.events.NucleusAFKEvent;
 import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
 import nl.riebie.mcclans.channels.ClanMessageChannelImpl;
@@ -68,7 +69,7 @@ public class SpongeChatListener {
 
             boolean ignoreRoot = false;
             if (MagiBridge.getConfig().CORE.SEND_HELPOP) {
-                if (e.getChannel().get().getClass().getName().equals("io.github.nucleuspowered.util.PermissionMessageChannel")) {
+                if (e.getChannel().get() instanceof NucleusChatChannel.HelpOp) {
                     ignoreRoot = true;
                     channel = MagiBridge.getConfig().CHANNELS.NUCLEUS.HELPOP_CHANNEL.isEmpty() ? channel : MagiBridge.getConfig().CHANNELS.NUCLEUS.HELPOP_CHANNEL;
                 }
