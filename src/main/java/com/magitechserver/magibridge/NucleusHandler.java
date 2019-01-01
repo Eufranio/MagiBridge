@@ -27,7 +27,7 @@ public class NucleusHandler {
         MessageChannel messageChannel;
         if (!isStaffChannel) {
             if (Sponge.getPluginManager().getPlugin("boop").isPresent() && MagiBridge.getConfig().CORE.USE_BOOP) {
-                messageChannel = new BoopableChannel(Sponge.getServer().getBroadcastChannel().getMembers());
+                messageChannel = new BoopableChannel(Sponge.getServer().getBroadcastChannel());
             } else {
                 messageChannel = Sponge.getServer().getBroadcastChannel();
             }

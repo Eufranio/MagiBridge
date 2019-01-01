@@ -32,12 +32,18 @@ public class DiscordHandler {
                 }
             }
         }
+
+        if (message.isEmpty()) return;
+
         MagiBridge.jda.getTextChannelById(channel).sendMessage(message.replaceAll("&([0-9a-fA-FlLkKrR])", "")).queue();
     }
 
     public static void sendMessageToChannel(String channel, String message, long deleteTime) {
         if (!isValidChannel(channel)) return;
         message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
+
+        if (message.isEmpty()) return;
+
         MagiBridge.jda.getTextChannelById(channel).sendMessage(message.replaceAll("&([0-9a-fA-FlLkKrR])", ""))
                 .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
     }
@@ -103,11 +109,16 @@ public class DiscordHandler {
                 message = message.replace("@everyone", "");
                 message = message.replace("@here", "");
             }
+
+            if (message.isEmpty()) return;
+
             Webhooking.sendWebhookMessage(ReplacerUtil.replaceEach(MagiBridge.getConfig().MESSAGES.WEBHOOK_NAME, placeholders),
                     placeholders.get("%player%"),
                     message,
                     channel);
         } else {
+            if (message.isEmpty()) return;
+
             MagiBridge.jda.getTextChannelById(channel).sendMessage(message).queue();
         }
     }

@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.magitechserver.magibridge'
-version = '2.5' + ((System.getenv("BUILD_NUMBER") != null || System.getProperty("BUILD_NUMBER") != null) ? ("-b" + (System.getenv("BUILD_NUMBER") ?: System.getProperty("BUILD_NUMBER"))) : "")
+version = '2.5'
 description = 'A utility Discord <-> Minecraft chat relay plugin'
 mainClassName = 'com.magitechserver.magibridge.MagiBridge'
 compileJava.options.encoding = 'UTF-8'
@@ -38,6 +38,7 @@ shadowJar {
     relocate 'org.apache', 'shaded.apache'
     relocate 'org.json', 'shaded.org.json'
     relocate 'gnu.trove', 'shaded.gnu.trove'
+    relocate 'com.mashape.unirest', 'shaded.com.mashape.unirest'
     dependencies {
         exclude(dependency('org.slf4j:slf4j-api'))
         exclude(dependency('net.java.dev.jna:jna'))

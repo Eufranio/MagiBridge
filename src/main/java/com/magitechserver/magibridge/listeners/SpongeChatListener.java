@@ -18,6 +18,7 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.text.channel.MessageChannel;
+import org.spongepowered.api.text.channel.type.FixedMessageChannel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class SpongeChatListener {
             }
 
             if (MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT && p.get(Keys.VANISH).orElse(false)) return;
+
             if (!NucleusAPI.getStaffChatService().isPresent()) {
                 MagiBridge.getLogger().error("The staff chat module is disabled in the Nucleus config! Please enable it!");
             }
@@ -53,6 +55,13 @@ public class SpongeChatListener {
             }
 
             boolean isStaffMessage = e.getChannel().get().getClass().equals(staffChannel.getClass());
+            if (!isStaffMessage) {
+                if (e.getChannel().get() instanceof FixedMessageChannel) {
+                    if (!e.getChannel().get().getMembers().containsAll(Sponge.getServer().getBroadcastChannel().getMembers())) {
+                        return; // probably a non-global channel, griefprevention uses this on it's mute sytem
+                    }
+                }
+            }
 
             String channel = isStaffMessage ? MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL : MagiBridge.getConfig().CHANNELS.NUCLEUS.GLOBAL_CHANNEL;
             if (channel.isEmpty()) return;
