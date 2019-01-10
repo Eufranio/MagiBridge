@@ -4,17 +4,84 @@ import com.magitechserver.magibridge.util.*;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.scheduler.Task;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Frani on 05/07/2017.
  */
 public class DiscordHandler {
+
+    private static final int MESSAGE_SIZE_LIMIT = 2000;
+    private static Queue<Pair<String, String>> messageQueue;
+    private static boolean initialized = false;
+    private static Task messageSendingTask;
+
+    public static void init() {
+        if (initialized) return;
+        initialized = true;
+        messageQueue = new ConcurrentLinkedQueue<>();
+
+        messageSendingTask = Task.builder()
+                .execute(() -> {
+                    if (messageQueue.isEmpty()) return;
+                    Map<String, List<String>> groupedMessages = new HashMap<>();
+
+                    // group messages to their channels
+                    int size = messageQueue.size();
+                    for (int i = 0; i < size; i++) {
+                        Pair<String, String> message = messageQueue.poll();
+                        if (message == null) break;
+                        List<String> messageGroup = groupedMessages.get(message.getKey());
+                        if (messageGroup == null) messageGroup = new ArrayList<>();
+                        messageGroup.add(message.getValue());
+                        groupedMessages.put(message.getKey(), messageGroup);
+                    }
+
+                    // send the messages in one code block
+                    for (Map.Entry<String, List<String>> collectedMessages : groupedMessages.entrySet()) {
+                        String channel = collectedMessages.getKey();
+                        StringBuffer messageBuffer = new StringBuffer("```\n");
+                        for (String message : collectedMessages.getValue()) {
+                            // make sure our message isn't too large
+                            if (messageBuffer.length() + message.length() + 1 < MESSAGE_SIZE_LIMIT - 10) {
+                                messageBuffer.append(message).append("\n");
+                            } else {
+                                messageBuffer.append("\n```");
+                                sendMessageToChannel(channel, messageBuffer.toString());
+                                messageBuffer = new StringBuffer("\n```").append(message);
+                            }
+                            // only send if we have something left to send
+                            if (messageBuffer.length() > 4) {
+                                messageBuffer.append("\n```");
+                                sendMessageToChannel(channel, messageBuffer.toString());
+                            }
+                        }
+                    }
+                })
+                .async()
+                .delay(3, TimeUnit.SECONDS).interval(2, TimeUnit.SECONDS)
+                .name("MagiBridge - Send Messages to Discord")
+                .submit(MagiBridge.getInstance());
+    }
+
+    public static void close() {
+        if (!initialized) return;
+        messageSendingTask.cancel();
+        messageQueue.clear();
+        initialized = false;
+    }
+
+    public static void queueMessageToChannel(String channel, String message) {
+        messageQueue.offer(Pair.of(channel, message));
+    }
 
     public static void sendMessageToChannel(String channel, String message) {
         if (!isValidChannel(channel)) return;
