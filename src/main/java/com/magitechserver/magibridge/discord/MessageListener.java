@@ -24,10 +24,10 @@ public class MessageListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent e) {
-        Task.builder().execute(task -> proccess(e)).submit(MagiBridge.getInstance());
+        Task.builder().execute(task -> process(e)).submit(MagiBridge.getInstance());
     }
 
-    private void proccess(MessageReceivedEvent e) {
+    private void process(MessageReceivedEvent e) {
         MBMessageEvent messageEvent = new MBMessageEvent(e.getGuild(), Sponge.getCauseStackManager().getCurrentCause(), e.getMessage());
         Sponge.getEventManager().post(messageEvent);
         if (messageEvent.isCancelled()) return;

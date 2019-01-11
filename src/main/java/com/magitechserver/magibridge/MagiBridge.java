@@ -40,7 +40,7 @@ import java.util.concurrent.Future;
 @Plugin(id = "magibridge",
         name = "MagiBridge",
         description = "A utility Discord <-> Minecraft chat relay plugin",
-        authors = { "Eufranio" },
+        authors = {"Eufranio"},
         dependencies = {
                 @Dependency(id = "ultimatechat", optional = true),
                 @Dependency(id = "nucleus", optional = true),
@@ -105,6 +105,7 @@ public class MagiBridge {
             }
 
             if (!fake) {
+                DiscordHandler.init();
                 DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STARTING);
                 CommandHandler.registerBroadcastCommand();
 
@@ -129,6 +130,7 @@ public class MagiBridge {
         if (!fake) {
             if (jda != null) {
                 DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STOPPING);
+                DiscordHandler.close();
                 if (updater != null) updater.interrupt();
                 jda.getTextChannelById(Config.CHANNELS.MAIN_CHANNEL).getManager().setTopic(FormatType.OFFLINE_TOPIC_FORMAT.get()).queue();
                 jda.shutdown();

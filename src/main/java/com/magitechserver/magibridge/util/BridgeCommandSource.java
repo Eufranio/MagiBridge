@@ -29,9 +29,9 @@ public class BridgeCommandSource implements CommandSource {
 
     @Override
     public void sendMessage(Text message) {
-        if (message.toPlain().equals("") || message.toPlain().trim().isEmpty()) return;
-        String msg = "```" + message.toPlain() + "```";
-        DiscordHandler.sendMessageToChannel(channel, msg);
+        String plain = message.toPlain();
+        if ("".equals(plain) || plain.trim().isEmpty()) return;
+        DiscordHandler.queueMessageToChannel(channel, plain);
     }
 
     @Override

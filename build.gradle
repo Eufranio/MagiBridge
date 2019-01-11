@@ -39,7 +39,6 @@ repositories {
 }
 
 shadowJar {
-    relocate 'org.apache', 'shaded.apache'
     relocate 'org.json', 'shaded.org.json'
     relocate 'gnu.trove', 'shaded.gnu.trove'
     relocate 'com.mashape.unirest', 'shaded.com.mashape.unirest'
