@@ -37,18 +37,11 @@ public class UCHandler {
         }
 
         UCChannel uc = UCHandler.getChannelByCaseInsensitiveName(channel);
-
         if (uc != null) {
-
-            Text message = TextSerializers.FORMATTING_CODE.deserialize(ReplacerUtil.replaceEach(rawFormat, placeholders));
-            Text attachment = Text.of();
-
             // Prefix enabled
             Text prefix = Text.of();
             if (MagiBridge.getConfig().MESSAGES.PREFIX.ENABLED) {
                 Messages.PrefixCategory category = MagiBridge.getConfig().MESSAGES.PREFIX;
-                Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(category.TEXT).toBuilder();
-                Text hover = TextSerializers.FORMATTING_CODE.deserialize(category.HOVER);
 
                 URL url;
                 try {
@@ -58,11 +51,15 @@ public class UCHandler {
                     return;
                 }
 
-                prefix = text.onHover(TextActions.showText(hover))
+                prefix = ReplacerUtil.toText(category.TEXT)
+                        .toBuilder()
+                        .onHover(TextActions.showText(ReplacerUtil.toText(category.HOVER)))
                         .onClick(TextActions.openUrl(url))
                         .build();
             }
 
+            Text message = ReplacerUtil.toText(ReplacerUtil.replaceEach(rawFormat, placeholders));
+            Text attachment = Text.of();
             if (hasAttachment) {
                 attachment = NucleusHandler.attachmentBuilder(attachments);
             }

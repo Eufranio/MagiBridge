@@ -11,12 +11,14 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by Frani on 24/08/2017.
@@ -39,14 +41,12 @@ public class NucleusHandler {
         String msg = ReplacerUtil.replaceEach(format.get(), placeholders);
 
         if (messageChannel != null) {
-            Text messageAsText = TextSerializers.FORMATTING_CODE.deserialize(msg);
+            Text messageAsText = ReplacerUtil.toText(msg);
             Text prefix = Text.of();
 
             // Prefix enabled
             if (MagiBridge.getConfig().MESSAGES.PREFIX.ENABLED) {
                 Messages.PrefixCategory category = MagiBridge.getConfig().MESSAGES.PREFIX;
-                Text.Builder text = TextSerializers.FORMATTING_CODE.deserialize(category.TEXT).toBuilder();
-                Text hover = TextSerializers.FORMATTING_CODE.deserialize(category.HOVER);
 
                 URL url;
                 try {
@@ -56,7 +56,8 @@ public class NucleusHandler {
                     return;
                 }
 
-                prefix = text.onHover(TextActions.showText(hover))
+                prefix = ReplacerUtil.toText(category.TEXT)
+                        .toBuilder().onHover(TextActions.showText(ReplacerUtil.toText(category.HOVER)))
                         .onClick(TextActions.openUrl(url))
                         .build();
             }
@@ -70,30 +71,31 @@ public class NucleusHandler {
     }
 
     public static Text attachmentBuilder(List<Message.Attachment> attachments) {
-        Text text = Text.of();
-        Text hover = TextSerializers.FORMATTING_CODE.deserialize("&bAttachment: ").concat(Text.NEW_LINE);
+        Text.Builder hover = Text.builder("Attachments: ")
+                .append(Text.NEW_LINE);
         for (Message.Attachment attachment : attachments) {
-            hover = hover.concat(Text.of(attachment.getFileName())).concat(Text.NEW_LINE);
+            hover.append(Text.of(attachment.getFileName(), Text.NEW_LINE));
         }
-        hover = hover.concat(TextSerializers.FORMATTING_CODE.deserialize("&bClick to open the attachment!"));
+
+        hover.append(Text.of(TextColors.AQUA, "Click to open this attachment!"));
+
         URL url = null;
         try {
             url = new URL(attachments.get(0).getUrl());
-        } catch (MalformedURLException exception) {
-        }
-        text = Text.builder()
-                .onHover(TextActions.showText(hover))
-                .onClick(TextActions.openUrl(url))
-                .append(TextSerializers.FORMATTING_CODE.deserialize(MagiBridge.getConfig().MESSAGES.ATTACHMENT_NAME))
+        } catch (MalformedURLException exception) {}
+
+        return Text.builder()
+                .append(ReplacerUtil.toText(MagiBridge.getConfig().MESSAGES.ATTACHMENT_NAME))
+                .onHover(TextActions.showText(hover.build()))
+                .onClick(url != null ? TextActions.openUrl(url) : null)
                 .build();
-        return text;
     }
 
     public static String getNick(Player p) {
-        String[] nick = new String[1];
         if (!Sponge.getPluginManager().getPlugin("nucleus").isPresent()) return p.getName();
-        NucleusAPI.getNicknameService().ifPresent(s -> s.getNickname(p).ifPresent(n -> nick[0] = n.toPlain()));
-        return nick[0] == null ? p.getName() : nick[0];
+        return NucleusAPI.getNicknameService()
+                .map(s -> s.getNickname(p).map(Text::toPlain).orElse(null))
+                .orElse(p.getName());
     }
 
 }

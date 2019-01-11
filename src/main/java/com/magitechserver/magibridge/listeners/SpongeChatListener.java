@@ -55,7 +55,7 @@ public class SpongeChatListener {
                 return;
             }
 
-            boolean isStaffMessage = e.getChannel().get().getClass().equals(staffChannel.getClass());
+            boolean isStaffMessage = e.getChannel().get() instanceof NucleusChatChannel.StaffChat;
             if (!isStaffMessage) {
                 if (e.getChannel().get() instanceof FixedMessageChannel) {
                     if (!e.getChannel().get().getMembers().containsAll(Sponge.getServer().getBroadcastChannel().getMembers())) {

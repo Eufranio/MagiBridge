@@ -1,5 +1,8 @@
 package com.magitechserver.magibridge.util;
 
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
+
 import java.util.Map;
 
 /**
@@ -127,5 +130,9 @@ public class ReplacerUtil {
         }
 
         return buf.toString();
+    }
+
+    public static Text toText(String string) {
+        return TextSerializers.FORMATTING_CODE.deserialize(string);
     }
 }
