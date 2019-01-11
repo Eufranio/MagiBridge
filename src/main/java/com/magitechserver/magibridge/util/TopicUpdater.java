@@ -1,6 +1,7 @@
 package com.magitechserver.magibridge.util;
 
 import com.magitechserver.magibridge.MagiBridge;
+import net.dv8tion.jda.core.JDA;
 import org.spongepowered.api.Sponge;
 
 import java.lang.management.ManagementFactory;
@@ -17,7 +18,7 @@ public class TopicUpdater extends Thread {
     @Override
     public void run() {
         while (true) {
-            if (MagiBridge.getConfig().CORE.ENABLE_UPDATER) {
+            if (MagiBridge.getConfig().CORE.ENABLE_UPDATER && MagiBridge.jda.getStatus() == JDA.Status.CONNECTED) {
                 String topic = FormatType.TOPIC_FORMAT.get()
                         .replace("%players%", Integer.valueOf(Sponge.getServer().getOnlinePlayers().size()).toString())
                         .replace("%maxplayers%", Integer.valueOf(Sponge.getServer().getMaxPlayers()).toString())

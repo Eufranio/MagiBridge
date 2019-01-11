@@ -83,12 +83,12 @@ public class MagiBridge {
     }
 
     @Listener
-    public void stop(GameStoppingEvent event) throws Exception {
+    public void stop(GameStoppingEvent event) {
         stopStuff(false);
     }
 
     @Listener
-    public void reload(GameReloadEvent event) throws Exception {
+    public void reload(GameReloadEvent event) {
         stopStuff(true);
         initStuff(true);
         logger.info("Plugin reloaded successfully!");

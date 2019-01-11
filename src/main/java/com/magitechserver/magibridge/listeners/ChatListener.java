@@ -27,17 +27,21 @@ public class ChatListener {
         String channel = getKey(e.getChannel().getName().toLowerCase());
         if (channel == null) return;
 
-        if (MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT && ((Player) e.getSender()).get(Keys.VANISH).orElse(false))
+        Player p = e.getSender() instanceof Player ? (Player) e.getSender() : null;
+
+        if (p != null &&
+                MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT &&
+                p.get(Keys.VANISH).orElse(false))
             return;
         FormatType format = FormatType.SERVER_TO_DISCORD_FORMAT;
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("%prefix%", e.getSender().getOption("prefix").orElse(""));
         placeholders.put("%player%", e.getSender().getName());
         placeholders.put("%message%", e.getMessage().toPlain());
-        placeholders.put("%topgroup%", GroupUtil.getHighestGroup((Player) e.getSender()));
+        placeholders.put("%topgroup%", p != null ? GroupUtil.getHighestGroup(p) : "");
 
-        if (Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
-            placeholders.put("%nick%", NucleusHandler.getNick((Player) e.getSender()));
+        if (p != null && Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
+            placeholders.put("%nick%", NucleusHandler.getNick(p));
         }
 
         boolean removeEveryone = !e.getSender().hasPermission("magibridge.everyone");
