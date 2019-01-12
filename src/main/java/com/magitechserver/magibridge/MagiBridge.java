@@ -97,33 +97,36 @@ public class MagiBridge {
     public void initStuff(Boolean fake) {
         logger.info("MagiBridge is starting!");
         Config = new ConfigManager(instance).loadConfig();
-        CompletableFuture.runAsync(this::initJDA).thenAccept(v -> {
-            this.registerListeners();
+        Task.builder().async().execute(() -> {
+            this.initJDA();
+            Task.builder().execute(() -> {
+                this.registerListeners();
 
-            if (!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
-                jda.getPresence().setGame(Game.playing(Config.MESSAGES.BOT_GAME_STATUS));
-            }
+                if (!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
+                    jda.getPresence().setGame(Game.playing(Config.MESSAGES.BOT_GAME_STATUS));
+                }
 
-            if (!fake) {
-                DiscordHandler.init();
-                DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STARTING);
-                CommandHandler.registerBroadcastCommand();
+                if (!fake) {
+                    DiscordHandler.init();
+                    DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STARTING);
+                    CommandHandler.registerBroadcastCommand();
 
-                if (updater != null) {
-                    if (updater.getState() == Thread.State.NEW) {
-                        updater.start();
+                    if (updater != null) {
+                        if (updater.getState() == Thread.State.NEW) {
+                            updater.start();
+                        } else {
+                            updater.interrupt();
+                            updater = new TopicUpdater();
+                            updater.start();
+                        }
                     } else {
-                        updater.interrupt();
                         updater = new TopicUpdater();
                         updater.start();
                     }
-                } else {
-                    updater = new TopicUpdater();
-                    updater.start();
-                }
 
-            }
-        });
+                }
+            }).submit(instance);
+        }).submit(instance);
     }
 
     public void stopStuff(Boolean fake) {
@@ -160,7 +163,7 @@ public class MagiBridge {
 
     private boolean initJDA() {
         try {
-            jda = new JDABuilder(AccountType.BOT).setToken(Config.CORE.BOT_TOKEN).buildBlocking();
+            jda = new JDABuilder(AccountType.BOT).setToken(Config.CORE.BOT_TOKEN).build().awaitReady();
             jda.addEventListener(new MessageListener());
         } catch (LoginException e) {
             logger.error("ERROR STARTING THE PLUGIN:");
