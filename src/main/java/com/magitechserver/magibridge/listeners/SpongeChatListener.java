@@ -108,7 +108,7 @@ public class SpongeChatListener {
                 placeholders.put("%player%", p.getName());
                 placeholders.put("%topgroup%", GroupUtil.getHighestGroup(p));
                 placeholders.put("%nick%", NucleusHandler.getNick(p));
-                DiscordHandler.sendMessageToDiscord(channel, format, placeholders, false, 0, false);
+                DiscordHandler.sendMessageToDiscord(channel, format, placeholders, false, 0, false, false);
             }
         }
     }
