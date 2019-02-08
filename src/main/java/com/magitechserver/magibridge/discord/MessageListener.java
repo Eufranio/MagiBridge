@@ -4,6 +4,7 @@ import com.magitechserver.magibridge.DiscordHandler;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.NucleusHandler;
 import com.magitechserver.magibridge.UCHandler;
+import com.magitechserver.magibridge.VanillaHandler;
 import com.magitechserver.magibridge.events.MBMessageEvent;
 import com.magitechserver.magibridge.util.FormatType;
 import com.magitechserver.magibridge.util.ReplacerUtil;
@@ -95,6 +96,13 @@ public class MessageListener extends ListenerAdapter {
             boolean isStaffChannel = channelID.equals(MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL);
             NucleusHandler.handle(isStaffChannel, format, placeholders, hasAttachment, e.getMessage().getAttachments());
         }
+		
+		//Use Vanilla Chat
+		if (!MagiBridge.getConfig().CHANNELS.USE_NUCLEUS && !MagiBridge.getConfig().CHANNELS.USE_UCHAT) {
+			FormatType format = FormatType.DISCORD_TO_SERVER_FORMAT;
+			boolean isStaffChannel = channelID.equals(MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL);
+			VanillaHandler.handle(isStaffChannel,format,placeholders);
+		}
     }
 
     private boolean isListenableChannel(String channel) {
