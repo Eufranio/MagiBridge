@@ -10,6 +10,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.util.Tristate;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -46,12 +47,14 @@ public class BridgeCommandSource implements CommandSource {
 
     @Override
     public void sendMessages(Iterable<Text> messages) {
-        this.actualSource.sendMessages(messages);
+        messages.forEach(this::sendMessage);
+        //this.actualSource.sendMessages(messages);
     }
 
     @Override
     public void sendMessages(Text... messages) {
-        this.actualSource.sendMessages(messages);
+        Arrays.stream(messages).forEach(this::sendMessage);
+        //this.actualSource.sendMessages(messages);
     }
 
     @Override
