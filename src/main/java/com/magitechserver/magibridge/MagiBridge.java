@@ -270,10 +270,8 @@ public class MagiBridge {
 
     public static Boolean shouldUpdateTopic()
     {
-        if (MagiBridge.getConfig().CORE.ENABLE_UPDATER && jda.getStatus() == JDA.Status.CONNECTED) {
-            if (MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS != null && !MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.isEmpty()) {
+        if (MagiBridge.getConfig().CORE.ENABLE_UPDATER && jda.getStatus() == JDA.Status.CONNECTED && MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS != null && !MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.isEmpty()) {
                     return true;
-            }
         }
         return false;
     }
