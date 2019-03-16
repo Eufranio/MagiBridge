@@ -40,6 +40,9 @@ public class Channel {
     @Setting(value = "main-discord-channel", comment = "ID of the main Discord Channel, where start/stop messages will be sent to")
     public String MAIN_CHANNEL = "MAIN_CHANNEL_ID_HERE";
 
+    @Setting(value = "topic-discord-channels", comment = "IDs of the Discord Channels, that there topics will be updated (ID1,ID2)")
+    public String TOPIC_CHANNELS = "CHANNEL_IDS_HERE";
+
     public Channel() {
         COMMANDS_ROLE_OVERRIDE.put("stop", "admin");
         COMMANDS_ROLE_OVERRIDE.put("ban", "mod");
@@ -48,14 +51,14 @@ public class Channel {
     @ConfigSerializable
     public static class UChatCategory {
         @Setting(value = "channels", comment = "Format: ChannelID = IngameChannelName, Example:\n" +
-                "12345678912345 = global\n" +
+                "#12345678912345 = global\n" +
                 "Replace the default value with your own channels")
         public Map<String, String> UCHAT_CHANNELS = Maps.newHashMap();
         @Setting(value = "channel-overrides", comment = "Channels defined here override the global format, so you can have per-channel formats")
         public Map<String, String> UCHAT_OVERRIDES = Maps.newHashMap();
 
         public UChatCategory() {
-            UCHAT_CHANNELS.put("12345678912345", "global");
+            UCHAT_CHANNELS.put("#12345678912345", "global");
             UCHAT_OVERRIDES.put("global", "&7[&a&lG&7] &f%user%&7: %message%");
         }
     }

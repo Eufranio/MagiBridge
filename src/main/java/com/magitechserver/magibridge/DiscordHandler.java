@@ -105,7 +105,17 @@ public class DiscordHandler {
         MagiBridge.jda.getTextChannelById(channel).sendMessage(message.replaceAll("&([0-9a-fA-FlLkKrR])", "")).queue();
     }
 
-    public static void sendMessageToChannel(String channel, String message, long deleteTime) {
+    public static void sendMessageToChannel(String str_channel, String message, long deleteTime) {
+        long channel = 0L;
+        try {
+            channel = Long.parseLong(str_channel);
+
+        } catch (NumberFormatException e) {
+            MagiBridge.getLogger().error("Error parsing the channel ID!");
+            e.printStackTrace();
+            return;
+        }
+
         if (!isValidChannel(channel)) return;
         message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
 
@@ -113,6 +123,17 @@ public class DiscordHandler {
 
         MagiBridge.jda.getTextChannelById(channel).sendMessage(message.replaceAll("&([0-9a-fA-FlLkKrR])", ""))
                 .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
+    }
+
+    private static boolean isValidChannel(long channel) {
+        if (MagiBridge.jda == null) return false;
+        if (MagiBridge.jda.getStatus() != JDA.Status.CONNECTED) return false;
+        if (MagiBridge.jda.getTextChannelById(channel) == null) {
+            MagiBridge.getLogger().error("The channel " + channel + " defined in the config isn't a valid Discord Channel ID!");
+            MagiBridge.getLogger().error("Replace it with a valid one then reload the plugin!");
+            return false;
+        }
+        return true;
     }
 
     private static boolean isValidChannel(String channel) {

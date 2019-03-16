@@ -135,7 +135,27 @@ public class MagiBridge {
                 DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STOPPING);
                 DiscordHandler.close();
                 if (updater != null) updater.interrupt();
-                jda.getTextChannelById(Config.CHANNELS.MAIN_CHANNEL).getManager().setTopic(FormatType.OFFLINE_TOPIC_FORMAT.get()).queue();
+                if (MagiBridge.shouldUpdateTopic()) {
+                    try {
+                        String topic = FormatType.OFFLINE_TOPIC_FORMAT.get();
+                        if (MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.contains(",")) {
+                            String[] IDs = MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.split(",");
+                            for (String str_id : IDs) {
+                                if (!MagiBridge.UpdateTopic(str_id, topic)) {
+                                    MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
+                                }
+                            }
+                        } else {
+                            String str_id = MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS;
+                            if (!MagiBridge.UpdateTopic(str_id, topic)) {
+                                MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
+                            }
+                        }
+
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
                 jda.shutdown();
                 long time = System.currentTimeMillis();
                 while ((System.currentTimeMillis() - time < 10000) && (jda != null && jda.getStatus() != JDA.Status.SHUTDOWN)) {
@@ -212,6 +232,52 @@ public class MagiBridge {
         }
 
         Sponge.getEventManager().registerListeners(this, new SpongeLoginListener());
+    }
+
+    public static Boolean UpdateTopic(String str_id, String topic) {
+        try {
+            long id = Long.parseLong(str_id);
+
+            if (jda.getTextChannelById(id) == null) {
+                MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
+                return false;
+            }
+
+            jda.getTextChannelById(id).getManager().setTopic(topic).queue();
+            return true;
+        } catch (NumberFormatException e) {
+            MagiBridge.getLogger().error("Error parsing the channel ID!");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static Boolean UpdateTopic(Long id, String topic) {
+        try {
+            if (jda.getTextChannelById(id) == null) {
+                MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
+                return false;
+            }
+
+            jda.getTextChannelById(id).getManager().setTopic(topic).queue();
+            return true;
+        } catch (NumberFormatException e) {
+            MagiBridge.getLogger().error("Error parsing the channel ID!");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static Boolean shouldUpdateTopic()
+    {
+        if (MagiBridge.getConfig().CORE.ENABLE_UPDATER && jda.getStatus() == JDA.Status.CONNECTED) {
+            if (MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS != null) {
+                if(!MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.isEmpty()){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static Logger getLogger() {
