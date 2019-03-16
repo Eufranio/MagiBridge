@@ -18,12 +18,6 @@ import java.util.Map;
  * Created by Frani on 27/09/2017.
  */
 public class ConfigManager {
-
-    private File configFile = new File(MagiBridge.instance.configDir, "MagiBridge.conf");
-
-    private CommentedConfigurationNode config;
-    private ConfigurationLoader<CommentedConfigurationNode> loader;
-
     public ConfigCategory root;
     private String HEADER = " MagiBridge, by Eufranio\n" +
             "\n" +
@@ -54,13 +48,13 @@ public class ConfigManager {
 
     public ConfigCategory loadConfig() {
         try {
-
+            File configFile = new File(MagiBridge.instance.configDir, "MagiBridge.conf");
             if (!configFile.exists()) {
                 configFile.createNewFile();
             }
 
-            loader = HoconConfigurationLoader.builder().setFile(configFile).build();
-            config = loader.load(ConfigurationOptions.defaults().setObjectMapperFactory(instance.factory).setShouldCopyDefaults(true).setHeader(HEADER));
+            ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(configFile).build();
+            CommentedConfigurationNode config = loader.load(ConfigurationOptions.defaults().setObjectMapperFactory(instance.factory).setShouldCopyDefaults(true).setHeader(HEADER));
             root = config.getValue(TypeToken.of(ConfigCategory.class), new ConfigCategory());
 
             Map<String, String> UCHAT_CHANNELS = Maps.newHashMap();

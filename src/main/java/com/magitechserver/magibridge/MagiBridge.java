@@ -141,13 +141,13 @@ public class MagiBridge {
                         if (MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.contains(",")) {
                             String[] IDs = MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.split(",");
                             for (String str_id : IDs) {
-                                if (!MagiBridge.UpdateTopic(str_id, topic)) {
+                                if (!MagiBridge.updateTopic(str_id, topic)) {
                                     MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
                                 }
                             }
                         } else {
                             String str_id = MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS;
-                            if (!MagiBridge.UpdateTopic(str_id, topic)) {
+                            if (!MagiBridge.updateTopic(str_id, topic)) {
                                 MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
                             }
                         }
@@ -234,7 +234,7 @@ public class MagiBridge {
         Sponge.getEventManager().registerListeners(this, new SpongeLoginListener());
     }
 
-    public static Boolean UpdateTopic(String str_id, String topic) {
+    public static Boolean updateTopic(String str_id, String topic) {
         try {
             long id = Long.parseLong(str_id);
 
@@ -252,7 +252,7 @@ public class MagiBridge {
         }
     }
 
-    public static Boolean UpdateTopic(Long id, String topic) {
+    public static Boolean updateTopic(Long id, String topic) {
         try {
             if (jda.getTextChannelById(id) == null) {
                 MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
@@ -271,10 +271,8 @@ public class MagiBridge {
     public static Boolean shouldUpdateTopic()
     {
         if (MagiBridge.getConfig().CORE.ENABLE_UPDATER && jda.getStatus() == JDA.Status.CONNECTED) {
-            if (MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS != null) {
-                if(!MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.isEmpty()){
+            if (MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS != null && !MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.isEmpty()) {
                     return true;
-                }
             }
         }
         return false;
