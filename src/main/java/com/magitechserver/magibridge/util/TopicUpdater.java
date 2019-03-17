@@ -29,17 +29,11 @@ public class TopicUpdater extends Thread {
 
                     try {
                         if (MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.contains(",")) {
-                            String[] IDs = MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.split(",");
+                            String[] IDs = MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.replace(" ","").split(",");
                             for (String str_id : IDs) {
                                 if (!MagiBridge.updateTopic(str_id, topic)) {
                                     MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
                                 }
-                            }
-                        } else {
-                            String str_id = MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS;
-                            if (!MagiBridge.updateTopic(str_id, topic)) {
-                                MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
-                                continue;
                             }
                         }
 
