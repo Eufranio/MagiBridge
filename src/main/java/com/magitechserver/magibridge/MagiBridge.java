@@ -8,6 +8,7 @@ import com.magitechserver.magibridge.discord.MessageListener;
 import com.magitechserver.magibridge.listeners.*;
 import com.magitechserver.magibridge.util.CommandHandler;
 import com.magitechserver.magibridge.util.FormatType;
+import com.magitechserver.magibridge.util.PresenceUpdater;
 import com.magitechserver.magibridge.util.TopicUpdater;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -63,6 +64,7 @@ public class MagiBridge {
     private Logger logger;
 
     private TopicUpdater updater;
+    private PresenceUpdater presenceUpdater;
 
     public static MagiBridge getInstance() {
         return instance;
@@ -102,10 +104,6 @@ public class MagiBridge {
             Task.builder().execute(() -> {
                 this.registerListeners();
 
-                if (!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
-                    jda.getPresence().setGame(Game.playing(Config.MESSAGES.BOT_GAME_STATUS));
-                }
-
                 if (!fake) {
                     DiscordHandler.init();
                     DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STARTING);
@@ -124,6 +122,19 @@ public class MagiBridge {
                         updater.start();
                     }
 
+                    if (presenceUpdater != null) {
+                        if (presenceUpdater.getState() == Thread.State.NEW) {
+                            presenceUpdater.start();
+                        } else {
+                            presenceUpdater.interrupt();
+                            presenceUpdater = new PresenceUpdater();
+                            presenceUpdater.start();
+                        }
+                    } else {
+                        presenceUpdater = new PresenceUpdater();
+                        presenceUpdater.start();
+                    }
+
                 }
             }).submit(instance);
         }).submit(instance);
@@ -135,23 +146,16 @@ public class MagiBridge {
                 DiscordHandler.sendMessageToChannel(Config.CHANNELS.MAIN_CHANNEL, Config.MESSAGES.SERVER_STOPPING);
                 DiscordHandler.close();
                 if (updater != null) updater.interrupt();
+                if (presenceUpdater != null) presenceUpdater.interrupt();
                 if (MagiBridge.shouldUpdateTopic()) {
                     try {
                         String topic = FormatType.OFFLINE_TOPIC_FORMAT.get();
-                        if (MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.contains(",")) {
                             String[] IDs = MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.split(",");
                             for (String str_id : IDs) {
                                 if (!MagiBridge.updateTopic(str_id, topic)) {
                                     MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
                                 }
                             }
-                        } else {
-                            String str_id = MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS;
-                            if (!MagiBridge.updateTopic(str_id, topic)) {
-                                MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
-                            }
-                        }
-
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
@@ -254,6 +258,24 @@ public class MagiBridge {
     {
         if (MagiBridge.getConfig().CORE.ENABLE_UPDATER && jda.getStatus() == JDA.Status.CONNECTED && MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS != null && !MagiBridge.getConfig().CHANNELS.TOPIC_CHANNELS.isEmpty()) {
                     return true;
+        }
+        return false;
+    }
+
+    public static Boolean updatePresence(String presence) {
+        try {
+                jda.getPresence().setGame(Game.playing(presence));
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static Boolean shouldUpdatePresence()
+    {
+        if (MagiBridge.getConfig().CORE.ENABLE_PRESENCE_UPDATER && jda.getStatus() == JDA.Status.CONNECTED && MagiBridge.getConfig().MESSAGES.BOT_GAME_STATUS != null && !MagiBridge.getConfig().MESSAGES.BOT_GAME_STATUS.isEmpty()) {
+            return true;
         }
         return false;
     }

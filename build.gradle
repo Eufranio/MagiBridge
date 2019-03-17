@@ -13,7 +13,7 @@ compileJava.options.encoding = 'UTF-8'
 
 dependencies {
     shadow 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
-    shadow 'io.github.nucleuspowered:nucleus-api:1.8.0-S7.1'
+    shadow 'io.github.nucleuspowered:nucleus-api:1.8.3-S7.1'
     shadow 'me.lucko.luckperms:luckperms-api:4.1'
     shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-7:1.8.8'
     shadow files('libs/boop.jar')

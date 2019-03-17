@@ -17,6 +17,7 @@ public enum FormatType {
     DEATH_MESSAGE(() -> MagiBridge.getConfig().MESSAGES.DEATH_MESSAGE),
     NEW_PLAYERS_MESSAGE(() -> MagiBridge.getConfig().MESSAGES.NEW_PLAYERS_MESSAGE),
     TOPIC_FORMAT(() -> MagiBridge.getConfig().MESSAGES.TOPIC_MESSAGE),
+    PRESENCE_FORMAT(() -> MagiBridge.getConfig().MESSAGES.BOT_GAME_STATUS),
     OFFLINE_TOPIC_FORMAT(() -> MagiBridge.getConfig().MESSAGES.OFFLINE_TOPIC),
     JOIN_MESSAGE(() -> MagiBridge.getConfig().MESSAGES.PLAYER_JOIN),
     QUIT_MESSAGE(() -> MagiBridge.getConfig().MESSAGES.PLAYER_QUIT),
