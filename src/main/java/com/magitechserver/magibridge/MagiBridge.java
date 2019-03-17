@@ -234,25 +234,7 @@ public class MagiBridge {
         Sponge.getEventManager().registerListeners(this, new SpongeLoginListener());
     }
 
-    public static Boolean updateTopic(String str_id, String topic) {
-        try {
-            long id = Long.parseLong(str_id);
-
-            if (jda.getTextChannelById(id) == null) {
-                MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
-                return false;
-            }
-
-            jda.getTextChannelById(id).getManager().setTopic(topic).queue();
-            return true;
-        } catch (NumberFormatException e) {
-            MagiBridge.getLogger().error("Error parsing the channel ID!");
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static Boolean updateTopic(Long id, String topic) {
+    public static Boolean updateTopic(String id, String topic) {
         try {
             if (jda.getTextChannelById(id) == null) {
                 MagiBridge.getLogger().error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
