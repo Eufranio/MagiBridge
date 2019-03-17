@@ -121,17 +121,6 @@ public class DiscordHandler {
         }
     }
 
-    private static boolean isValidChannel(long channel) {
-        if (MagiBridge.jda == null) return false;
-        if (MagiBridge.jda.getStatus() != JDA.Status.CONNECTED) return false;
-        if (MagiBridge.jda.getTextChannelById(channel) == null) {
-            MagiBridge.getLogger().error("The channel " + channel + " defined in the config isn't a valid Discord Channel ID!");
-            MagiBridge.getLogger().error("Replace it with a valid one then reload the plugin!");
-            return false;
-        }
-        return true;
-    }
-
     private static boolean isValidChannel(String channel) {
         if (MagiBridge.jda == null) return false;
         if (MagiBridge.jda.getStatus() != JDA.Status.CONNECTED) return false;
