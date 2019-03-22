@@ -57,8 +57,9 @@ public class Messages {
     @Setting(value = "no-role-placeholder", comment = "Text that will be used in %toprole% when the user don't have any roles (besides @everyone)\n" +
             "Use only if you need. If you don't, leave this option as \"\"")
     public String NO_ROLE_PLACEHOLDER = "";
-    @Setting(value = "bot-playing-status", comment = "Game that will be displayed in the bot's game status")
-    public String BOT_GAME_STATUS = "Playing on a nice server!";
+    @Setting(value = "bot-playing-status", comment = "Game/Status that will be displayed in the bot's game status\n" +
+            "Supports %tps%, %players%, %maxplayers%, %daysonline%, %hoursonline% and %minutesonline%")
+    public String BOT_GAME_STATUS = "Online Players: %players%";
     @Setting(value = "attachment-name", comment = "Name of the attachment tag shown in-game when someone sends an attachment to the Discord channel")
     public String ATTACHMENT_NAME = "[Attachment]";
     @Setting(value = "afk", comment = "Messages sent to Discord when a player goes/retuns AFK, if enabled")

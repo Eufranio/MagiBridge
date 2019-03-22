@@ -10,6 +10,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.data.key.Keys;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +28,8 @@ public class SpongeLoginListener {
             return;
         }
 
-        if (p.hasPermission("magibridge.silentjoin")) {
-            MagiBridge.getLogger().warn("The player " + p.getName() + " has the magibridge.silentjoin permission, not sending quit message!");
+        if (p.hasPermission("magibridge.silentjoin") || p.get(Keys.VANISH).orElse(false) || p.hasPermission("nucleus.vanish.onlogin")) {
+            MagiBridge.getLogger().warn("The player " + p.getName() + " has the magibridge.silentjoin permission or is in vanish, not sending quit message!");
             return;
         }
 
@@ -44,8 +45,8 @@ public class SpongeLoginListener {
 
     @Listener
     public void onQuit(ClientConnectionEvent.Disconnect event, @First Player p) {
-        if (p.hasPermission("magibridge.silentquit")) {
-            MagiBridge.getLogger().warn("The player " + p.getName() + " has the magibridge.silentquit permission, not sending quit message!");
+        if (p.hasPermission("magibridge.silentquit") || p.get(Keys.VANISH).orElse(false)) {
+            MagiBridge.getLogger().warn("The player " + p.getName() + " has the magibridge.silentquit permission or is in vanish, not sending quit message!");
             return;
         }
         Map<String, String> placeholders = new HashMap<>();

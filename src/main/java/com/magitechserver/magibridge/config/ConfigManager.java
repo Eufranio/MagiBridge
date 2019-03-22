@@ -1,5 +1,6 @@
 package com.magitechserver.magibridge.config;
 
+import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.categories.ConfigCategory;
@@ -7,8 +8,11 @@ import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Created by Frani on 27/09/2017.
@@ -44,14 +48,29 @@ public class ConfigManager {
 
     public ConfigCategory loadConfig() {
         try {
-            File file = new File(instance.configDir, "MagiBridge.conf");
-            if (!file.exists()) {
-                file.createNewFile();
+            File configFile = new File(MagiBridge.instance.configDir, "MagiBridge.conf");
+            if (!configFile.exists()) {
+                configFile.createNewFile();
             }
-            ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(file).build();
+
+            ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(configFile).build();
             CommentedConfigurationNode config = loader.load(ConfigurationOptions.defaults().setObjectMapperFactory(instance.factory).setShouldCopyDefaults(true).setHeader(HEADER));
             root = config.getValue(TypeToken.of(ConfigCategory.class), new ConfigCategory());
-            loader.save(config);
+
+            Map<String, String> UCHAT_CHANNELS = Maps.newHashMap();
+            for (Map.Entry<String, String> values : root.CHANNELS.UCHAT.UCHAT_CHANNELS.entrySet()) {
+                UCHAT_CHANNELS.put(values.getKey().replace("#", ""), values.getValue());
+            }
+
+            try {
+                config.setValue(TypeToken.of(ConfigCategory.class), root);
+                loader.save(config);
+                root.CHANNELS.UCHAT.UCHAT_CHANNELS = UCHAT_CHANNELS;
+            } catch (IOException | ObjectMappingException e) {
+                MagiBridge.getLogger().error("Could not save config.", e);
+                return root;
+            }
+
             return root;
         } catch (Exception e) {
             MagiBridge.getLogger().error("Could not load config.", e);

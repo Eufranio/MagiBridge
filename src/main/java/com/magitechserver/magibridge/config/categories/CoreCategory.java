@@ -24,8 +24,12 @@ public class CoreCategory {
     public boolean CUT_MESSAGES = false;
     @Setting(value = "topic-updater-interval", comment = "Topic Updater interval in seconds, minimum is 10")
     public int UPDATER_INTERVAL = 10;
+    @Setting(value = "presence-updater-interval", comment = "Presence Updater interval in seconds, minimum is 10")
+    public int PRESENCE_UPDATER_INTERVAL = 10;
     @Setting(value = "enable-topic-updater", comment = "Should MagiBridge enable the Topic Updater, updating the topic of the main Discord channel?")
     public boolean ENABLE_UPDATER = true;
+    @Setting(value = "enable-presence-updater", comment = "Should MagiBridge enable the Presence Updater, updating the presence of the bot?")
+    public boolean ENABLE_PRESENCE_UPDATER = true;
 
     @Setting(value = "send-helpop", comment = "Should MagiBridge send Nucleus' HelpOp messages to Discord? The channel that the messages will be sent\n" +
             "SHOULD be defined in the Channels section if this is enabled!")

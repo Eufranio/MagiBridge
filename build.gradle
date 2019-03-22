@@ -6,22 +6,22 @@ plugins {
 }
 
 group = 'com.magitechserver.magibridge'
-version = '2.6.2'
+version = '2.6.3'
 description = 'A utility Discord <-> Minecraft chat relay plugin'
 mainClassName = 'com.magitechserver.magibridge.MagiBridge'
 compileJava.options.encoding = 'UTF-8'
 
 dependencies {
     shadow 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
-    shadow 'io.github.nucleuspowered:nucleus-api:1.8.0-S7.1'
+    shadow 'io.github.nucleuspowered:nucleus-api:1.8.3-S7.1'
     shadow 'me.lucko.luckperms:luckperms-api:4.1'
-    shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.4'
+    shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-7:1.8.8'
     shadow files('libs/boop.jar')
     shadow files('libs/mcclans.jar')
     shadow 'com.github.Arckenver:Nations:v2.11_api7'
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
-    compile 'net.dv8tion:JDA:3.8.1_439'
+    compile 'net.dv8tion:JDA:3.8.3_460'
     compile 'com.vdurmont:emoji-java:4.0.0'
 }
 

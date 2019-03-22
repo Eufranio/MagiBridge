@@ -106,13 +106,19 @@ public class DiscordHandler {
     }
 
     public static void sendMessageToChannel(String channel, String message, long deleteTime) {
-        if (!isValidChannel(channel)) return;
-        message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
+        try {
+            if (!isValidChannel(channel)) return;
+            message = translateEmojis(message, MagiBridge.jda.getTextChannelById(channel).getGuild());
 
-        if (message.isEmpty()) return;
+            if (message.isEmpty()) return;
 
-        MagiBridge.jda.getTextChannelById(channel).sendMessage(message.replaceAll("&([0-9a-fA-FlLkKrR])", ""))
-                .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
+            MagiBridge.jda.getTextChannelById(channel).sendMessage(message.replaceAll("&([0-9a-fA-FlLkKrR])", ""))
+                    .queue(m -> m.delete().queueAfter(deleteTime, TimeUnit.SECONDS));
+        } catch (NumberFormatException e) {
+            MagiBridge.getLogger().error("Error parsing the channel ID!");
+            e.printStackTrace();
+            return;
+        }
     }
 
     private static boolean isValidChannel(String channel) {
