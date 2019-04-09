@@ -32,6 +32,7 @@ public class MessageListener extends ListenerAdapter {
         MBMessageEvent messageEvent = new MBMessageEvent(e.getGuild(), Sponge.getCauseStackManager().getCurrentCause(), e.getMessage());
         Sponge.getEventManager().post(messageEvent);
         if (messageEvent.isCancelled()) return;
+	boolean isBot = e.getAuthor().isBot();
 
         // Basics
         String channelID = e.getChannel().getId();
@@ -40,6 +41,7 @@ public class MessageListener extends ListenerAdapter {
         if (!isValidMessage(e)) return;
         if (message.isEmpty() && e.getMessage().getAttachments().isEmpty()) return;
         if (!isListenableChannel(channelID)) return;
+	if (isBot && MagiBridge.getConfig().CORE.IGNORE_OTHER_BOTS) return;
 
         boolean canUseColors = MagiBridge.getConfig().CHANNELS.COLOR_REQUIRED_ROLE.equalsIgnoreCase("everyone")
                 || e.getMember().getRoles().stream().anyMatch(r ->
