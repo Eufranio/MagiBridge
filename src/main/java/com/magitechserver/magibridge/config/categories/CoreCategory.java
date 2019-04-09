@@ -30,6 +30,8 @@ public class CoreCategory {
     public boolean ENABLE_UPDATER = true;
     @Setting(value = "enable-presence-updater", comment = "Should MagiBridge enable the Presence Updater, updating the presence of the bot?")
     public boolean ENABLE_PRESENCE_UPDATER = true;
+    @Setting(value = "ignore-other-bots", comment = "Should MagiBridge ignore messages sent by other bots?")
+    public boolean IGNORE_OTHER_BOTS = true;
 
     @Setting(value = "send-helpop", comment = "Should MagiBridge send Nucleus' HelpOp messages to Discord? The channel that the messages will be sent\n" +
             "SHOULD be defined in the Channels section if this is enabled!")
