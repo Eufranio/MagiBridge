@@ -1,12 +1,11 @@
-package com.magitechserver.magibridge.util;
+package com.magitechserver.magibridge.discord;
 
 import com.magitechserver.magibridge.MagiBridge;
-import com.magitechserver.magibridge.api.WebhookContent;
 import com.mashape.unirest.http.Unirest;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.Webhook;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.Webhook;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -83,7 +82,7 @@ public class Webhooking {
         }
 
         Webhook webhook = channel.getGuild()
-                .getWebhooks().complete().stream().filter(wh ->
+                .retrieveWebhooks().complete().stream().filter(wh ->
                         wh.getName().equals("MB: " + channel.getName())).findFirst().orElse(null);
 
         if (webhook == null) {

@@ -1,6 +1,6 @@
 package com.magitechserver.magibridge.util;
 
-import com.magitechserver.magibridge.DiscordHandler;
+import com.magitechserver.magibridge.discord.DiscordHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.service.permission.SubjectCollection;
@@ -10,10 +10,11 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.util.Tristate;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by Frani on 10/07/2017.
@@ -32,7 +33,7 @@ public class BridgeCommandSource implements CommandSource {
     public void sendMessage(Text message) {
         String plain = message.toPlain();
         if ("".equals(plain) || plain.trim().isEmpty()) return;
-        DiscordHandler.queueMessageToChannel(channel, plain);
+        DiscordHandler.sendMessageToChannel(channel, plain);
     }
 
     @Override
@@ -47,14 +48,18 @@ public class BridgeCommandSource implements CommandSource {
 
     @Override
     public void sendMessages(Iterable<Text> messages) {
-        messages.forEach(this::sendMessage);
+        for (Text message : messages) {
+            this.sendMessage(message);
+        }
+        //System.out.println(messages);
+        //messages.forEach(this::sendMessage);
         //this.actualSource.sendMessages(messages);
     }
 
     @Override
     public void sendMessages(Text... messages) {
-        Arrays.stream(messages).forEach(this::sendMessage);
-        //this.actualSource.sendMessages(messages);
+        //Arrays.stream(messages).forEach(this::sendMessage);
+        this.actualSource.sendMessages(messages);
     }
 
     @Override

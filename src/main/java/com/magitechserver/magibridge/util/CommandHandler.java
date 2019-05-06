@@ -1,7 +1,7 @@
 package com.magitechserver.magibridge.util;
 
 import com.magitechserver.magibridge.MagiBridge;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;

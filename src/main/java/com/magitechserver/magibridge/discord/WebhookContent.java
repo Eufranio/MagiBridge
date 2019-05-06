@@ -1,4 +1,4 @@
-package com.magitechserver.magibridge.api;
+package com.magitechserver.magibridge.discord;
 
 /**
  * Created by Frani on 27/09/2017.
