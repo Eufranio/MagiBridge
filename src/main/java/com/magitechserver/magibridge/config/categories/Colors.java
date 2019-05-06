@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -12,6 +11,10 @@ import java.util.Map;
  */
 @ConfigSerializable
 public class Colors {
+
+    @Setting(value = "discord-to-mc-replacer", comment = "Conversor from RGB to in-game colors (for %toprolecolor%)\n" +
+            "Format: \"RGB\" = \"IN-GAME COLOR\"")
+    public Map<String, String> COLORS = Maps.newHashMap();
 
     public Colors() {
         COLORS.put("99AAB5", "&f");
@@ -36,9 +39,5 @@ public class Colors {
         COLORS.put("979C9F", "&7");
         COLORS.put("546E7A", "&8");
     }
-
-    @Setting(value = "discord-to-mc-replacer", comment = "Conversor from RGB to in-game colors (for %toprolecolor%)\n" +
-            "Format: \"RGB\" = \"IN-GAME COLOR\"")
-    public Map<String, String> COLORS = Maps.newHashMap();
 
 }

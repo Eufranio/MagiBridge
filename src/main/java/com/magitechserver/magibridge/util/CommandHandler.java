@@ -1,7 +1,7 @@
 package com.magitechserver.magibridge.util;
 
 import com.magitechserver.magibridge.MagiBridge;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -28,12 +28,12 @@ public class CommandHandler {
                 .executor(new CommandExecutor() {
                     @Override
                     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-                        if(args.<String>getOne("channel").isPresent() && args.<String>getOne("message").isPresent()) {
+                        if (args.<String>getOne("channel").isPresent() && args.<String>getOne("message").isPresent()) {
                             String channel = args.<String>getOne("channel").get();
                             String message = args.<String>getOne("message").get();
-                            for(TextChannel discordChannel : MagiBridge.jda.getTextChannels()) {
-                                if(discordChannel.getName().equals(channel)) {
-                                    for(TextChannel ch : MagiBridge.jda.getTextChannelsByName(channel, true)) {
+                            for (TextChannel discordChannel : MagiBridge.jda.getTextChannels()) {
+                                if (discordChannel.getName().equals(channel)) {
+                                    for (TextChannel ch : MagiBridge.jda.getTextChannelsByName(channel, true)) {
                                         ch.sendMessage(message).queue();
                                     }
                                 }

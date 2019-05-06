@@ -15,11 +15,6 @@ import java.io.File;
  */
 public class ConfigManager {
     public ConfigCategory root;
-
-    public ConfigCategory get() {
-        return root;
-    }
-
     private String HEADER = " MagiBridge, by Eufranio\n" +
             "\n" +
             " You can use the following placeholders on the DISCORD -> MC formats:\n" +
@@ -34,7 +29,6 @@ public class ConfigManager {
             "     %topgroup% -> name of the highest group of the player who sent the message\n" +
             "     %nick% -> nickname of the player. If no nick is assigned to the player, his name will be used instead\n" +
             "     %message% -> message that the player sent";
-
     private MagiBridge instance;
 
     public ConfigManager(MagiBridge instance) {
@@ -42,6 +36,10 @@ public class ConfigManager {
         if (!instance.configDir.exists()) {
             instance.configDir.mkdirs();
         }
+    }
+
+    public ConfigCategory get() {
+        return root;
     }
 
     public ConfigCategory loadConfig() {
@@ -56,7 +54,7 @@ public class ConfigManager {
             loader.save(config);
             return root;
         } catch (Exception e) {
-            MagiBridge.logger.error("Could not load config.", e);
+            MagiBridge.getLogger().error("Could not load config.", e);
             return root;
         }
     }

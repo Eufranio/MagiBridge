@@ -1,45 +1,50 @@
 plugins {
-    id 'org.spongepowered.plugin' version '0.8.1'
-    id 'com.github.johnrengelman.shadow' version '2.0.1'
-    id 'java'
-    id 'application'
+    id 'org.spongepowered.plugin' version '0.9.0'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
+    id 'com.qixalite.spongestart2' version '4.0.0'
 }
 
-group = 'com.magitechserver.magibridge'
-version = '2.4.5' + ((System.getenv("BUILD_NUMBER") != null || System.getProperty("BUILD_NUMBER") != null) ? ("-b" + (System.getenv("BUILD_NUMBER") ?: System.getProperty("BUILD_NUMBER"))) : "")
-description = 'A utility Discord <-> Minecraft chat relay plugin'
-mainClassName = 'com.magitechserver.magibridge.MagiBridge'
-compileJava.options.encoding = 'UTF-8'
+group = pluginGroup
+version = pluginVersion
 
 dependencies {
-    shadow 'org.spongepowered:spongeapi:6.0.0'
-    shadow 'io.github.nucleuspowered:nucleus-api:1.1.1-S5.1'
-    shadow 'me.lucko.luckperms:luckperms-api:3.2'
-    shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.1'
+    shadow 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
+    shadow 'io.github.nucleuspowered:nucleus-api:1.8.0-S7.1'
+    shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.4'
     shadow files('libs/boop.jar')
     shadow files('libs/mcclans.jar')
+    shadow 'com.github.Arckenver:Nations:v2.11_api7'
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
-    compile 'net.dv8tion:JDA:3.4.0_317'
-    compile 'com.vdurmont:emoji-java:3.3.0'
+    compile ('net.dv8tion:JDA:4.ALPHA.0_76') {
+        exclude module: 'opus-java'
+    }
+    compile 'com.vdurmont:emoji-java:4.0.0'
+}
+
+spongestart {
+    minecraft '1.12.2'
 }
 
 repositories {
     mavenCentral()
     jcenter()
     maven { url = "http://repo.drnaylor.co.uk/artifactory/list/minecraft" }
-    maven { url = "https://repo.lucko.me/" }
     maven { url = "https://raw.github.com/FabioZumbi12/UltimateChat/mvn-repo/" }
+    maven { url 'https://jitpack.io' }
 }
 
 shadowJar {
-    relocate 'org.apache', 'shaded.apache'
-    relocate 'org.json', 'shaded.org.json'
-    relocate 'gnu.trove', 'shaded.gnu.trove'
+    relocate 'org.apache', 'magibridge.org.apache'
+    relocate 'org.json', 'magibridge.org.json'
+    relocate 'gnu.trove', 'magibridge.gnu.trove'
+    relocate 'com.mashape.unirest', 'magibridge.com.mashape.unirest'
     dependencies {
         exclude(dependency('org.slf4j:slf4j-api'))
         exclude(dependency('net.java.dev.jna:jna'))
     }
-    baseName = 'MagiBridge'
+    baseName = 'MagiBridge-API7'
     classifier = null
 }
+
+sponge.plugin.id = pluginId
