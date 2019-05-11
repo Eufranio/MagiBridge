@@ -115,36 +115,37 @@ public class MagiBridge {
                             .useWebhook(false)
                             .send();
                     CommandHandler.registerBroadcastCommand();
+                }
 
-                    if (getConfig().CORE.ENABLE_UPDATER && getJDA().getStatus() == JDA.Status.CONNECTED) {
-                        this.updaterTask = Task.builder()
-                                .async()
-                                .interval(Math.max(MagiBridge.getConfig().CORE.UPDATER_INTERVAL, 10), TimeUnit.SECONDS)
-                                .execute(() -> {
-                                    TextChannel channel = getJDA().getTextChannelById(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL);
-                                    if (channel == null) {
-                                        logger.error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
-                                        return;
-                                    }
+                if (getConfig().CORE.ENABLE_UPDATER && getJDA().getStatus() == JDA.Status.CONNECTED) {
+                    this.updaterTask = Task.builder()
+                            .interval(Math.max(MagiBridge.getConfig().CORE.UPDATER_INTERVAL, 10), TimeUnit.SECONDS)
+                            .execute(() -> {
+                                TextChannel channel = getJDA().getTextChannelById(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL);
+                                if (channel == null) {
+                                    logger.error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
+                                    return;
+                                }
 
-                                    String topic = FormatType.TOPIC_FORMAT.get()
-                                            .replace("%players%", ""+Sponge.getServer().getOnlinePlayers().stream().filter(p -> !p.get(Keys.VANISH).isPresent()).count())
-                                            .replace("%maxplayers%", Integer.valueOf(Sponge.getServer().getMaxPlayers()).toString())
-                                            .replace("%tps%", Long.valueOf(Math.round(Sponge.getServer().getTicksPerSecond())).toString())
-                                            .replace("%daysonline%", Long.valueOf(ManagementFactory.getRuntimeMXBean().getUptime() / (24 * 60 * 60 * 1000)).toString())
-                                            .replace("%hoursonline%", Long.valueOf((ManagementFactory.getRuntimeMXBean().getUptime() / (60 * 60 * 1000)) % 24).toString())
-                                            .replace("%minutesonline%", Long.valueOf((ManagementFactory.getRuntimeMXBean().getUptime() / (60 * 1000)) % 60).toString());
+                                String topic = FormatType.TOPIC_FORMAT.get()
+                                        .replace("%players%", "" + Sponge.getServer().getOnlinePlayers().stream().filter(p -> !p.get(Keys.VANISH).orElse(false)).count())
+                                        .replace("%maxplayers%", Integer.valueOf(Sponge.getServer().getMaxPlayers()).toString())
+                                        .replace("%tps%", Long.valueOf(Math.round(Sponge.getServer().getTicksPerSecond())).toString())
+                                        .replace("%daysonline%", Long.valueOf(ManagementFactory.getRuntimeMXBean().getUptime() / (24 * 60 * 60 * 1000)).toString())
+                                        .replace("%hoursonline%", Long.valueOf((ManagementFactory.getRuntimeMXBean().getUptime() / (60 * 60 * 1000)) % 24).toString())
+                                        .replace("%minutesonline%", Long.valueOf((ManagementFactory.getRuntimeMXBean().getUptime() / (60 * 1000)) % 60).toString());
 
-                                    channel.getManager().setTopic(topic).queue();
-                                })
-                                .submit(this);
-                    }
+                                channel.getManager().setTopic(topic).queue();
+                            })
+                            .submit(this);
                 }
             }).submit(instance);
         }).submit(instance);
     }
 
     public void stopStuff(Boolean fake) {
+        if (this.updaterTask != null) this.updaterTask.cancel();
+
         if (!fake) {
             if (jda != null) {
                 MessageBuilder.forChannel(Config.CHANNELS.MAIN_CHANNEL)
