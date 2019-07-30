@@ -82,7 +82,7 @@ public class MessageBuilder {
             message = Utils.replaceEach(placeholders.get("%message%"), this.placeholders);
         } // the whole message should be the exact player message if we're gonna send this via webhooks
         
-		for(char ch : bannedCharacters) { // Remove special chars that discord removes anyway, preventing unwanted @everyone and @here
+        for(char ch : bannedCharacters) { // Remove special chars that discord removes anyway, preventing unwanted @everyone and @here
             message = message.replace(Character.toString(ch), "");
         }
         
