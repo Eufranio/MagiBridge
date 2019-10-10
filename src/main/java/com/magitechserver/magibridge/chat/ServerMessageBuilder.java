@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.FormatType;
 import com.magitechserver.magibridge.config.categories.Messages;
+import com.magitechserver.magibridge.events.DiscordMessageEvent;
 import com.magitechserver.magibridge.util.Utils;
 import flavor.pie.boop.BoopableChannel;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
@@ -25,7 +26,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Frani on 26/04/2019.
  */
-public class ServerMessageBuilder {
+public class ServerMessageBuilder implements MessageBuilder {
 
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '\u00A7' + "[0-9A-FK-OR]");
 
@@ -70,7 +71,14 @@ public class ServerMessageBuilder {
         return this;
     }
 
+    public Type getType() {
+        return Type.DISCORD_TO_SERVER;
+    }
+
     public void send() {
+        if (Sponge.getEventManager().post(new DiscordMessageEvent(this)))
+            return;
+
         if (!this.colors) {
             this.placeholders.compute("%message%", (k, v) -> v != null ? STRIP_COLOR_PATTERN.matcher(v).replaceAll("") : v);
         }

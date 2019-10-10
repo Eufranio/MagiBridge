@@ -2,10 +2,13 @@ package com.magitechserver.magibridge.discord;
 
 import com.google.common.collect.Maps;
 import com.magitechserver.magibridge.MagiBridge;
+import com.magitechserver.magibridge.chat.MessageBuilder;
 import com.magitechserver.magibridge.config.FormatType;
+import com.magitechserver.magibridge.events.DiscordMessageEvent;
 import com.magitechserver.magibridge.util.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
+import org.spongepowered.api.Sponge;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Frani on 17/04/2019.
  */
-public class MessageBuilder {
+public class DiscordMessageBuilder implements MessageBuilder {
 
     private String channel;
     private FormatType formatType;
@@ -27,42 +30,47 @@ public class MessageBuilder {
     private int deleteTime = -1;
     private Map<String, String> placeholders = Maps.newHashMap();
 
-    public static MessageBuilder forChannel(String channel) {
-        return new MessageBuilder(channel);
+    public static DiscordMessageBuilder forChannel(String channel) {
+        return new DiscordMessageBuilder(channel);
     }
 
-    private MessageBuilder(String channel) {
+    private DiscordMessageBuilder(String channel) {
         this.channel = channel;
     }
 
-    public MessageBuilder format(FormatType format) {
+    public DiscordMessageBuilder format(FormatType format) {
         this.formatType = format;
         return this;
     }
 
-    public MessageBuilder placeholder(String name, String value) {
+    public DiscordMessageBuilder placeholder(String name, String value) {
         this.placeholders.put("%" + name + "%", value);
         return this;
     }
 
-    public MessageBuilder useWebhook(boolean use) {
+    public DiscordMessageBuilder useWebhook(boolean use) {
         this.useWebhook = use;
         return this;
     }
 
-    public MessageBuilder allowMentions(boolean allow) {
+    public DiscordMessageBuilder allowMentions(boolean allow) {
         this.allowMentions = allow;
         return this;
     }
 
-    public MessageBuilder allowEveryone(boolean allow) {
+    public DiscordMessageBuilder allowEveryone(boolean allow) {
         this.allowEveryone = allow;
         return this;
     }
 
-    public MessageBuilder allowHere(boolean allow) {
+    public DiscordMessageBuilder allowHere(boolean allow) {
         this.allowHere = allow;
         return this;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.SERVER_TO_DISCORD;
     }
 
     public void send() {
@@ -75,6 +83,9 @@ public class MessageBuilder {
             MagiBridge.getLogger().error("Replace it with a valid one then reload the plugin!");
             return;
         }
+
+        if (Sponge.getEventManager().post(new DiscordMessageEvent(this)))
+            return;
 
         String message = this.formatType.format(this.placeholders).replaceAll("&([0-9a-fA-FlLkKrR])", "");
         if (this.useWebhook && MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS) {

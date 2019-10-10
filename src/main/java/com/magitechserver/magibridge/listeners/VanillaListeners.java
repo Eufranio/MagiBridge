@@ -3,7 +3,7 @@ package com.magitechserver.magibridge.listeners;
 import com.arckenver.nations.channel.NationMessageChannel;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.FormatType;
-import com.magitechserver.magibridge.discord.MessageBuilder;
+import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
 import com.magitechserver.magibridge.util.Utils;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import io.github.nucleuspowered.nucleus.api.chat.NucleusChatChannel;
@@ -34,7 +34,7 @@ public class VanillaListeners {
         if (!p.hasPermission("magibridge.chat")) return;
         if (!MagiBridge.getConfig().CORE.ADVANCEMENT_MESSAGES_ENABLED) return;
 
-        MessageBuilder.forChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL)
+        DiscordMessageBuilder.forChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL)
                 .placeholder("player", p.getName())
                 .placeholder("nick", Utils.getNick(p))
                 .placeholder("advancement", event.getAdvancement().getName())
@@ -53,7 +53,7 @@ public class VanillaListeners {
             Player p = (Player) event.getTargetEntity();
             if (!p.hasPermission("magibridge.chat")) return;
 
-            MessageBuilder.forChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL)
+            DiscordMessageBuilder.forChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL)
                     .placeholder("player", p.getName())
                     .placeholder("nick", Utils.getNick(p))
                     .placeholder("deathmessage", event.getMessage().toPlain())
@@ -135,7 +135,7 @@ public class VanillaListeners {
             }
         }
 
-        MessageBuilder.forChannel(channel)
+        DiscordMessageBuilder.forChannel(channel)
                 .placeholder("prefix", p.getOption("prefix").orElse(""))
                 .placeholder("player", p.getName())
                 .placeholder("message", e.getFormatter().getBody().toText().toPlain())
@@ -154,7 +154,7 @@ public class VanillaListeners {
 
         String mainChannel = MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL;
         if (!p.hasPlayedBefore()) {
-            MessageBuilder.forChannel(mainChannel)
+            DiscordMessageBuilder.forChannel(mainChannel)
                     .placeholder("player", p.getName())
                     .useWebhook(false)
                     .format(FormatType.NEW_PLAYERS_MESSAGE)
@@ -167,7 +167,7 @@ public class VanillaListeners {
             return;
         }
 
-        MessageBuilder.forChannel(mainChannel)
+        DiscordMessageBuilder.forChannel(mainChannel)
                 .placeholder("player", p.getName())
                 .placeholder("nick", Utils.getNick(p))
                 .placeholder("prefix", p.getOption("prefix").orElse(""))
@@ -188,7 +188,7 @@ public class VanillaListeners {
             return;
         }
 
-        MessageBuilder.forChannel(mainChannel)
+        DiscordMessageBuilder.forChannel(mainChannel)
                 .placeholder("player", p.getName())
                 .placeholder("nick", Utils.getNick(p))
                 .placeholder("prefix", p.getOption("prefix").orElse(""))

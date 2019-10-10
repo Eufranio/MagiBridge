@@ -3,13 +3,15 @@ package com.magitechserver.magibridge;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.magitechserver.magibridge.config.ConfigManager;
+import com.magitechserver.magibridge.config.FormatType;
 import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import com.magitechserver.magibridge.discord.DiscordHandler;
-import com.magitechserver.magibridge.discord.MessageBuilder;
+import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
 import com.magitechserver.magibridge.discord.MessageListener;
-import com.magitechserver.magibridge.listeners.*;
+import com.magitechserver.magibridge.listeners.NucleusListeners;
+import com.magitechserver.magibridge.listeners.UChatListeners;
+import com.magitechserver.magibridge.listeners.VanillaListeners;
 import com.magitechserver.magibridge.util.CommandHandler;
-import com.magitechserver.magibridge.config.FormatType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -110,7 +112,7 @@ public class MagiBridge {
                 if (!fake) {
                     DiscordHandler.init();
 
-                    MessageBuilder.forChannel(Config.CHANNELS.MAIN_CHANNEL)
+                    DiscordMessageBuilder.forChannel(Config.CHANNELS.MAIN_CHANNEL)
                             .format(FormatType.SERVER_STARTING)
                             .useWebhook(false)
                             .send();
@@ -148,7 +150,7 @@ public class MagiBridge {
 
         if (!fake) {
             if (jda != null) {
-                MessageBuilder.forChannel(Config.CHANNELS.MAIN_CHANNEL)
+                DiscordMessageBuilder.forChannel(Config.CHANNELS.MAIN_CHANNEL)
                         .format(FormatType.SERVER_STOPPING)
                         .useWebhook(false)
                         .send();

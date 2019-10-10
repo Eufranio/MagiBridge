@@ -1,14 +1,7 @@
 package com.magitechserver.magibridge.discord;
 
 import com.magitechserver.magibridge.MagiBridge;
-import com.magitechserver.magibridge.config.FormatType;
-import com.magitechserver.magibridge.util.*;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.entity.living.player.Player;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.util.Tuple;
 

@@ -24,7 +24,9 @@ public class MessageListener extends ListenerAdapter {
     }
 
     private void process(MessageReceivedEvent e) {
-        if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) || e.getAuthor().isFake())
+        if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) ||
+                e.getAuthor().isFake() ||
+                e.getAuthor().isBot())
             return;
 
         String messageStripped = e.getMessage().getContentStripped();

@@ -2,7 +2,7 @@ package com.magitechserver.magibridge.listeners;
 
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.FormatType;
-import com.magitechserver.magibridge.discord.MessageBuilder;
+import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
 import com.magitechserver.magibridge.util.Utils;
 import io.github.nucleuspowered.nucleus.api.events.NucleusAFKEvent;
 import org.spongepowered.api.entity.living.player.Player;
@@ -24,7 +24,7 @@ public class NucleusListeners {
                 Player p = e.getTargetEntity();
                 String channel = MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL;
 
-                MessageBuilder.forChannel(channel)
+                DiscordMessageBuilder.forChannel(channel)
                         .placeholder("prefix", p.getOption("prefix").orElse(""))
                         .placeholder("player", p.getName())
                         .placeholder("topgroup", Utils.getHighestGroup(p))

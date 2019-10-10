@@ -3,7 +3,7 @@ package com.magitechserver.magibridge.listeners;
 import br.net.fabiozumbi12.UltimateChat.Sponge.API.SendChannelMessageEvent;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.FormatType;
-import com.magitechserver.magibridge.discord.MessageBuilder;
+import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
 import com.magitechserver.magibridge.util.Utils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -32,7 +32,7 @@ public class UChatListeners {
             return;
 
         FormatType format = FormatType.SERVER_TO_DISCORD_FORMAT;
-        MessageBuilder.forChannel(channel)
+        DiscordMessageBuilder.forChannel(channel)
                 .placeholder("prefix", e.getSender().getOption("prefix").orElse(""))
                 .placeholder("player", e.getSender().getName())
                 .placeholder("message", e.getMessage().toPlain())
