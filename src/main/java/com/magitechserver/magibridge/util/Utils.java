@@ -7,7 +7,6 @@ import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -140,6 +139,21 @@ public class Utils {
     }
 
     private static String replaceIfNotNumeric(String s) {
-        return !StringUtils.isNumeric(s) ? s.replaceAll("[^0-9]", "") : s;
+        return !isNumeric(s) ? s.replaceAll("[^0-9]", "") : s;
+    }
+
+    // from StringUtils.isNumeric
+    private static boolean isNumeric(String cs) {
+        if (cs.isEmpty()) {
+            return false;
+        } else {
+            int sz = cs.length();
+            for(int i = 0; i < sz; ++i) {
+                if (!Character.isDigit(cs.charAt(i))) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
