@@ -51,6 +51,22 @@ https://discordapp.com/oauth2/authorize?client_id=CLIENTID&scope=bot (for exampl
 ### Supported plugins:
 [UltimateChat, from FabioZumbi12](https://forums.spongepowered.org/t/thought-balloon-ultimatechat-v-1-7-0-api-5-6), [Nucleus, from dualspiral](https://ore.spongepowered.org/Nucleus/Nucleus)
 
+### Developers
+You can add MagiBridge to your workspace by using Jitpack:
+```
+dependencies {
+    ...
+    compile 'com.github.Eufranio:MagiBridge:api-7-SNAPSHOT'
+}
+
+repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+}
+```
+
+If you're searching for the API, take a look in the [Developers Wiki page](https://github.com/Eufranio/MagiBridge/wiki/Developers).
+
 ### Planned support:
 None, suggest one if you want in the Issues tab =)
 
@@ -61,5 +77,5 @@ You can download MagiBridge from the [releases tab](https://github.com/Eufranio/
 You can suggest additions or report issues by [creating a ticket](https://github.com/Eufranio/MagiBridge/issues/new) in the Issues tab, and I'll try to fix it asap.
 
 ### Support me!
-If you like the plugin, consider donating via PayPal to frani@magitechserver.com
+If you like the plugin, consider donating via PayPal to eufraniow@gmail.com
 
