@@ -1,11 +1,13 @@
 package com.magitechserver.magibridge.util;
 
 import com.magitechserver.magibridge.MagiBridge;
+import com.magitechserver.magibridge.config.categories.Channel;
 import com.magitechserver.magibridge.discord.DiscordHandler;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -121,5 +123,23 @@ public class Utils {
         return NucleusAPI.getNicknameService()
                 .map(s -> s.getNickname(p).map(Text::toPlain).orElse(null))
                 .orElse(p.getName());
+    }
+
+    public static void turnAllConfigChannelsNumeric() {
+        Channel channels = MagiBridge.getConfig().CHANNELS;
+        channels.MAIN_CHANNEL = replaceIfNotNumeric(channels.MAIN_CHANNEL);
+
+        Channel.UChatCategory uchat = channels.UCHAT;
+        uchat.UCHAT_CHANNELS = uchat.UCHAT_CHANNELS.entrySet().stream()
+                .collect(Collectors.toMap(e -> replaceIfNotNumeric(e.getKey()), Map.Entry::getValue));
+
+        Channel.NucleusCategory nucleus = channels.NUCLEUS;
+        nucleus.GLOBAL_CHANNEL = replaceIfNotNumeric(nucleus.GLOBAL_CHANNEL);
+        nucleus.HELPOP_CHANNEL = replaceIfNotNumeric(nucleus.HELPOP_CHANNEL);
+        nucleus.STAFF_CHANNEL = replaceIfNotNumeric(nucleus.STAFF_CHANNEL);
+    }
+
+    private static String replaceIfNotNumeric(String s) {
+        return !StringUtils.isNumeric(s) ? s.replaceAll("[^0-9]", "") : s;
     }
 }

@@ -12,6 +12,7 @@ import com.magitechserver.magibridge.listeners.NucleusListeners;
 import com.magitechserver.magibridge.listeners.UChatListeners;
 import com.magitechserver.magibridge.listeners.VanillaListeners;
 import com.magitechserver.magibridge.util.CommandHandler;
+import com.magitechserver.magibridge.util.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -100,6 +101,10 @@ public class MagiBridge {
     public void initStuff(Boolean fake) {
         logger.info("MagiBridge is starting!");
         Config = new ConfigManager(instance).loadConfig();
+
+        // needed because of parsing issues
+        Utils.turnAllConfigChannelsNumeric();
+
         Task.builder().async().execute(() -> {
             this.initJDA();
             Task.builder().execute(() -> {
