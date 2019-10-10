@@ -29,6 +29,7 @@ public class DiscordMessageBuilder implements MessageBuilder {
     private boolean allowHere = false;
     private int deleteTime = -1;
     private Map<String, String> placeholders = Maps.newHashMap();
+    private char[] bannedCharacters = {(char) 0x202E, (char) 0x202D, (char) 0x202A, (char) 0x202B, (char) 0x202C};
 
     public static DiscordMessageBuilder forChannel(String channel) {
         return new DiscordMessageBuilder(channel);
@@ -91,7 +92,11 @@ public class DiscordMessageBuilder implements MessageBuilder {
         if (this.useWebhook && MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS) {
             message = Utils.replaceEach(placeholders.get("%message%"), this.placeholders);
         } // the whole message should be the exact player message if we're gonna send this via webhooks
-
+        
+        for(char ch : bannedCharacters) { // Remove special chars that discord removes anyway, preventing unwanted @everyone and @here
+            message = message.replace(Character.toString(ch), "");
+        }
+        
         // replace message emotes with the ones from the guild, if they exist
         Guild guild = textChannel.getGuild();
         for (Emote emote : guild.getEmotes()) {
@@ -122,10 +127,14 @@ public class DiscordMessageBuilder implements MessageBuilder {
         }
 
         if (!this.allowEveryone) {
-            message = message.replace("@everyone", "");
+            while(message.matches(".*@everyone.*")) {
+                message = message.replace("@everyone", "");
+            }
         }
         if (!this.allowHere) {
-            message = message.replace("@here", "");
+            while(message.matches(".*@here.*")) {
+                message = message.replace("@here", "");
+            }
         }
 
         if (message.isEmpty()) return;
