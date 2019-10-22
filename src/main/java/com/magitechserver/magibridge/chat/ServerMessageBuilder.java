@@ -135,7 +135,7 @@ public class ServerMessageBuilder implements MessageBuilder {
                 return;
             }
 
-            Text text = Text.of(prefix, Utils.replaceEach(rawFormat, this.placeholders), attachment);
+            Text text = Text.of(prefix, Utils.toText(Utils.replaceEach(rawFormat, this.placeholders)), attachment);
             chatChannel.sendMessage(Sponge.getServer().getConsole(), text, true);
         } else if (MagiBridge.getConfig().CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().isLoaded("nucleus")) {
             MessageChannel messageChannel;
