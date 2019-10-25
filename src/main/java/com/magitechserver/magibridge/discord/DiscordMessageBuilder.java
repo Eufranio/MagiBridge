@@ -126,16 +126,11 @@ public class DiscordMessageBuilder implements MessageBuilder {
             }
         }
 
-        if (!this.allowEveryone) {
-            while(message.matches(".*@everyone.*")) {
-                message = message.replace("@everyone", "");
-            }
-        }
-        if (!this.allowHere) {
-            while(message.matches(".*@here.*")) {
-                message = message.replace("@here", "");
-            }
-        }
+        if(!this.allowEveryone)
+            message.replace("@everyone", "@\u0435veryone");
+
+        if(!this.allowHere)
+            message.replace("@here", "@h\u0435re");
 
         if (message.isEmpty()) return;
 
