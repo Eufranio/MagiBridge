@@ -111,6 +111,8 @@ public class DiscordMessageBuilder implements MessageBuilder {
 
             if (!usersMentioned.isEmpty()) {
                 for (String user : usersMentioned) {
+                    if (user.trim().isEmpty()) continue;
+
                     List<Member> users = textChannel.getGuild().getMembers().stream()
                             .filter(m -> m.getEffectiveName().equalsIgnoreCase(user))
                             .collect(Collectors.toList());
@@ -127,10 +129,10 @@ public class DiscordMessageBuilder implements MessageBuilder {
         }
 
         if(!this.allowEveryone)
-            message.replace("@everyone", "@\u0435veryone");
+            message = message.replace("@everyone", "@\u0435veryone");
 
         if(!this.allowHere)
-            message.replace("@here", "@h\u0435re");
+            message = message.replace("@here", "@h\u0435re");
 
         if (message.isEmpty()) return;
 
