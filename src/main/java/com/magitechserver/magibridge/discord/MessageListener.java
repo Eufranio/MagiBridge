@@ -49,18 +49,6 @@ public class MessageListener extends ListenerAdapter {
         if (e.getMessage().getAttachments().isEmpty() && message.trim().isEmpty())
             return;
 
-        // Handle console command
-        if (message.startsWith(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND)) {
-            Utils.dispatchCommand(e);
-            return;
-        }
-
-        // Handle player list command
-        if (message.equalsIgnoreCase(MagiBridge.getConfig().CHANNELS.LIST_COMMAND)) {
-            Utils.dispatchList(e.getChannel());
-            return;
-        }
-
         String channel = e.getChannel().getId();
 
         // ensure we should listen to this channel
@@ -74,6 +62,18 @@ public class MessageListener extends ListenerAdapter {
             if (!MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL.equals(channel)) {
                 return;
             }
+        }
+
+        // Handle console command
+        if (message.startsWith(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND)) {
+            Utils.dispatchCommand(e);
+            return;
+        }
+
+        // Handle player list command
+        if (message.equalsIgnoreCase(MagiBridge.getConfig().CHANNELS.LIST_COMMAND)) {
+            Utils.dispatchList(e.getChannel());
+            return;
         }
 
         Member member = e.getMember();
