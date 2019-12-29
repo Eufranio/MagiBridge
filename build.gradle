@@ -1,6 +1,6 @@
 plugins {
     id 'org.spongepowered.plugin' version '0.9.0'
-    id 'com.github.johnrengelman.shadow' version '2.0.4'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
     id 'com.qixalite.spongestart2' version '4.0.0'
 }
 
@@ -14,8 +14,7 @@ dependencies {
     shadow files('libs/boop.jar')
     shadow files('libs/mcclans.jar')
     shadow 'com.github.Arckenver:Nations:v2.11_api7'
-
-    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.8.1'
+    shadow 'org.apache.logging.log4j:log4j-core:2.8.1'
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
     compile ('net.dv8tion:JDA:4.ALPHA.0_76') {
@@ -37,10 +36,13 @@ repositories {
 }
 
 shadowJar {
-    relocate 'org.apache', 'magibridge.org.apache'
+    relocate('org.apache', 'magibridge.org.apache') {
+        exclude 'org/apache/logging/**'
+    }
     relocate 'org.json', 'magibridge.org.json'
     relocate 'gnu.trove', 'magibridge.gnu.trove'
     relocate 'com.mashape.unirest', 'magibridge.com.mashape.unirest'
+    relocate 'com.squareup', 'magibridge.com.squareup'
     dependencies {
         exclude(dependency('org.slf4j:slf4j-api'))
         exclude(dependency('net.java.dev.jna:jna'))

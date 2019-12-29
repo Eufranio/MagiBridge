@@ -55,6 +55,7 @@ public class Utils {
     }
 
     public static void dispatchCommand(MessageReceivedEvent e) {
+        boolean consoleMessage = e.getMessage().getContentDisplay().startsWith(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND);
         String[] args = e.getMessage().getContentDisplay()
                 .replace(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND + " ", "")
                 .split(" ");
@@ -66,7 +67,10 @@ public class Utils {
         }
 
         String cmd = String.join(" ", args);
-        Sponge.getCommandManager().process(new BridgeCommandSource(e.getChannel().getId(), Sponge.getServer().getConsole()), cmd);
+        Sponge.getCommandManager().process(
+                consoleMessage ? new BridgeCommandSource(e.getChannel().getId(), Sponge.getServer().getConsole()) :
+                        Sponge.getServer().getConsole(),
+                cmd);
     }
 
     public static void dispatchList(MessageChannel channel) {

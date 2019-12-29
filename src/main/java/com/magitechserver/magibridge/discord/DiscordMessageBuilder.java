@@ -74,29 +74,31 @@ public class DiscordMessageBuilder implements MessageBuilder {
         return Type.SERVER_TO_DISCORD;
     }
 
-    public void send() {
+    public String get() {
         JDA jda = MagiBridge.getInstance().getJDA();
-        if (jda == null || jda.getStatus() != JDA.Status.CONNECTED) return;
+        if (jda == null || jda.getStatus() != JDA.Status.CONNECTED) return null;
 
         TextChannel textChannel = jda.getTextChannelById(this.channel.replace("#", ""));
         if (textChannel == null) {
             MagiBridge.getLogger().error("The channel " + channel + " defined in the config isn't a valid Discord Channel ID!");
             MagiBridge.getLogger().error("Replace it with a valid one then reload the plugin!");
-            return;
+            return null;
         }
 
         if (Sponge.getEventManager().post(new DiscordMessageEvent(this)))
-            return;
+            return null;
 
-        String message = this.formatType.format(this.placeholders).replaceAll("&([0-9a-fA-FlLkKrR])", "");
+        String message = this.formatType.format(this.placeholders)
+                .replaceAll("&([0-9a-fA-FlLkKrR])", "")
+                .replaceAll("§([0-9a-fA-FlLkKrR])", "");
         if (this.useWebhook && MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS) {
             message = Utils.replaceEach(placeholders.get("%message%"), this.placeholders);
         } // the whole message should be the exact player message if we're gonna send this via webhooks
-        
+
         for(char ch : bannedCharacters) { // Remove special chars that discord removes anyway, preventing unwanted @everyone and @here
             message = message.replace(Character.toString(ch), "");
         }
-        
+
         // replace message emotes with the ones from the guild, if they exist
         Guild guild = textChannel.getGuild();
         for (Emote emote : guild.getEmotes()) {
@@ -134,7 +136,19 @@ public class DiscordMessageBuilder implements MessageBuilder {
         if(!this.allowHere)
             message = message.replace("@here", "@h\u0435re");
 
-        if (message.isEmpty()) return;
+        if (message.isEmpty()) return null;
+
+        return message;
+    }
+
+    public void send() {
+        String message = this.get();
+        if (message == null)
+            return;
+
+        TextChannel textChannel = MagiBridge.getInstance()
+                .getJDA()
+                .getTextChannelById(this.channel.replace("#", ""));
 
         if (this.deleteTime != -1) {
             textChannel.sendMessage(message).queue(m -> m.delete().queueAfter(this.deleteTime, TimeUnit.SECONDS));

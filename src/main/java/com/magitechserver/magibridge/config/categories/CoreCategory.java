@@ -26,6 +26,8 @@ public class CoreCategory {
     public int UPDATER_INTERVAL = 10;
     @Setting(value = "enable-topic-updater", comment = "Should MagiBridge enable the Topic Updater, updating the topic of the main Discord channel?")
     public boolean ENABLE_UPDATER = true;
+    @Setting(value = "enable-console-logging", comment = "Should MagiBridge send console messages to Discord? You must set the console-discord-channel for this to work!")
+    public boolean ENABLE_CONSOLE_LOGGING = false;
 
     @Setting(value = "send-helpop", comment = "Should MagiBridge send Nucleus' HelpOp messages to Discord? The channel that the messages will be sent\n" +
             "SHOULD be defined in the Channels section if this is enabled!")

@@ -12,16 +12,14 @@ import com.magitechserver.magibridge.listeners.NucleusListeners;
 import com.magitechserver.magibridge.listeners.UChatListeners;
 import com.magitechserver.magibridge.listeners.VanillaListeners;
 import com.magitechserver.magibridge.util.CommandHandler;
+import com.magitechserver.magibridge.util.ConsoleHandler;
 import com.magitechserver.magibridge.util.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.TextChannel;
 import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
@@ -60,7 +58,9 @@ public class MagiBridge {
     public static MagiBridge instance = null;
     public static ConfigCategory Config;
     public static JDA jda;
+
     private Task updaterTask;
+    private ConsoleHandler consoleHandler;
 
     @Inject
     @ConfigDir(sharedRoot = false)
@@ -106,8 +106,6 @@ public class MagiBridge {
         logger.info("MagiBridge is starting!");
         Config = new ConfigManager(instance).loadConfig();
 
-        initConsoleHijack();
-
         // needed because of parsing issues
         Utils.turnAllConfigChannelsNumeric();
 
@@ -128,6 +126,12 @@ public class MagiBridge {
                             .useWebhook(false)
                             .send();
                     CommandHandler.registerBroadcastCommand();
+
+                    if (Config.CORE.ENABLE_CONSOLE_LOGGING && !Config.CHANNELS.CONSOLE_CHANNEL.isEmpty()) {
+                        consoleHandler = new ConsoleHandler();
+                        consoleHandler.start();
+                        ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addAppender(consoleHandler);
+                    }
                 }
 
                 if (getConfig().CORE.ENABLE_UPDATER && getJDA().getStatus() == JDA.Status.CONNECTED) {
@@ -195,40 +199,6 @@ public class MagiBridge {
         Sponge.getEventManager().registerListeners(this, this);
 
         Config = null;
-    }
-
-    private void initConsoleHijack() {
-        ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addAppender(new ConsoleLogHandler("MagiBridgeConsoleWatcher"));
-    }
-
-    //Interesting way to get all console messages
-    public static class ConsoleLogHandler extends AbstractAppender {
-
-        private ConsoleLogHandler(final String name) {
-            super(name, null, null);
-        }
-
-        @Override
-        public void append(LogEvent event) {
-
-            if (!event.getLevel().isInRange(Level.FATAL, Level.INFO)) {
-                return;
-            }
-
-            FormatType format = FormatType.SERVER_CONSOLE_TO_DISCORD_FORMAT;
-            String channel = MagiBridge.getConfig().CHANNELS.CONSOLE_CHANNEL;
-
-            DiscordMessageBuilder.forChannel(channel)
-                    .placeholder("threadname", event.getThreadName())
-                    .placeholder("loglevel", event.getLevel().name())
-                    .placeholder("loggername", event.getLoggerName())
-                    .placeholder("message", event.getMessage().getFormattedMessage())
-                    .format(format)
-                    .useWebhook(false)
-                    .send();
-
-        }
-
     }
 
     private boolean initJDA() {

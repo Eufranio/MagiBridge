@@ -1,6 +1,7 @@
 package com.magitechserver.magibridge.discord;
 
 import com.magitechserver.magibridge.MagiBridge;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.util.Tuple;
@@ -75,9 +76,14 @@ public class DiscordHandler {
     }
 
     public static void sendMessageToChannel(String channel, String message) {
+        JDA jda = MagiBridge.instance.getJDA();
+        if (jda == null || jda.getStatus() != JDA.Status.CONNECTED)
+            return;
         TextChannel textChannel = MagiBridge.getInstance().getJDA().getTextChannelById(channel);
         if (textChannel == null) return;
-        textChannel.sendMessage(message).queue();
+        try {
+            textChannel.sendMessage(message).queue();
+        } catch (Exception e) { e.printStackTrace(); }
         //messageQueue.offer(Tuple.of(channel, message));
     }
 
