@@ -20,6 +20,8 @@ public class Messages {
     public String CONSOLE_NO_PERMISSION = "**You don't have permission to use this command!**";
     @Setting(value = "server-to-discord-format", comment = "Format of messages sent FROM the server TO discord")
     public String SERVER_TO_DISCORD_FORMAT = "**%player%**: %message%";
+    @Setting(value = "server-to-discord-format", comment = "Format of console messages sent FROM the server TO discord")
+    public String SERVER_CONSOLE_TO_DISCORD_FORMAT = "[%threadname%/%loglevel%] [%loggername%] %message%";
     @Setting(value = "server-to-discord-staff-format", comment = "Format of messages sent FROM the server staff channel TO the discord staff channel\n" +
             "Used only when Nucleus is running and enabled")
     public String SERVER_TO_DISCORD_STAFF_FORMAT = "**%player%**: %message%";

@@ -39,6 +39,8 @@ public class Channel {
     public NucleusCategory NUCLEUS = new NucleusCategory();
     @Setting(value = "main-discord-channel", comment = "ID of the main Discord Channel, where start/stop messages will be sent to")
     public String MAIN_CHANNEL = "MAIN_CHANNEL_ID_HERE";
+    @Setting(value = "console-discord-channel", comment = "ID of the console Discord Channel, where console messages will be sent to")
+    public String CONSOLE_CHANNEL = "CONSOLE_CHANNEL_ID_HERE";
 
     public Channel() {
         COMMANDS_ROLE_OVERRIDE.put("stop", "admin");

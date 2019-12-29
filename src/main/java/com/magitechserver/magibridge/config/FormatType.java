@@ -17,6 +17,8 @@ public class FormatType {
 
     public static FormatType SERVER_TO_DISCORD_FORMAT = new FormatType(() -> MagiBridge.getConfig().MESSAGES.SERVER_TO_DISCORD_FORMAT);
 
+    public static FormatType SERVER_CONSOLE_TO_DISCORD_FORMAT = new FormatType(() -> MagiBridge.getConfig().MESSAGES.SERVER_CONSOLE_TO_DISCORD_FORMAT);
+
     public static FormatType SERVER_TO_DISCORD_STAFF_FORMAT = new FormatType(() -> MagiBridge.getConfig().MESSAGES.SERVER_TO_DISCORD_STAFF_FORMAT);
 
     public static FormatType ADVANCEMENT_MESSAGE = new FormatType(() -> MagiBridge.getConfig().MESSAGES.ADVANCEMENT_MESSAGE);

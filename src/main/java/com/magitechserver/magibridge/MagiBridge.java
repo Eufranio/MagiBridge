@@ -18,6 +18,10 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.TextChannel;
 import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
@@ -101,6 +105,8 @@ public class MagiBridge {
     public void initStuff(Boolean fake) {
         logger.info("MagiBridge is starting!");
         Config = new ConfigManager(instance).loadConfig();
+
+        initConsoleHijack();
 
         // needed because of parsing issues
         Utils.turnAllConfigChannelsNumeric();
@@ -189,6 +195,40 @@ public class MagiBridge {
         Sponge.getEventManager().registerListeners(this, this);
 
         Config = null;
+    }
+
+    private void initConsoleHijack() {
+        ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addAppender(new ConsoleLogHandler("MagiBridgeConsoleWatcher"));
+    }
+
+    //Interesting way to get all console messages
+    public static class ConsoleLogHandler extends AbstractAppender {
+
+        private ConsoleLogHandler(final String name) {
+            super(name, null, null);
+        }
+
+        @Override
+        public void append(LogEvent event) {
+
+            if (!event.getLevel().isInRange(Level.FATAL, Level.INFO)) {
+                return;
+            }
+
+            FormatType format = FormatType.SERVER_CONSOLE_TO_DISCORD_FORMAT;
+            String channel = MagiBridge.getConfig().CHANNELS.CONSOLE_CHANNEL;
+
+            DiscordMessageBuilder.forChannel(channel)
+                    .placeholder("threadname", event.getThreadName())
+                    .placeholder("loglevel", event.getLevel().name())
+                    .placeholder("loggername", event.getLoggerName())
+                    .placeholder("message", event.getMessage().getFormattedMessage())
+                    .format(format)
+                    .useWebhook(false)
+                    .send();
+
+        }
+
     }
 
     private boolean initJDA() {
