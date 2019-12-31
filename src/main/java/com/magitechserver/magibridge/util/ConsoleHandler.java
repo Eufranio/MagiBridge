@@ -10,7 +10,6 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.spongepowered.api.scheduler.Task;
 
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ConsoleHandler extends AbstractAppender {
 
-    private Queue<String> messagesQueue = new LinkedList<>();
+    private LinkedList<String> messagesQueue = new LinkedList<>();
 
     public ConsoleHandler() {
         super("MagiBridgeConsoleWatcher", null, null);
@@ -62,9 +61,18 @@ public class ConsoleHandler extends AbstractAppender {
         StringBuilder buffer = new StringBuilder();
         int currentMessageSize = 0;
         while (!messagesQueue.isEmpty()) {
-            String message = messagesQueue.peek();
-            if ((currentMessageSize + message.length()) >= 2000)
+            if (currentMessageSize >= 2000)
                 break;
+            String message = messagesQueue.peek();
+            int finalCount = currentMessageSize + message.length();
+            if (finalCount >= 2000) {
+                //split the message in 2
+                int endIndex = finalCount % 1999;
+                messagesQueue.poll();
+                messagesQueue.add(0, message.substring(endIndex));
+                messagesQueue.add(0, message.substring(0, endIndex));
+                continue;
+            }
             currentMessageSize += message.length();
 
             buffer.append(messagesQueue.poll()).append("\n");

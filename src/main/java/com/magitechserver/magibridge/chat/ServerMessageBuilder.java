@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  */
 public class ServerMessageBuilder implements MessageBuilder {
 
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '\u00A7' + "[0-9A-FK-OR]");
+    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)[§&][0-9A-FK-OR]");
 
     private boolean staff = false;
     private boolean colors = true;
