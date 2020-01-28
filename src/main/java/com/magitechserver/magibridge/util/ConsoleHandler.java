@@ -63,19 +63,22 @@ public class ConsoleHandler extends AbstractAppender {
         while (!messagesQueue.isEmpty()) {
             if (currentMessageSize >= 2000)
                 break;
-            String message = messagesQueue.peek();
+            String message = messagesQueue.poll();
             int finalCount = currentMessageSize + message.length();
-            if (finalCount >= 2000) {
+            if (finalCount > 1999) {
                 //split the message in 2
-                int endIndex = finalCount % 1999;
-                messagesQueue.poll();
-                messagesQueue.add(0, message.substring(endIndex));
-                messagesQueue.add(0, message.substring(0, endIndex));
+                int cutIndex = 1999 - currentMessageSize;
+                if (cutIndex == 0) {
+                    messagesQueue.add(0, message);
+                } else {
+                    messagesQueue.add(0, message.substring(cutIndex));
+                    messagesQueue.add(0, message.substring(0, cutIndex));
+                }
                 continue;
             }
-            currentMessageSize += message.length();
+            currentMessageSize += message.length() + 1; // 1 for \n
 
-            buffer.append(messagesQueue.poll()).append("\n");
+            buffer.append(message).append("\n");
         }
         if (currentMessageSize == 0)
             return;
