@@ -8,7 +8,7 @@ group = pluginGroup
 version = pluginVersion
 
 dependencies {
-    shadow 'org.spongepowered:spongeapi:7.2.0-SNAPSHOT'
+    shadow 'org.spongepowered:spongeapi:7.1.0'
     shadow 'io.github.nucleuspowered:nucleus-api:1.8.0-S7.1'
     shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.4'
     shadow files('libs/boop.jar')
@@ -50,6 +50,8 @@ shadowJar {
     baseName = 'MagiBridge-API7'
     classifier = null
 }
+
+build.dependsOn shadowJar
 
 sponge.plugin.id = pluginId
 compileJava.options.encoding = 'UTF-8'
