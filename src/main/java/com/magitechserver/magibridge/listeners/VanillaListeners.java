@@ -81,7 +81,13 @@ public class VanillaListeners {
             if (Sponge.getPluginManager().isLoaded("nations") && messageChannel instanceof NationMessageChannel) {
                 return; // don't want to send private nation messages to Discord
             }
-
+            
+            if(Sponge.getPluginManager().isLoaded("eaglefactions") 
+        	    && (messageChannel instanceof FactionMessageChannelImpl
+        		    || messageChannel instanceof AllianceMessageChannelImpl)) {
+        	return;
+            }
+            
             if (Sponge.getPluginManager().isLoaded("mcclans") &&
                     (messageChannel instanceof AllyMessageChannelImpl ||
                             messageChannel instanceof ClanMessageChannelImpl)) {
