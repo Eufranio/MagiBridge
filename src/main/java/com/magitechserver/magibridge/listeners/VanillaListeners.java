@@ -5,6 +5,8 @@ import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.FormatType;
 import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
 import com.magitechserver.magibridge.util.Utils;
+import io.github.aquerr.eaglefactions.common.messaging.chat.AllianceMessageChannelImpl;
+import io.github.aquerr.eaglefactions.common.messaging.chat.FactionMessageChannelImpl;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import io.github.nucleuspowered.nucleus.api.chat.NucleusChatChannel;
 import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
@@ -82,10 +84,9 @@ public class VanillaListeners {
                 return; // don't want to send private nation messages to Discord
             }
             
-            if(Sponge.getPluginManager().isLoaded("eaglefactions") 
-        	    && (messageChannel instanceof FactionMessageChannelImpl
-        		    || messageChannel instanceof AllianceMessageChannelImpl)) {
-        	return;
+            if (Sponge.getPluginManager().isLoaded("eaglefactions") &&
+                    (messageChannel instanceof FactionMessageChannelImpl || messageChannel instanceof AllianceMessageChannelImpl)) {
+        	    return; // don't want to private faction messages to Discord
             }
             
             if (Sponge.getPluginManager().isLoaded("mcclans") &&
