@@ -13,9 +13,9 @@ dependencies {
     shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-5.0-6.0:1.8.4'
     shadow files('libs/boop.jar')
     shadow files('libs/mcclans.jar')
-    shadow files('libs/ef.jar')
     shadow 'com.github.Arckenver:Nations:v2.11_api7'
     shadow 'org.apache.logging.log4j:log4j-core:2.8.1'
+    shadow 'com.github.Aquerr.EagleFactions:EagleFactions:10d78dac2337514e4fe9f6ecf84c1ff4ca4f2517'
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
     compile ('net.dv8tion:JDA:4.ALPHA.0_76') {

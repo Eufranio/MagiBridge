@@ -64,6 +64,8 @@ public class ConsoleHandler extends AbstractAppender {
             if (currentMessageSize >= 2000)
                 break;
             String message = messagesQueue.poll();
+            if (message == null)
+                break;
             int finalCount = currentMessageSize + message.length();
             if (finalCount > 1999) {
                 //split the message in 2

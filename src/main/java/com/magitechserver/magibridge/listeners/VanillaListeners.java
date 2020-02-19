@@ -5,8 +5,8 @@ import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.FormatType;
 import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
 import com.magitechserver.magibridge.util.Utils;
-import io.github.aquerr.eaglefactions.common.messaging.chat.AllianceMessageChannelImpl;
-import io.github.aquerr.eaglefactions.common.messaging.chat.FactionMessageChannelImpl;
+import io.github.aquerr.eaglefactions.api.messaging.chat.AllianceMessageChannel;
+import io.github.aquerr.eaglefactions.api.messaging.chat.FactionMessageChannel;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import io.github.nucleuspowered.nucleus.api.chat.NucleusChatChannel;
 import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
@@ -23,8 +23,11 @@ import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.type.FixedMessageChannel;
+
+import java.util.Optional;
 
 /**
  * Created by Frani on 17/04/2019.
@@ -83,10 +86,14 @@ public class VanillaListeners {
             if (Sponge.getPluginManager().isLoaded("nations") && messageChannel instanceof NationMessageChannel) {
                 return; // don't want to send private nation messages to Discord
             }
-            
-            if (Sponge.getPluginManager().isLoaded("eaglefactions") &&
-                    (messageChannel instanceof FactionMessageChannelImpl || messageChannel instanceof AllianceMessageChannelImpl)) {
-        	    return; // don't want to private faction messages to Discord
+
+            if (Sponge.getPluginManager().isLoaded("eaglefactions")) {
+                try {
+                    // EagleFactions is loaded with the new version, and we don't want to send private faction messages to Discord
+                    Class.forName("io.github.aquerr.eaglefactions.api.messaging.chat.AllianceMessageChannel");
+                    if (messageChannel instanceof AllianceMessageChannel || messageChannel instanceof FactionMessageChannel)
+                        return;
+                } catch (Exception ex) {}
             }
             
             if (Sponge.getPluginManager().isLoaded("mcclans") &&
