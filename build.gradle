@@ -44,6 +44,8 @@ shadowJar {
     relocate 'gnu.trove', 'magibridge.gnu.trove'
     relocate 'com.mashape.unirest', 'magibridge.com.mashape.unirest'
     relocate 'com.squareup', 'magibridge.com.squareup'
+    relocate 'okio', 'magibridge.okio'
+    relocate 'okhttp3', 'magibridge.okhttp3'
     dependencies {
         exclude(dependency('org.slf4j:slf4j-api'))
         exclude(dependency('net.java.dev.jna:jna'))
