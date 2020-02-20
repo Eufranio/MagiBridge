@@ -35,7 +35,7 @@ import java.util.Optional;
 public class VanillaListeners {
 
     @Listener
-    public void onAdvancement(AdvancementEvent event, @Root Player p) {
+    public void onAdvancement(AdvancementEvent.Grant event, @Getter("getTargetEntity") Player p) {
         if (!p.hasPermission("magibridge.chat")) return;
         if (!MagiBridge.getConfig().CORE.ADVANCEMENT_MESSAGES_ENABLED) return;
 
@@ -71,7 +71,7 @@ public class VanillaListeners {
     }
 
     @Listener(order = Order.LAST)
-    public void onSpongeMessage(MessageChannelEvent.Chat e, @First Player p) {
+    public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
         if (!MagiBridge.useVanillaChat) return;
         if (!p.hasPermission("magibridge.chat")) return;
         if (!Sponge.getServer().getOnlinePlayers().contains(p) || e.isMessageCancelled()) return;
@@ -123,30 +123,14 @@ public class VanillaListeners {
                     MagiBridge.getConfig().CHANNELS.NUCLEUS.GLOBAL_CHANNEL;
             if (channel.isEmpty()) return;
 
-            boolean ignoreRoot = false;
-            if (MagiBridge.getConfig().CORE.SEND_HELPOP && messageChannel instanceof NucleusChatChannel.HelpOp) {
-                ignoreRoot = true;
-                channel = MagiBridge.getConfig().CHANNELS.NUCLEUS.HELPOP_CHANNEL.isEmpty() ?
-                        channel :
-                        MagiBridge.getConfig().CHANNELS.NUCLEUS.HELPOP_CHANNEL;
-            }
-
-            if (!ignoreRoot && !(e.getSource() instanceof Player)) {
+            /*if (!ignoreRoot && !(e.getSource() instanceof Player)) {
                 return; // if it's not a helpop message, we don't care about other sources
-            }
+            }*/
 
             format = isStaffMessage ?
                     FormatType.SERVER_TO_DISCORD_STAFF_FORMAT :
                     FormatType.SERVER_TO_DISCORD_FORMAT;
 
-        } else {
-            if (e.getChannel().isPresent() && Sponge.getPluginManager().isLoaded("nucleus") && MagiBridge.getConfig().CORE.SEND_HELPOP) {
-                if (e.getChannel().get().getClass().getName().equals("io.github.nucleuspowered.util.PermissionMessageChannel")) {
-                    channel = MagiBridge.getConfig().CHANNELS.NUCLEUS.HELPOP_CHANNEL.isEmpty() ?
-                            MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL :
-                            MagiBridge.getConfig().CHANNELS.NUCLEUS.HELPOP_CHANNEL;
-                }
-            }
         }
 
         DiscordMessageBuilder.forChannel(channel)

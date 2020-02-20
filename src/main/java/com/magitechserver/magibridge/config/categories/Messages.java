@@ -63,6 +63,8 @@ public class Messages {
     public String BOT_GAME_STATUS = "Playing on a nice server!";
     @Setting(value = "attachment-name", comment = "Name of the attachment tag shown in-game when someone sends an attachment to the Discord channel")
     public String ATTACHMENT_NAME = "[Attachment]";
+    @Setting(value = "helpop-message", comment = "Format used when sending HelpOp messages to Discord")
+    public String HELP_OP = "HelpOp > %player%: %message%";
     @Setting(value = "afk", comment = "Messages sent to Discord when a player goes/retuns AFK, if enabled")
     public AFKCategory AFK = new AFKCategory();
 

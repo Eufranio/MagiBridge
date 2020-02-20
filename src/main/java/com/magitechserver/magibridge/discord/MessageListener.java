@@ -51,24 +51,11 @@ public class MessageListener extends ListenerAdapter {
 
         String channel = e.getChannel().getId();
 
-        boolean listenToConsole = MagiBridge.getConfig().CORE.ENABLE_CONSOLE_LOGGING &&
-                MagiBridge.getConfig().CHANNELS.CONSOLE_CHANNEL.equals(channel);
-        if (!listenToConsole) {
-            if (MagiBridge.getConfig().CHANNELS.USE_UCHAT && !MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_CHANNELS.containsKey(channel)) {
-                return;
-            } else if (MagiBridge.getConfig().CHANNELS.USE_NUCLEUS && !(
-                    MagiBridge.getConfig().CHANNELS.NUCLEUS.GLOBAL_CHANNEL.equals(channel)
-                            || MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL.equals(channel))) {
-                return;
-            } else if (!MagiBridge.getConfig().CHANNELS.USE_UCHAT && !MagiBridge.getConfig().CHANNELS.USE_NUCLEUS) {
-                if (!MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL.equals(channel)) {
-                    return;
-                }
-            }
-        }
+        if (!MagiBridge.getInstance().getListeningChannels().contains(channel))
+            return;
 
         // Handle console command
-        if (listenToConsole || message.startsWith(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND)) {
+        if (MagiBridge.getConfig().CHANNELS.CONSOLE_CHANNEL.equals(channel) || message.startsWith(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND)) {
             Utils.dispatchCommand(e);
             return;
         }

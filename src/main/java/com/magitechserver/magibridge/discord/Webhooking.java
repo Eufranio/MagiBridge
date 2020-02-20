@@ -62,15 +62,17 @@ public class Webhooking {
         json.put("content", content.message);
         json.put("username", content.name.replaceAll("&([0-9a-fA-FlLkKrR])", ""));
         json.put("avatar_url", content.avatarUrl);
-        try {
-            Unirest.post(webhook.getUrl())
-                    .header("Content-Type", "application/json")
-                    .body(json)
-                    .asJsonAsync();
-        } catch (Exception e) {
-            MagiBridge.getLogger().error("Error delivering Webhook request: ");
-            e.printStackTrace();
-        }
+        Task.builder().execute(() -> {
+            try {
+                Unirest.post(webhook.getUrl())
+                        .header("Content-Type", "application/json")
+                        .body(json)
+                        .asJson();
+            } catch (Exception e) {
+                MagiBridge.getLogger().error("Error delivering Webhook request: ");
+                e.printStackTrace();
+            }
+        }).submit(MagiBridge.getInstance());
     }
 
     private static Webhook getWebhook(String channelID) {

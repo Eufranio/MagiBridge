@@ -45,6 +45,8 @@ public class FormatType {
 
     public static FormatType SERVER_STOPPING = new FormatType(() -> MagiBridge.Config.MESSAGES.SERVER_STOPPING);
 
+    public static FormatType HELP_OP_MESSAGE = new FormatType(() -> MagiBridge.Config.MESSAGES.HELP_OP);
+
     private Supplier<String> s;
 
     FormatType(Supplier<String> s) {
