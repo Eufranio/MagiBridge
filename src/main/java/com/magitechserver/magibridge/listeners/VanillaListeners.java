@@ -19,15 +19,11 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.advancement.AdvancementEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.filter.Getter;
-import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.type.FixedMessageChannel;
-
-import java.util.Optional;
 
 /**
  * Created by Frani on 17/04/2019.
