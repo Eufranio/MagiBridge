@@ -50,29 +50,20 @@ public class Webhooking {
                 .submit(MagiBridge.getInstance());
     }
 
-    public static void sendWebhook(String channel_id, WebhookContent webhook) {
-        Task.builder()
-                .async()
-                .execute(() -> sendWebhook(getWebhook(channel_id), webhook))
-                .submit(MagiBridge.getInstance());
-    }
-
     public static void sendWebhook(Webhook webhook, WebhookContent content) {
         JSONObject json = new JSONObject();
         json.put("content", content.message);
         json.put("username", content.name.replaceAll("&([0-9a-fA-FlLkKrR])", ""));
         json.put("avatar_url", content.avatarUrl);
-        Task.builder().execute(() -> {
-            try {
-                Unirest.post(webhook.getUrl())
-                        .header("Content-Type", "application/json")
-                        .body(json)
-                        .asJson();
-            } catch (Exception e) {
-                MagiBridge.getLogger().error("Error delivering Webhook request: ");
-                e.printStackTrace();
-            }
-        }).submit(MagiBridge.getInstance());
+        try {
+            Unirest.post(webhook.getUrl())
+                    .header("Content-Type", "application/json")
+                    .body(json)
+                    .asJson();
+        } catch (Exception e) {
+            MagiBridge.getLogger().error("Error delivering Webhook request: ");
+            e.printStackTrace();
+        }
     }
 
     private static Webhook getWebhook(String channelID) {

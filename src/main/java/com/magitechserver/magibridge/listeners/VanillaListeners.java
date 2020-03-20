@@ -190,6 +190,7 @@ public class VanillaListeners {
                 .useWebhook(false)
                 .format(FormatType.QUIT_MESSAGE)
                 .send();
+
     }
 
 }
