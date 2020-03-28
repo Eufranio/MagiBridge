@@ -2,14 +2,15 @@ package com.magitechserver.magibridge.util;
 
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.FormatType;
-import com.magitechserver.magibridge.discord.DiscordHandler;
 import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.spongepowered.api.scheduler.Task;
 
-import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ConsoleHandler extends AbstractAppender {
 
-    private LinkedList<String> messagesQueue = new LinkedList<>();
+    private MessageBuilder messageBuilder = new MessageBuilder();
 
     public ConsoleHandler() {
         super("MagiBridgeConsoleWatcher", null, null);
@@ -49,43 +50,22 @@ public class ConsoleHandler extends AbstractAppender {
         if (msg == null)
             return;
 
-        messagesQueue.add(msg);
-        /*if (this.stopping) {
-            this.sendMessages();
-        }*/
+        messageBuilder.append(msg).append('\n');
     }
 
     public void sendMessages() {
-        if (messagesQueue.isEmpty())
+        if (messageBuilder.isEmpty())
             return;
-        StringBuilder buffer = new StringBuilder();
-        int currentMessageSize = 0;
-        while (!messagesQueue.isEmpty()) {
-            if (currentMessageSize >= 2000)
-                break;
-            String message = messagesQueue.poll();
-            if (message == null)
-                break;
-            int finalCount = currentMessageSize + message.length();
-            if (finalCount > 1999) {
-                //split the message in 2
-                int cutIndex = 1999 - currentMessageSize;
-                if (cutIndex == 0) {
-                    messagesQueue.add(0, message);
-                } else {
-                    messagesQueue.add(0, message.substring(cutIndex));
-                    messagesQueue.add(0, message.substring(0, cutIndex));
-                }
-                continue;
-            }
-            currentMessageSize += message.length() + 1; // 1 for \n
 
-            buffer.append(message).append("\n");
-        }
-        if (currentMessageSize == 0)
+        JDA jda = MagiBridge.jda;
+        if (jda == null || jda.getStatus() != JDA.Status.CONNECTED)
             return;
-        String m = buffer.toString();
-        DiscordHandler.sendMessageToChannel(MagiBridge.getConfig().CHANNELS.CONSOLE_CHANNEL, m);
+        TextChannel textChannel = MagiBridge.getInstance().getJDA().getTextChannelById(MagiBridge.getConfig().CHANNELS.CONSOLE_CHANNEL);
+        if (textChannel == null) return;
+        try {
+            messageBuilder.buildAll().forEach(m -> textChannel.sendMessage(m).queue());
+            messageBuilder = new MessageBuilder();
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }
 
