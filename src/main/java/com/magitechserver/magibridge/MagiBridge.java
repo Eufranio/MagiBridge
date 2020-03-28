@@ -40,6 +40,7 @@ import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * Created by Frani on 22/06/2017.
@@ -116,10 +117,6 @@ public class MagiBridge {
                 Task.builder().execute(() -> {
                     this.registerListeners();
 
-                    if (!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
-                        jda.getPresence().setActivity(Activity.playing(Config.MESSAGES.BOT_GAME_STATUS));
-                    }
-
                     if (!fake) {
                         DiscordHandler.init();
 
@@ -146,15 +143,21 @@ public class MagiBridge {
                                         return;
                                     }
 
-                                    String topic = FormatType.TOPIC_FORMAT.get()
-                                            .replace("%players%", "" + Sponge.getServer().getOnlinePlayers().stream().filter(p -> !p.get(Keys.VANISH).orElse(false)).count())
+                                    Function<String, String> replace = s ->
+                                            s.replace("%players%", "" + Sponge.getServer().getOnlinePlayers().stream().filter(p -> !p.get(Keys.VANISH).orElse(false)).count())
                                             .replace("%maxplayers%", Integer.valueOf(Sponge.getServer().getMaxPlayers()).toString())
                                             .replace("%tps%", Long.valueOf(Math.round(Sponge.getServer().getTicksPerSecond())).toString())
                                             .replace("%daysonline%", Long.valueOf(ManagementFactory.getRuntimeMXBean().getUptime() / (24 * 60 * 60 * 1000)).toString())
                                             .replace("%hoursonline%", Long.valueOf((ManagementFactory.getRuntimeMXBean().getUptime() / (60 * 60 * 1000)) % 24).toString())
                                             .replace("%minutesonline%", Long.valueOf((ManagementFactory.getRuntimeMXBean().getUptime() / (60 * 1000)) % 60).toString());
 
+                                    String topic = replace.apply(FormatType.TOPIC_FORMAT.get());
+
                                     channel.getManager().setTopic(topic).queue();
+
+                                    if (!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
+                                        jda.getPresence().setActivity(Activity.playing(replace.apply(Config.MESSAGES.BOT_GAME_STATUS)));
+                                    }
                                 })
                                 .submit(this);
                     }
