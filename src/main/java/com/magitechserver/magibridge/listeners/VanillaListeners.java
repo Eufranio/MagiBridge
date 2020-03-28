@@ -34,6 +34,7 @@ public class VanillaListeners {
     public void onAdvancement(AdvancementEvent.Grant event, @Getter("getTargetEntity") Player p) {
         if (!p.hasPermission("magibridge.chat")) return;
         if (!MagiBridge.getConfig().CORE.ADVANCEMENT_MESSAGES_ENABLED) return;
+        if (event.getAdvancement().getName().startsWith("recipes")) return;
 
         DiscordMessageBuilder.forChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL)
                 .placeholder("player", p.getName())
