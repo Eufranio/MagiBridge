@@ -156,7 +156,13 @@ public class MagiBridge {
                                     channel.getManager().setTopic(topic).queue();
 
                                     if (!Config.MESSAGES.BOT_GAME_STATUS.isEmpty()) {
-                                        jda.getPresence().setActivity(Activity.playing(replace.apply(Config.MESSAGES.BOT_GAME_STATUS)));
+                                        String msg = replace.apply(Config.MESSAGES.BOT_GAME_STATUS);
+
+                                        Activity activity = jda.getPresence().getActivity();
+                                        if (activity != null && activity.getName().equals(msg))
+                                            return;
+
+                                        jda.getPresence().setActivity(Activity.playing(msg));
                                     }
                                 })
                                 .submit(this);

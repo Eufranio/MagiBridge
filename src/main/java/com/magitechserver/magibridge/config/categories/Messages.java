@@ -20,7 +20,7 @@ public class Messages {
     public String CONSOLE_NO_PERMISSION = "**You don't have permission to use this command!**";
     @Setting(value = "server-to-discord-format", comment = "Format of messages sent FROM the server TO discord")
     public String SERVER_TO_DISCORD_FORMAT = "**%player%**: %message%";
-    @Setting(value = "server-to-discord-format", comment = "Format of console messages sent FROM the server TO discord")
+    @Setting(value = "server-to-discord-console-format", comment = "Format of console messages sent FROM the server TO discord")
     public String SERVER_CONSOLE_TO_DISCORD_FORMAT = "[%threadname%/%loglevel%] [%loggername%] %message%";
     @Setting(value = "server-to-discord-staff-format", comment = "Format of messages sent FROM the server staff channel TO the discord staff channel\n" +
             "Used only when Nucleus is running and enabled")
@@ -55,7 +55,7 @@ public class Messages {
     @Setting(value = "webhook-picture-url", comment = "URL that webhooks should get the skin picture from\n" +
             "Note: the link SHOULD return a valid .png picture from the request!\n" +
             "Supports %player%")
-    public String WEBHOOK_PICTURE_URL = "https://crafatar.com/avatars/%uuid%?default=MHF_Alex";
+    public String WEBHOOK_PICTURE_URL = "https://minotar.net/helm/%uuid%/100";
     @Setting(value = "no-role-placeholder", comment = "Text that will be used in %toprole% when the user don't have any roles (besides @everyone)\n" +
             "Use only if you need. If you don't, leave this option as \"\"")
     public String NO_ROLE_PLACEHOLDER = "";
