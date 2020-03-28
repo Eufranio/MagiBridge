@@ -3,6 +3,7 @@ package com.magitechserver.magibridge.discord;
 import com.google.common.collect.Maps;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.chat.MessageBuilder;
+import com.magitechserver.magibridge.chat.ServerMessageBuilder;
 import com.magitechserver.magibridge.config.FormatType;
 import com.magitechserver.magibridge.events.DiscordMessageEvent;
 import com.magitechserver.magibridge.util.Utils;
@@ -89,8 +90,7 @@ public class DiscordMessageBuilder implements MessageBuilder {
             return null;
 
         String message = this.formatType.format(this.placeholders)
-                .replaceAll("&([0-9a-fA-FlLkKrR])", "")
-                .replaceAll("§([0-9a-fA-FlLkKrR])", "");
+                .replaceAll(ServerMessageBuilder.STRIP_COLOR_PATTERN.pattern(), "");
         if (this.useWebhook && MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS) {
             message = Utils.replaceEach(placeholders.get("%message%"), this.placeholders);
         } // the whole message should be the exact player message if we're gonna send this via webhooks
