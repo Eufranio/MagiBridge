@@ -89,15 +89,19 @@ public class DiscordMessageBuilder implements MessageBuilder {
         if (Sponge.getEventManager().post(new DiscordMessageEvent(this)))
             return null;
 
+        // replace special chars only on the main message content, allowing formats to use them if needed
+        placeholders.computeIfPresent("%message%", (placeholder, value) -> {
+            for (char ch : bannedCharacters) { // Remove special chars that discord removes anyway, preventing unwanted @everyone and @here
+                value = value.replace(Character.toString(ch), "");
+            }
+            return value;
+        });
+
         String message = this.formatType.format(this.placeholders)
                 .replaceAll(ServerMessageBuilder.STRIP_COLOR_PATTERN.pattern(), "");
         if (this.useWebhook && MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS) {
             message = Utils.replaceEach(placeholders.get("%message%"), this.placeholders);
         } // the whole message should be the exact player message if we're gonna send this via webhooks
-
-        for(char ch : bannedCharacters) { // Remove special chars that discord removes anyway, preventing unwanted @everyone and @here
-            message = message.replace(Character.toString(ch), "");
-        }
 
         // replace message emotes with the ones from the guild, if they exist
         Guild guild = textChannel.getGuild();
