@@ -16,6 +16,11 @@ import java.util.Map;
  */
 public class UChatListeners {
 
+    MagiBridge plugin;
+    public UChatListeners(MagiBridge plugin) {
+        this.plugin = plugin;
+    }
+
     @Listener
     public void onMessage(SendChannelMessageEvent e) {
         if (!e.getSender().hasPermission("magibridge.chat")) return;
@@ -27,7 +32,7 @@ public class UChatListeners {
 
         Player p = e.getSender() instanceof Player ? (Player) e.getSender() : null;
         if (p != null &&
-                MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT &&
+                plugin.getConfig().CORE.HIDE_VANISHED_CHAT &&
                 p.get(Keys.VANISH).orElse(false))
             return;
 
@@ -45,7 +50,7 @@ public class UChatListeners {
     }
 
     private String getKey(String value) {
-        for (Map.Entry<String, String> values : MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_CHANNELS.entrySet()) {
+        for (Map.Entry<String, String> values : plugin.getConfig().CHANNELS.UCHAT.UCHAT_CHANNELS.entrySet()) {
             if (value.equals(values.getValue().toLowerCase())) {
                 return values.getKey();
             }

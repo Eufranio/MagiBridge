@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Frani on 15/07/2017.
  */
-public class Webhooking {
+public class WebhookManager {
 
     public static void sendWebhookMessage(String hook, String player, String message, String channelID) {
 
@@ -30,7 +30,7 @@ public class Webhooking {
 
         if (!usersMentioned.isEmpty()) {
             for (String user : usersMentioned) {
-                List<User> users = MagiBridge.jda.getUsersByName(user, true);
+                List<User> users = MagiBridge.getInstance().getJDA().getUsersByName(user, true);
                 if (!users.isEmpty()) {
                     content = content.replaceAll("@" + user, "<@" + users.get(0).getId() + ">");
                 }
@@ -38,7 +38,7 @@ public class Webhooking {
         }
 
         Player p = Sponge.getServer().getPlayer(player).get();
-        String format = MagiBridge.getConfig().MESSAGES.WEBHOOK_PICTURE_URL.replace("%player%", player).replace("%uuid%", p.getUniqueId().toString());
+        String format = MagiBridge.getInstance().getConfig().MESSAGES.WEBHOOK_PICTURE_URL.replace("%player%", player).replace("%uuid%", p.getUniqueId().toString());
         final String c = content;
         Task.builder()
                 .async()
@@ -67,7 +67,7 @@ public class Webhooking {
     }
 
     private static Webhook getWebhook(String channelID) {
-        TextChannel channel = MagiBridge.jda.getTextChannelById(channelID);
+        TextChannel channel = MagiBridge.getInstance().getJDA().getTextChannelById(channelID);
         if (!channel.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
             MagiBridge.getLogger().error("The bot does not have the MANAGE WEBHOOKS permission, so it can't create webhooks!");
             MagiBridge.getLogger().error("Please give it or disable the use-webhooks feature!");

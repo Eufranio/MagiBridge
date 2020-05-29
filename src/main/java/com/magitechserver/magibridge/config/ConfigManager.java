@@ -49,7 +49,7 @@ public class ConfigManager {
                 file.createNewFile();
             }
             ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(file).build();
-            CommentedConfigurationNode config = loader.load(ConfigurationOptions.defaults().setObjectMapperFactory(instance.factory).setShouldCopyDefaults(true).setHeader(HEADER));
+            CommentedConfigurationNode config = loader.load(ConfigurationOptions.defaults().setShouldCopyDefaults(true).setHeader(HEADER));
             root = config.getValue(TypeToken.of(ConfigCategory.class), new ConfigCategory());
             loader.save(config);
             return root;

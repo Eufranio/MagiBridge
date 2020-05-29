@@ -3,6 +3,7 @@ package com.magitechserver.magibridge.discord;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.chat.ServerMessageBuilder;
 import com.magitechserver.magibridge.config.FormatType;
+import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import com.magitechserver.magibridge.util.Utils;
 import com.vdurmont.emoji.EmojiParser;
 import net.dv8tion.jda.api.entities.Member;
@@ -32,7 +33,8 @@ public class MessageListener extends ListenerAdapter {
         String messageStripped = e.getMessage().getContentStripped();
         if (messageStripped.isEmpty()) return;
 
-        if (MagiBridge.getConfig().CORE.CUT_MESSAGES) {
+        ConfigCategory config = MagiBridge.getInstance().getConfig();
+        if (config.CORE.CUT_MESSAGES) {
             if (messageStripped.length() > 120) {
                 messageStripped = messageStripped.substring(0, 120);
             }
@@ -44,7 +46,7 @@ public class MessageListener extends ListenerAdapter {
             messageStripped = messageStripped.substring(0, messageStripped.length() - 1).substring(1);
         }
 
-        String message = Utils.replaceEach(EmojiParser.parseToAliases(messageStripped), MagiBridge.getConfig().REPLACER.REPLACER);
+        String message = Utils.replaceEach(EmojiParser.parseToAliases(messageStripped), config.REPLACER.REPLACER);
 
         if (e.getMessage().getAttachments().isEmpty() && message.trim().isEmpty())
             return;
@@ -55,13 +57,13 @@ public class MessageListener extends ListenerAdapter {
             return;
 
         // Handle console command
-        if (MagiBridge.getConfig().CHANNELS.CONSOLE_CHANNEL.equals(channel) || message.startsWith(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND)) {
+        if (config.CHANNELS.CONSOLE_CHANNEL.equals(channel) || message.startsWith(config.CHANNELS.CONSOLE_COMMAND)) {
             Utils.dispatchCommand(e);
             return;
         }
 
         // Handle player list command
-        if (message.equalsIgnoreCase(MagiBridge.getConfig().CHANNELS.LIST_COMMAND)) {
+        if (message.equalsIgnoreCase(config.CHANNELS.LIST_COMMAND)) {
             Utils.dispatchList(e.getChannel());
             return;
         }
@@ -70,17 +72,17 @@ public class MessageListener extends ListenerAdapter {
         boolean isMember = member != null;
 
         // check if the allowed role is everyone or if the sender has the role
-        String colorAllowedRole = MagiBridge.getConfig().CHANNELS.COLOR_REQUIRED_ROLE;
+        String colorAllowedRole = config.CHANNELS.COLOR_REQUIRED_ROLE;
         boolean canUseColors = colorAllowedRole.equalsIgnoreCase("everyone") ||
                 (isMember && member.getRoles().stream()
                         .anyMatch(r -> r.getName().equalsIgnoreCase(colorAllowedRole)));
 
         String name = isMember ? member.getEffectiveName() : "Unknown";
 
-        String noRolePlaceholder = MagiBridge.getConfig().MESSAGES.NO_ROLE_PLACEHOLDER;
+        String noRolePlaceholder = config.MESSAGES.NO_ROLE_PLACEHOLDER;
         String toprole = isMember ? (!member.getRoles().isEmpty() ? member.getRoles().get(0).getName() : noRolePlaceholder) : noRolePlaceholder;
 
-        Map<String, String> colors = MagiBridge.getConfig().COLORS.COLORS;
+        Map<String, String> colors = config.COLORS.COLORS;
         String toprolecolor = colors.getOrDefault("99AAB5", "&f");
 
         if (isMember && !member.getRoles().isEmpty()) {
@@ -104,18 +106,15 @@ public class MessageListener extends ListenerAdapter {
                 .format(FormatType.DISCORD_TO_SERVER_FORMAT);
 
         // Hooks active
-        if (MagiBridge.getConfig().CHANNELS.USE_NUCLEUS) {
-            builder.staff(channel.equals(MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL))
-                    .send();
-        } else if (MagiBridge.getConfig().CHANNELS.USE_UCHAT) {
-            String chatChannel = MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_CHANNELS.get(channel);
+        if (config.CHANNELS.USE_NUCLEUS) {
+            builder.staff(channel.equals(config.CHANNELS.NUCLEUS.STAFF_CHANNEL)).send();
+        } else if (config.CHANNELS.USE_UCHAT) {
+            String chatChannel = config.CHANNELS.UCHAT.UCHAT_CHANNELS.get(channel);
             if (chatChannel != null) {
-                builder.channel(chatChannel)
-                        .send();
+                builder.channel(chatChannel).send();
             }
         } else {
-            builder.staff(channel.equals(MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL))
-                    .send();
+            builder.staff(channel.equals(config.CHANNELS.NUCLEUS.STAFF_CHANNEL)).send();
         }
     }
 }

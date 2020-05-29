@@ -18,11 +18,13 @@ import java.util.concurrent.TimeUnit;
  */
 public class ConsoleHandler extends AbstractAppender {
 
-    private MessageBuilder messageBuilder = new MessageBuilder();
+    MessageBuilder messageBuilder = new MessageBuilder();
+    MagiBridge plugin;
 
-    public ConsoleHandler() {
+    public ConsoleHandler(MagiBridge plugin) {
         super("MagiBridgeConsoleWatcher", null, null);
 
+        this.plugin = plugin;
         Task.builder().interval(2, TimeUnit.SECONDS)
                 .execute(this::sendMessages)
                 .submit(MagiBridge.getInstance());
@@ -35,9 +37,9 @@ public class ConsoleHandler extends AbstractAppender {
         }
 
         FormatType format = FormatType.SERVER_CONSOLE_TO_DISCORD_FORMAT;
-        if (MagiBridge.getConfig() == null)
+        if (plugin.getConfig() == null)
             return;
-        String channel = MagiBridge.getConfig().CHANNELS.CONSOLE_CHANNEL;
+        String channel = plugin.getConfig().CHANNELS.CONSOLE_CHANNEL;
 
         String msg = DiscordMessageBuilder.forChannel(channel)
                 .placeholder("threadname", event.getThreadName())
@@ -57,11 +59,13 @@ public class ConsoleHandler extends AbstractAppender {
         if (messageBuilder.isEmpty())
             return;
 
-        JDA jda = MagiBridge.jda;
+        JDA jda = plugin.getJDA();
         if (jda == null || jda.getStatus() != JDA.Status.CONNECTED)
             return;
-        TextChannel textChannel = MagiBridge.getInstance().getJDA().getTextChannelById(MagiBridge.getConfig().CHANNELS.CONSOLE_CHANNEL);
-        if (textChannel == null) return;
+
+        TextChannel textChannel = jda.getTextChannelById(plugin.getConfig().CHANNELS.CONSOLE_CHANNEL);
+        if (textChannel == null)
+            return;
         try {
             messageBuilder.buildAll().forEach(m -> textChannel.sendMessage(m).queue());
             messageBuilder = new MessageBuilder();

@@ -28,6 +28,7 @@ public class DiscordMessageBuilder implements MessageBuilder {
     private boolean allowMentions = true;
     private boolean allowEveryone = false;
     private boolean allowHere = false;
+    private boolean queue = true;
     private int deleteTime = -1;
     private Map<String, String> placeholders = Maps.newHashMap();
     private char[] bannedCharacters = {(char) 0x202E, (char) 0x202D, (char) 0x202A, (char) 0x202B, (char) 0x202C};
@@ -70,6 +71,11 @@ public class DiscordMessageBuilder implements MessageBuilder {
         return this;
     }
 
+    public DiscordMessageBuilder queue(boolean queue) {
+        this.queue = queue;
+        return this;
+    }
+
     @Override
     public Type getType() {
         return Type.SERVER_TO_DISCORD;
@@ -82,7 +88,7 @@ public class DiscordMessageBuilder implements MessageBuilder {
         TextChannel textChannel = jda.getTextChannelById(this.channel.replace("#", ""));
         if (textChannel == null) {
             MagiBridge.getLogger().error("The channel " + channel + " defined in the config isn't a valid Discord Channel ID!");
-            MagiBridge.getLogger().error("Replace it with a valid one then reload the plugin!");
+            MagiBridge.getLogger().error("Replace it with a valid one and then reload the plugin!");
             return null;
         }
 
@@ -99,7 +105,7 @@ public class DiscordMessageBuilder implements MessageBuilder {
 
         String message = this.formatType.format(this.placeholders)
                 .replaceAll(ServerMessageBuilder.STRIP_COLOR_PATTERN.pattern(), "");
-        if (this.useWebhook && MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS) {
+        if (this.useWebhook && MagiBridge.getInstance().getConfig().CHANNELS.USE_WEBHOOKS) {
             message = Utils.replaceEach(placeholders.get("%message%"), this.placeholders);
         } // the whole message should be the exact player message if we're gonna send this via webhooks
 
@@ -155,15 +161,21 @@ public class DiscordMessageBuilder implements MessageBuilder {
                 .getTextChannelById(this.channel.replace("#", ""));
 
         if (this.deleteTime != -1) {
-            textChannel.sendMessage(message).queue(m -> m.delete().queueAfter(this.deleteTime, TimeUnit.SECONDS));
-        } else if (this.useWebhook && MagiBridge.getConfig().CHANNELS.USE_WEBHOOKS) {
-            Webhooking.sendWebhookMessage(
+            if (this.queue)
+                textChannel.sendMessage(message).queue(m -> m.delete().queueAfter(this.deleteTime, TimeUnit.SECONDS));
+            else
+                textChannel.sendMessage(message).complete().delete().queueAfter(this.deleteTime, TimeUnit.SECONDS);
+        } else if (this.useWebhook && MagiBridge.getInstance().getConfig().CHANNELS.USE_WEBHOOKS) {
+            WebhookManager.sendWebhookMessage(
                     FormatType.WEBHOOK_NAME.format(this.placeholders),
                     placeholders.get("%player%"),
                     message,
                     channel);
         } else {
-            textChannel.sendMessage(message).queue();
+            if (this.queue)
+                textChannel.sendMessage(message).queue();
+            else
+                textChannel.sendMessage(message).complete();
         }
     }
 

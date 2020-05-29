@@ -2,7 +2,7 @@ package com.magitechserver.magibridge.util;
 
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.categories.Channel;
-import com.magitechserver.magibridge.discord.DiscordHandler;
+import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -55,14 +55,15 @@ public class Utils {
     }
 
     public static void dispatchCommand(MessageReceivedEvent e) {
-        boolean consoleMessage = e.getMessage().getContentDisplay().startsWith(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND);
+        ConfigCategory config = MagiBridge.getInstance().getConfig();
+
+        boolean consoleMessage = e.getMessage().getContentDisplay().startsWith(config.CHANNELS.CONSOLE_COMMAND);
         String[] args = e.getMessage().getContentDisplay()
-                .replace(MagiBridge.getConfig().CHANNELS.CONSOLE_COMMAND + " ", "")
+                .replace(config.CHANNELS.CONSOLE_COMMAND + " ", "")
                 .split(" ");
 
         if (!canUseCommand(e.getMember(), args[0])) {
-            e.getChannel().sendMessage(MagiBridge.getConfig().MESSAGES.CONSOLE_NO_PERMISSION);
-            DiscordHandler.sendMessageToChannel(e.getChannel().getId(), MagiBridge.getConfig().MESSAGES.CONSOLE_NO_PERMISSION);
+            e.getChannel().sendMessage(config.MESSAGES.CONSOLE_NO_PERMISSION).queue();
             return;
         }
 
@@ -74,16 +75,17 @@ public class Utils {
     }
 
     public static void dispatchList(MessageChannel channel) {
-        boolean shouldDelete = MagiBridge.getConfig().CHANNELS.DELETE_LIST;
+        ConfigCategory config = MagiBridge.getInstance().getConfig();
+        boolean shouldDelete = config.CHANNELS.DELETE_LIST;
 
         List<Player> onlinePlayers = Sponge.getServer().getOnlinePlayers().stream()
                 .filter(p -> !p.get(Keys.VANISH).orElse(false))
                 .sorted(Comparator.comparing(Player::getName))
                 .collect(Collectors.toList());
 
-        String message = MagiBridge.getConfig().MESSAGES.NO_PLAYERS;
+        String message = config.MESSAGES.NO_PLAYERS;
         if (!onlinePlayers.isEmpty()) {
-            String format = MagiBridge.getConfig().MESSAGES.PLAYER_LIST_NAME;
+            String format = config.MESSAGES.PLAYER_LIST_NAME;
             String players = onlinePlayers.stream()
                     .map(p -> format.replace("%player%", p.getName())
                             .replace("%topgroup%", Utils.getHighestGroup(p))
@@ -102,14 +104,15 @@ public class Utils {
     }
 
     private static boolean canUseCommand(Member m, String command) {
-        Map<String, String> override = MagiBridge.getConfig().CHANNELS.COMMANDS_ROLE_OVERRIDE;
+        ConfigCategory config = MagiBridge.getInstance().getConfig();
+        Map<String, String> override = config.CHANNELS.COMMANDS_ROLE_OVERRIDE;
         if (override.getOrDefault(command, "")
                 .equalsIgnoreCase("everyone")) {
             return true;
         }
 
         if (m.getRoles().stream()
-                .anyMatch(r -> r.getName().equalsIgnoreCase(MagiBridge.getConfig().CHANNELS.CONSOLE_REQUIRED_ROLE))) {
+                .anyMatch(r -> r.getName().equalsIgnoreCase(config.CHANNELS.CONSOLE_REQUIRED_ROLE))) {
             return true;
         }
 
@@ -129,7 +132,7 @@ public class Utils {
     }
 
     public static void turnAllConfigChannelsNumeric() {
-        Channel channels = MagiBridge.getConfig().CHANNELS;
+        Channel channels = MagiBridge.getInstance().getConfig().CHANNELS;
         channels.MAIN_CHANNEL = replaceIfNotNumeric(channels.MAIN_CHANNEL);
 
         Channel.UChatCategory uchat = channels.UCHAT;

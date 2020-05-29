@@ -5,6 +5,7 @@ import br.net.fabiozumbi12.UltimateChat.Sponge.UChat;
 import com.google.common.collect.Maps;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.FormatType;
+import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import com.magitechserver.magibridge.config.categories.Messages;
 import com.magitechserver.magibridge.events.DiscordMessageEvent;
 import com.magitechserver.magibridge.util.Utils;
@@ -84,11 +85,12 @@ public class ServerMessageBuilder implements MessageBuilder {
         }
 
         boolean isUchat = this.channel != null;
+        ConfigCategory config = MagiBridge.getInstance().getConfig();
 
         Text prefix = Text.of();
         // Prefix enabled
-        if (MagiBridge.getConfig().MESSAGES.PREFIX.ENABLED) {
-            Messages.PrefixCategory category = MagiBridge.getConfig().MESSAGES.PREFIX;
+        if (config.MESSAGES.PREFIX.ENABLED) {
+            Messages.PrefixCategory category = config.MESSAGES.PREFIX;
             try {
                 prefix = Utils.toText(category.TEXT)
                         .toBuilder()
@@ -117,15 +119,15 @@ public class ServerMessageBuilder implements MessageBuilder {
             } catch (MalformedURLException exception) {}
 
             attachment = Text.builder()
-                    .append(Utils.toText(MagiBridge.getConfig().MESSAGES.ATTACHMENT_NAME))
+                    .append(Utils.toText(config.MESSAGES.ATTACHMENT_NAME))
                     .onHover(TextActions.showText(hover.build()))
                     .onClick(url != null ? TextActions.openUrl(url) : null)
                     .build();
         }
 
         // implementation specific sending code
-        if (isUchat && MagiBridge.getConfig().CHANNELS.USE_UCHAT && Sponge.getPluginManager().isLoaded("ultimatechat")) {
-            String rawFormat = MagiBridge.getConfig().CHANNELS.UCHAT.UCHAT_OVERRIDES.getOrDefault(channel, this.format.get());
+        if (isUchat && config.CHANNELS.USE_UCHAT && Sponge.getPluginManager().isLoaded("ultimatechat")) {
+            String rawFormat = config.CHANNELS.UCHAT.UCHAT_OVERRIDES.getOrDefault(channel, this.format.get());
 
             UCChannel chatChannel = UChat.get().getAPI().getChannels().stream()
                     .filter(c -> c.getName().equalsIgnoreCase(channel))
@@ -137,10 +139,10 @@ public class ServerMessageBuilder implements MessageBuilder {
 
             Text text = Text.of(prefix, Utils.toText(Utils.replaceEach(rawFormat, this.placeholders)), attachment);
             chatChannel.sendMessage(Sponge.getServer().getConsole(), text, true);
-        } else if (MagiBridge.getConfig().CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().isLoaded("nucleus")) {
+        } else if (config.CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().isLoaded("nucleus")) {
             MessageChannel messageChannel;
             if (!this.staff) {
-                if (Sponge.getPluginManager().getPlugin("boop").isPresent() && MagiBridge.getConfig().CORE.USE_BOOP) {
+                if (Sponge.getPluginManager().getPlugin("boop").isPresent() && config.CORE.USE_BOOP) {
                     messageChannel = new BoopableChannel(MessageChannel.TO_ALL);
                 } else {
                     messageChannel = MessageChannel.TO_ALL;

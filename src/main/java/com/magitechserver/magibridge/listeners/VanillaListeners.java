@@ -30,13 +30,18 @@ import org.spongepowered.api.text.channel.type.FixedMessageChannel;
  */
 public class VanillaListeners {
 
+    MagiBridge plugin;
+    public VanillaListeners(MagiBridge plugin) {
+        this.plugin = plugin;
+    }
+
     @Listener
     public void onAdvancement(AdvancementEvent.Grant event, @Getter("getTargetEntity") Player p) {
         if (!p.hasPermission("magibridge.chat")) return;
-        if (!MagiBridge.getConfig().CORE.ADVANCEMENT_MESSAGES_ENABLED) return;
+        if (!plugin.getConfig().CORE.ADVANCEMENT_MESSAGES_ENABLED) return;
         if (event.getAdvancement().getName().startsWith("recipes")) return;
 
-        DiscordMessageBuilder.forChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL)
+        DiscordMessageBuilder.forChannel(plugin.getConfig().CHANNELS.MAIN_CHANNEL)
                 .placeholder("player", p.getName())
                 .placeholder("nick", Utils.getNick(p))
                 .placeholder("advancement", event.getAdvancement().getName())
@@ -49,13 +54,13 @@ public class VanillaListeners {
 
     @Listener
     public void onDeath(DestructEntityEvent.Death event) {
-        if (event.getTargetEntity() instanceof Player && MagiBridge.getConfig().CORE.DEATH_MESSAGES_ENABLED) {
+        if (event.getTargetEntity() instanceof Player && plugin.getConfig().CORE.DEATH_MESSAGES_ENABLED) {
             if (event.getMessage().toPlain().isEmpty()) return;
 
             Player p = (Player) event.getTargetEntity();
             if (!p.hasPermission("magibridge.chat")) return;
 
-            DiscordMessageBuilder.forChannel(MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL)
+            DiscordMessageBuilder.forChannel(plugin.getConfig().CHANNELS.MAIN_CHANNEL)
                     .placeholder("player", p.getName())
                     .placeholder("nick", Utils.getNick(p))
                     .placeholder("deathmessage", event.getMessage().toPlain())
@@ -69,13 +74,13 @@ public class VanillaListeners {
 
     @Listener(order = Order.LAST)
     public void onSpongeMessage(MessageChannelEvent.Chat e, @Root Player p) {
-        if (!MagiBridge.useVanillaChat) return;
+        if (!plugin.enableVanillaChat()) return;
         if (!p.hasPermission("magibridge.chat")) return;
         if (!Sponge.getServer().getOnlinePlayers().contains(p) || e.isMessageCancelled()) return;
-        if (MagiBridge.getConfig().CORE.HIDE_VANISHED_CHAT && p.get(Keys.VANISH).orElse(false)) return;
+        if (plugin.getConfig().CORE.HIDE_VANISHED_CHAT && p.get(Keys.VANISH).orElse(false)) return;
 
         FormatType format = FormatType.SERVER_TO_DISCORD_FORMAT;
-        String channel = MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL;
+        String channel = plugin.getConfig().CHANNELS.MAIN_CHANNEL;
 
         if (e.getChannel().isPresent()) {
             MessageChannel messageChannel = e.getChannel().get();
@@ -100,7 +105,7 @@ public class VanillaListeners {
             }
         }
 
-        if (MagiBridge.getConfig().CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().isLoaded("nucleus") && e.getChannel().isPresent()) {
+        if (plugin.getConfig().CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().isLoaded("nucleus") && e.getChannel().isPresent()) {
             MessageChannel messageChannel = e.getChannel().get();
 
             if (!NucleusAPI.getStaffChatService().isPresent()) {
@@ -116,8 +121,8 @@ public class VanillaListeners {
             }
 
             channel = isStaffMessage ?
-                    MagiBridge.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL :
-                    MagiBridge.getConfig().CHANNELS.NUCLEUS.GLOBAL_CHANNEL;
+                    plugin.getConfig().CHANNELS.NUCLEUS.STAFF_CHANNEL :
+                    plugin.getConfig().CHANNELS.NUCLEUS.GLOBAL_CHANNEL;
             if (channel.isEmpty()) return;
 
             /*if (!ignoreRoot && !(e.getSource() instanceof Player)) {
@@ -147,7 +152,7 @@ public class VanillaListeners {
     public void onLogin(ClientConnectionEvent.Join event, @Getter("getTargetEntity") Player p) {
         if (!p.hasPermission("magibridge.chat")) return;
 
-        String mainChannel = MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL;
+        String mainChannel = plugin.getConfig().CHANNELS.MAIN_CHANNEL;
         if (!p.hasPlayedBefore()) {
             DiscordMessageBuilder.forChannel(mainChannel)
                     .placeholder("player", p.getName())
@@ -176,7 +181,7 @@ public class VanillaListeners {
     public void onQuit(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player p) {
         if (!p.hasPermission("magibridge.chat")) return;
 
-        String mainChannel = MagiBridge.getConfig().CHANNELS.MAIN_CHANNEL;
+        String mainChannel = plugin.getConfig().CHANNELS.MAIN_CHANNEL;
 
         if (p.hasPermission("magibridge.silentquit")) {
             MagiBridge.getLogger().warn("The player " + p.getName() + " has the magibridge.silentjoin permission, not sending join message!");
