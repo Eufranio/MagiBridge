@@ -201,7 +201,7 @@ public class MagiBridge {
             this.registerListeners();
             if (config.CORE.ENABLE_UPDATER && jda.getStatus() == JDA.Status.CONNECTED) {
                 this.updaterTask = Task.builder()
-                        .interval(Math.max(config.CORE.UPDATER_INTERVAL, 5), TimeUnit.MINUTES)
+                        .interval(Math.max(config.CORE.UPDATER_INTERVAL, 10), TimeUnit.MINUTES)
                         .execute(() -> {
                             TextChannel channel = jda.getTextChannelById(config.CHANNELS.MAIN_CHANNEL);
                             if (channel == null) {
