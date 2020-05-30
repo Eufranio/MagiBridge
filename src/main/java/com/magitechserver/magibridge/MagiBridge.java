@@ -180,11 +180,11 @@ public class MagiBridge {
             try {
                 jda = JDABuilder.create(config.CORE.BOT_TOKEN,
                         GatewayIntent.GUILD_MESSAGES,
-                        GatewayIntent.DIRECT_MESSAGES)
+                        GatewayIntent.DIRECT_MESSAGES,
+                        GatewayIntent.GUILD_EMOJIS)
                 .disableCache(
                         CacheFlag.ACTIVITY,
                         CacheFlag.VOICE_STATE,
-                        CacheFlag.EMOTE,
                         CacheFlag.CLIENT_STATUS)
                 .build()
                 .awaitReady();
