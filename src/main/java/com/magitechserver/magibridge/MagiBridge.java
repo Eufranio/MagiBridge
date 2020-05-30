@@ -45,6 +45,7 @@ import java.lang.management.ManagementFactory;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -76,53 +77,51 @@ public class MagiBridge {
     Task updaterTask;
     ConsoleHandler consoleHandler;
     ConfigCategory config;
+    Executor executor;
     boolean useVanillaChat = false;
 
     @Listener
     public void onStartingServer(GameStartingServerEvent event) {
         instance = this;
+        this.executor = Sponge.getScheduler().createAsyncExecutor(this);
+        this.init().thenRun(() -> {
+            DiscordMessageBuilder.forChannel(config.CHANNELS.MAIN_CHANNEL)
+                    .format(FormatType.SERVER_STARTING)
+                    .useWebhook(false)
+                    .send();
 
-        this.init()
-                .thenRun(() -> {
-                    DiscordMessageBuilder.forChannel(config.CHANNELS.MAIN_CHANNEL)
-                            .format(FormatType.SERVER_STARTING)
-                            .useWebhook(false)
-                            .send();
+            CommandSpec cs = CommandSpec.builder()
+                    .description(Text.of("Broadcasts a message to the specified Discord channel name"))
+                    .permission("magibridge.admin.broadcast")
+                    .arguments(
+                            GenericArguments.string(Text.of("channel")),
+                            GenericArguments.remainingJoinedStrings(Text.of("message"))
+                    )
+                    .executor((src, args) -> {
+                        String channel = args.requireOne("channel");
+                        String message = args.requireOne("message");
 
-                    CommandSpec cs = CommandSpec.builder()
-                            .description(Text.of("Broadcasts a message to the specified Discord channel name"))
-                            .permission("magibridge.admin.broadcast")
-                            .arguments(
-                                    GenericArguments.string(Text.of("channel")),
-                                    GenericArguments.remainingJoinedStrings(Text.of("message"))
-                            )
-                            .executor((src, args) -> {
-                                String channel = args.requireOne("channel");
-                                String message = args.requireOne("message");
+                        List<TextChannel> channels = jda.getTextChannelsByName(channel, true);
+                        if (channels.isEmpty())
+                            throw new CommandException(Text.of("Could not send message! Are you sure a channel with this name exists?"));
 
-                                List<TextChannel> channels = jda.getTextChannelsByName(channel, true);
-                                if (channels.isEmpty())
-                                    throw new CommandException(Text.of("Could not send message! Are you sure a channel with this name exists?"));
+                        channels.forEach(c -> c.sendMessage(message).queue());
+                        src.sendMessage(Text.of(TextColors.GREEN, "Message sent!"));
 
-                                channels.forEach(c -> c.sendMessage(message).queue());
-                                src.sendMessage(Text.of(TextColors.GREEN, "Message sent!"));
+                        return CommandResult.success();
+                    })
+                    .build();
+            Sponge.getCommandManager().register(MagiBridge.getInstance(), cs, "mbroadcast", "mb");
 
-                                return CommandResult.success();
-                            })
-                            .build();
-                    Sponge.getCommandManager().register(MagiBridge.getInstance(), cs, "mbroadcast", "mb");
-
-                    if (config.CORE.ENABLE_CONSOLE_LOGGING && !config.CHANNELS.CONSOLE_CHANNEL.isEmpty()) {
-                        consoleHandler = new ConsoleHandler(this);
-                        consoleHandler.start();
-                        ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addAppender(consoleHandler);
-                    }
-                })
-                .exceptionally(throwable -> {
-                    logger.error("Error loading MagiBridge: ");
-                    throwable.printStackTrace();
-                    return null;
-                });
+            if (config.CORE.ENABLE_CONSOLE_LOGGING && !config.CHANNELS.CONSOLE_CHANNEL.isEmpty()) {
+                consoleHandler = new ConsoleHandler(this);
+                consoleHandler.start();
+                ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addAppender(consoleHandler);
+            }
+        }).exceptionally(throwable -> {
+            logger.error("Error loading MagiBridge: ", throwable.getCause());
+            return null;
+        });
 
         Sponge.getServiceManager().provide(PermissionService.class).ifPresent(svc -> {
             svc.getDefaults().getTransientSubjectData().setPermission(Sets.newHashSet(), "magibridge.chat", Tristate.TRUE);
@@ -162,25 +161,20 @@ public class MagiBridge {
         this.stop().thenCompose(v -> this.init())
                 .thenRun(() -> logger.info("Plugin reloaded successfully!"))
                 .exceptionally(throwable -> {
-                    logger.error("Error reloading MagiBridge: ");
-                    throwable.printStackTrace();
+                    logger.error("Error reloading MagiBridge: ", throwable.getCause());
                     return null;
                 });
     }
 
     CompletableFuture<Void> init() {
         return CompletableFuture.runAsync(() -> {
-            logger.info("MagiBridge is starting!");
             config = new ConfigManager(instance).loadConfig();
-
             // needed because of parsing issues
             Utils.turnAllConfigChannelsNumeric();
 
-            String exception = null;
             try {
                 jda = new JDABuilder(config.CORE.BOT_TOKEN)
                 .setDisabledCacheFlags(EnumSet.of(
-                        CacheFlag.ACTIVITY,
                         CacheFlag.VOICE_STATE,
                         CacheFlag.CLIENT_STATUS)
                 )
@@ -188,14 +182,15 @@ public class MagiBridge {
                 .awaitReady();
                 jda.addEventListener(new MessageListener());
             } catch (LoginException e) {
-                exception = "ERROR STARTING THE PLUGIN: \n" +
-                            "THE TOKEN IN THE CONFIG IS INVALID! \n" +
-                            "You probably didn't set the token yet, edit your config!";
+                String exception =
+                        "ERROR STARTING THE PLUGIN: \n" +
+                        "THE TOKEN IN THE CONFIG IS INVALID! \n" +
+                        "You probably didn't set the token yet, edit your config!";
                 throw new RuntimeException(exception);
             } catch (Exception e) {
                 throw new RuntimeException("Error connecting to discord. This is NOT a plugin error: ", e);
             }
-        }).thenRun(() -> {
+        }, executor).thenRun(() -> {
             this.registerListeners();
             if (config.CORE.ENABLE_UPDATER && jda.getStatus() == JDA.Status.CONNECTED) {
                 this.updaterTask = Task.builder()
@@ -249,6 +244,9 @@ public class MagiBridge {
             }
 
             config = null;
+        }).exceptionally(throwable -> {
+            logger.error("Error stopping MagiBridge: ", throwable.getCause());
+            return null;
         });
     }
 
