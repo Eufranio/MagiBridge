@@ -18,7 +18,7 @@ dependencies {
     shadow 'com.github.Aquerr.EagleFactions:EagleFactions:10d78dac2337514e4fe9f6ecf84c1ff4ca4f2517'
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
-    compile ('net.dv8tion:JDA:4.1.1_155') {
+    compile ('net.dv8tion:JDA:4.1.1_101') {
         exclude module: 'opus-java'
     }
     compile 'com.vdurmont:emoji-java:4.0.0'
@@ -52,6 +52,10 @@ shadowJar {
     }
     baseName = 'MagiBridge-API7'
     classifier = null
+}
+
+compileJava {
+    excludes = ['**/module-info.java', '**/module-info.class']
 }
 
 build.dependsOn shadowJar

@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
@@ -43,6 +42,7 @@ import org.spongepowered.api.util.Tristate;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -178,14 +178,12 @@ public class MagiBridge {
 
             String exception = null;
             try {
-                jda = JDABuilder.create(config.CORE.BOT_TOKEN,
-                        GatewayIntent.GUILD_MESSAGES,
-                        GatewayIntent.DIRECT_MESSAGES,
-                        GatewayIntent.GUILD_EMOJIS)
-                .disableCache(
+                jda = new JDABuilder(config.CORE.BOT_TOKEN)
+                .setDisabledCacheFlags(EnumSet.of(
                         CacheFlag.ACTIVITY,
                         CacheFlag.VOICE_STATE,
                         CacheFlag.CLIENT_STATUS)
+                )
                 .build()
                 .awaitReady();
                 jda.addEventListener(new MessageListener());
