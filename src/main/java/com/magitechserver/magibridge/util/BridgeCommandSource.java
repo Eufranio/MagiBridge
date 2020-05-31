@@ -36,6 +36,7 @@ public class BridgeCommandSource implements CommandSource {
 
         DiscordMessageBuilder.forChannel(channel)
                 .format(FormatType.of(() -> plain))
+                .useWebhook(false)
                 .send();
     }
 
