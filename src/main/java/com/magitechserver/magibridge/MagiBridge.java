@@ -105,7 +105,7 @@ public class MagiBridge {
                         if (channels.isEmpty())
                             throw new CommandException(Text.of("Could not send message! Are you sure a channel with this name exists?"));
 
-                        channels.forEach(c -> c.sendMessage(message).queue());
+                        channels.forEach(c -> c.sendMessage(message.replace("\\" + "n", "\n")).queue());
                         src.sendMessage(Text.of(TextColors.GREEN, "Message sent!"));
 
                         return CommandResult.success();
