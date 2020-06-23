@@ -111,13 +111,16 @@ public class Utils {
             return true;
         }
 
-        if (m.getRoles().stream()
-                .anyMatch(r -> r.getName().equalsIgnoreCase(config.CHANNELS.CONSOLE_REQUIRED_ROLE))) {
+        if (m.getRoles().stream().anyMatch(r ->
+                r.getName().equalsIgnoreCase(config.CHANNELS.CONSOLE_REQUIRED_ROLE) ||
+                r.getId().equals(config.CHANNELS.CONSOLE_REQUIRED_ROLE))) {
             return true;
         }
 
         String r = override.get(command);
-        return r != null && m.getRoles().stream().anyMatch(role -> role.getName().equalsIgnoreCase(r));
+        return r != null && m.getRoles().stream().anyMatch(role ->
+                role.getName().equalsIgnoreCase(r) ||
+                role.getId().equals(r));
     }
 
     public static Text toText(String s) {
