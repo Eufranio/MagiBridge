@@ -147,12 +147,14 @@ public class ServerMessageBuilder implements MessageBuilder {
                 } else {
                     messageChannel = MessageChannel.TO_ALL;
                 }
+                messageChannel.send(Text.of(prefix, Utils.toText(this.format.format(this.placeholders)), attachment));
             } else {
-                messageChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
                 this.format = FormatType.DISCORD_TO_SERVER_STAFF_FORMAT;
+                NucleusAPI.getStaffChatService().get().sendMessageFrom(
+                        Sponge.getServer().getConsole(),
+                        Text.of(prefix, Utils.toText(this.format.format(this.placeholders)), attachment)
+                );
             }
-
-            messageChannel.send(Text.of(prefix, Utils.toText(this.format.format(this.placeholders)), attachment));
         } else {
             MessageChannel messageChannel = Sponge.getPluginManager().getPlugin("boop").isPresent() ?
                     new BoopableChannel(MessageChannel.TO_ALL) :

@@ -4,7 +4,7 @@ import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.FormatType;
 import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
 import com.magitechserver.magibridge.util.Utils;
-import io.github.nucleuspowered.nucleus.api.events.NucleusAFKEvent;
+import io.github.nucleuspowered.nucleus.api.module.afk.event.NucleusAFKEvent;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.command.SendCommandEvent;

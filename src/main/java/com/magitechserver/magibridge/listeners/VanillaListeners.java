@@ -8,7 +8,7 @@ import com.magitechserver.magibridge.util.Utils;
 import io.github.aquerr.eaglefactions.api.messaging.chat.AllianceMessageChannel;
 import io.github.aquerr.eaglefactions.api.messaging.chat.FactionMessageChannel;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
-import io.github.nucleuspowered.nucleus.api.chat.NucleusChatChannel;
+import io.github.nucleuspowered.nucleus.api.module.staffchat.NucleusStaffChatChannel;
 import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
 import nl.riebie.mcclans.channels.ClanMessageChannelImpl;
 import org.spongepowered.api.Sponge;
@@ -115,7 +115,7 @@ public class VanillaListeners {
                 return;
             }
 
-            boolean isStaffMessage = messageChannel instanceof NucleusChatChannel.StaffChat;
+            boolean isStaffMessage = messageChannel instanceof NucleusStaffChatChannel;
             if (!isStaffMessage && messageChannel instanceof FixedMessageChannel) {
                 if (!messageChannel.getMembers().containsAll(Sponge.getServer().getBroadcastChannel().getMembers())) {
                     return; // probably a non-global channel, griefprevention uses this on it's mute sytem
