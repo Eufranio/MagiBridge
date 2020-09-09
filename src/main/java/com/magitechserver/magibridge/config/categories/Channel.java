@@ -12,6 +12,8 @@ import java.util.Map;
 @ConfigSerializable
 public class Channel {
 
+    @Setting(value="ignore-bots", comment = "Should MagiBridge ignore messages by other bots?")
+    public boolean IGNORE_BOTS = true;
     @Setting(value = "use-nucleus", comment = "Should MagiBridge use Nucleus? If this and use-ultimatechat are both false, MagiBridge will use the vanilla chat system")
     public boolean USE_NUCLEUS = true;
     @Setting(value = "use-ultimatechat", comment = "Should MagiBridge use UltimateChat instead? If this and use-nucleus are both false, MagiBridge will use the vanilla chat system")
@@ -41,6 +43,24 @@ public class Channel {
     public String MAIN_CHANNEL = "MAIN_CHANNEL_ID_HERE";
     @Setting(value = "console-discord-channel", comment = "ID of the console Discord Channel, where console messages will be sent to")
     public String CONSOLE_CHANNEL = "CONSOLE_CHANNEL_ID_HERE";
+
+    @Setting(value = "join-messages-channel", comment = "ID of the channel that join/quit messages will be sent to. If blank, main-discord-channel will be used")
+    public String JOIN_MESSAGES_CHANNEL = "";
+
+    @Setting(value = "advancement-messages-channel", comment = "ID of the channel that advancement messages will be sent to. If blank, main-discord-channel will be used")
+    public String ADVANCEMENT_MESSAGES_CHANNEL = "";
+
+    @Setting(value = "death-messages-channel", comment = "ID of the channel that death messages will be sent to. If blank, main-discord-channel will be used")
+    public String DEATH_MESSAGES_CHANNEL = "";
+
+    @Setting(value = "welcome-messages-channel", comment = "ID of the channel that welcome messages (for players who have never joined before) will be sent to. If blank, main-discord-channel will be used")
+    public String WELCOME_MESSAGES_CHANNEL = "";
+
+    @Setting(value = "topic-updater-channel", comment = "ID of the channel that the topic updater should update. If blank, main-discord-channel will be used")
+    public String TOPIC_UPDATER_CHANNEL = "";
+
+    @Setting(value = "start-messages-channel", comment = "ID of the channel that start/stop messages will be sent to. If blank, main-discord-channel will be used")
+    public String START_MESSAGES_CHANNEL = "";
 
     public Channel() {
         COMMANDS_ROLE_OVERRIDE.put("stop", "admin");
@@ -72,6 +92,9 @@ public class Channel {
 
         @Setting(value = "helpop-channel", comment = "Channel that HelpOp messages will be sent to (if enabled)")
         public String HELPOP_CHANNEL = "";
+
+        @Setting(value = "afk-messages-channel", comment = "ID of the channel that AFK messages will be sent to. If blank, main-discord-channel will be used")
+        public String AFK_MESSAGES_CHANNEL = "";
     }
 
 }

@@ -85,7 +85,11 @@ public class MagiBridge {
         instance = this;
         this.executor = Sponge.getScheduler().createAsyncExecutor(this);
         this.init().thenRun(() -> {
-            DiscordMessageBuilder.forChannel(config.CHANNELS.MAIN_CHANNEL)
+            String startChannel = config.CHANNELS.START_MESSAGES_CHANNEL;
+            if (startChannel.isEmpty())
+                startChannel = config.CHANNELS.MAIN_CHANNEL;
+
+            DiscordMessageBuilder.forChannel(startChannel)
                     .format(FormatType.SERVER_STARTING)
                     .useWebhook(false)
                     .send();
@@ -132,7 +136,11 @@ public class MagiBridge {
     @Listener
     public void onStoppingServer(GameStoppingServerEvent event) {
         if (jda != null) {
-            DiscordMessageBuilder.forChannel(config.CHANNELS.MAIN_CHANNEL)
+            String startChannel = config.CHANNELS.START_MESSAGES_CHANNEL;
+            if (startChannel.isEmpty())
+                startChannel = config.CHANNELS.MAIN_CHANNEL;
+
+            DiscordMessageBuilder.forChannel(startChannel)
                     .format(FormatType.SERVER_STOPPING)
                     .useWebhook(false)
                     .send();
@@ -196,7 +204,11 @@ public class MagiBridge {
                 this.updaterTask = Task.builder()
                         .interval(Math.max(config.CORE.UPDATER_INTERVAL, 10), TimeUnit.MINUTES)
                         .execute(() -> {
-                            TextChannel channel = jda.getTextChannelById(config.CHANNELS.MAIN_CHANNEL);
+                            String channelId = config.CHANNELS.TOPIC_UPDATER_CHANNEL;
+                            if (channelId.isEmpty())
+                                channelId = config.CHANNELS.MAIN_CHANNEL;
+
+                            TextChannel channel = jda.getTextChannelById(channelId);
                             if (channel == null) {
                                 logger.error("The main-discord-channel is INVALID, replace it with a valid one and restart the server!");
                                 return;
@@ -289,15 +301,37 @@ public class MagiBridge {
         if (config.CHANNELS.USE_UCHAT)
             channels.addAll(config.CHANNELS.UCHAT.UCHAT_CHANNELS.keySet());
 
+
         if (config.CHANNELS.USE_NUCLEUS) {
             channels.add(config.CHANNELS.NUCLEUS.GLOBAL_CHANNEL);
             channels.add(config.CHANNELS.NUCLEUS.STAFF_CHANNEL);
             if (!config.CHANNELS.NUCLEUS.HELPOP_CHANNEL.isEmpty())
                 channels.add(config.CHANNELS.NUCLEUS.HELPOP_CHANNEL);
+            if (!config.CHANNELS.NUCLEUS.AFK_MESSAGES_CHANNEL.isEmpty())
+                channels.add(config.CHANNELS.NUCLEUS.AFK_MESSAGES_CHANNEL);
         }
 
         if (!config.CHANNELS.MAIN_CHANNEL.isEmpty())
             channels.add(config.CHANNELS.MAIN_CHANNEL);
+
+        if (!config.CHANNELS.JOIN_MESSAGES_CHANNEL.isEmpty())
+            channels.add(config.CHANNELS.JOIN_MESSAGES_CHANNEL);
+
+        if (!config.CHANNELS.ADVANCEMENT_MESSAGES_CHANNEL.isEmpty())
+            channels.add(config.CHANNELS.ADVANCEMENT_MESSAGES_CHANNEL);
+
+        if (!config.CHANNELS.DEATH_MESSAGES_CHANNEL.isEmpty())
+            channels.add(config.CHANNELS.DEATH_MESSAGES_CHANNEL);
+
+        if (!config.CHANNELS.WELCOME_MESSAGES_CHANNEL.isEmpty())
+            channels.add(config.CHANNELS.WELCOME_MESSAGES_CHANNEL);
+
+        if (!config.CHANNELS.TOPIC_UPDATER_CHANNEL.isEmpty())
+            channels.add(config.CHANNELS.TOPIC_UPDATER_CHANNEL);
+
+        if (!config.CHANNELS.START_MESSAGES_CHANNEL.isEmpty())
+            channels.add(config.CHANNELS.START_MESSAGES_CHANNEL);
+
         return channels;
     }
 

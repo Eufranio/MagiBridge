@@ -25,15 +25,18 @@ public class MessageListener extends ListenerAdapter {
     }
 
     private void process(MessageReceivedEvent e) {
+        ConfigCategory config = MagiBridge.getInstance().getConfig();
+
         if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) ||
                 e.getAuthor().isFake() ||
-                e.getAuthor().isBot())
-            return;
+                e.getAuthor().isBot()) {
+            if (config.CHANNELS.IGNORE_BOTS)
+                return;
+        }
 
         String messageStripped = e.getMessage().getContentStripped();
         if (messageStripped.isEmpty()) return;
 
-        ConfigCategory config = MagiBridge.getInstance().getConfig();
         if (config.CORE.CUT_MESSAGES) {
             if (messageStripped.length() > 120) {
                 messageStripped = messageStripped.substring(0, 120);

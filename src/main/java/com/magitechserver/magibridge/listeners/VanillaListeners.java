@@ -41,12 +41,13 @@ public class VanillaListeners {
         if (!plugin.getConfig().CORE.ADVANCEMENT_MESSAGES_ENABLED) return;
         if (event.getAdvancement().getName().startsWith("recipes")) return;
 
-        DiscordMessageBuilder.forChannel(plugin.getConfig().CHANNELS.MAIN_CHANNEL)
-                .placeholder("player", p.getName())
-                .placeholder("nick", Utils.getNick(p))
+        String channel = plugin.getConfig().CHANNELS.ADVANCEMENT_MESSAGES_CHANNEL;
+        if (channel.isEmpty())
+            channel = plugin.getConfig().CHANNELS.MAIN_CHANNEL;
+
+        DiscordMessageBuilder.forChannel(channel)
+                .placeholders(Utils.playerPlaceholders(p))
                 .placeholder("advancement", event.getAdvancement().getName())
-                .placeholder("prefix", p.getOption("prefix").orElse(""))
-                .placeholder("topgroup", Utils.getHighestGroup(p))
                 .useWebhook(false)
                 .format(FormatType.ADVANCEMENT_MESSAGE)
                 .send();
@@ -60,12 +61,13 @@ public class VanillaListeners {
             Player p = (Player) event.getTargetEntity();
             if (!p.hasPermission("magibridge.chat")) return;
 
-            DiscordMessageBuilder.forChannel(plugin.getConfig().CHANNELS.MAIN_CHANNEL)
-                    .placeholder("player", p.getName())
-                    .placeholder("nick", Utils.getNick(p))
+            String channel = plugin.getConfig().CHANNELS.DEATH_MESSAGES_CHANNEL;
+            if (channel.isEmpty())
+                channel = plugin.getConfig().CHANNELS.MAIN_CHANNEL;
+
+            DiscordMessageBuilder.forChannel(channel)
+                    .placeholders(Utils.playerPlaceholders(p))
                     .placeholder("deathmessage", event.getMessage().toPlain())
-                    .placeholder("prefix", p.getOption("prefix").orElse(null))
-                    .placeholder("topgroup", Utils.getHighestGroup(p))
                     .useWebhook(false)
                     .format(FormatType.DEATH_MESSAGE)
                     .send();
@@ -136,11 +138,8 @@ public class VanillaListeners {
         }
 
         DiscordMessageBuilder.forChannel(channel)
-                .placeholder("prefix", p.getOption("prefix").orElse(""))
-                .placeholder("player", p.getName())
+                .placeholders(Utils.playerPlaceholders(p))
                 .placeholder("message", e.getFormatter().getBody().toText().toPlain())
-                .placeholder("topgroup", Utils.getHighestGroup(p))
-                .placeholder("nick", Utils.getNick(p))
                 .format(format)
                 .allowEveryone(p.hasPermission("magibridge.everyone"))
                 .allowMentions(p.hasPermission("magibridge.mention"))
@@ -152,10 +151,13 @@ public class VanillaListeners {
     public void onLogin(ClientConnectionEvent.Join event, @Getter("getTargetEntity") Player p) {
         if (!p.hasPermission("magibridge.chat")) return;
 
-        String mainChannel = plugin.getConfig().CHANNELS.MAIN_CHANNEL;
         if (!p.hasPlayedBefore()) {
-            DiscordMessageBuilder.forChannel(mainChannel)
-                    .placeholder("player", p.getName())
+            String channel = plugin.getConfig().CHANNELS.WELCOME_MESSAGES_CHANNEL;
+            if (channel.isEmpty())
+                channel = plugin.getConfig().CHANNELS.MAIN_CHANNEL;
+
+            DiscordMessageBuilder.forChannel(channel)
+                    .placeholders(Utils.playerPlaceholders(p))
                     .useWebhook(false)
                     .format(FormatType.NEW_PLAYERS_MESSAGE)
                     .send();
@@ -167,11 +169,12 @@ public class VanillaListeners {
             return;
         }
 
-        DiscordMessageBuilder.forChannel(mainChannel)
-                .placeholder("player", p.getName())
-                .placeholder("nick", Utils.getNick(p))
-                .placeholder("prefix", p.getOption("prefix").orElse(""))
-                .placeholder("topgroup", Utils.getHighestGroup(p))
+        String channel = plugin.getConfig().CHANNELS.JOIN_MESSAGES_CHANNEL;
+        if (channel.isEmpty())
+            channel = plugin.getConfig().CHANNELS.MAIN_CHANNEL;
+
+        DiscordMessageBuilder.forChannel(channel)
+                .placeholders(Utils.playerPlaceholders(p))
                 .useWebhook(false)
                 .format(FormatType.JOIN_MESSAGE)
                 .send();
@@ -181,18 +184,17 @@ public class VanillaListeners {
     public void onQuit(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player p) {
         if (!p.hasPermission("magibridge.chat")) return;
 
-        String mainChannel = plugin.getConfig().CHANNELS.MAIN_CHANNEL;
+        String channel = plugin.getConfig().CHANNELS.JOIN_MESSAGES_CHANNEL;
+        if (channel.isEmpty())
+            channel = plugin.getConfig().CHANNELS.MAIN_CHANNEL;
 
         if (p.hasPermission("magibridge.silentquit")) {
             MagiBridge.getLogger().warn("The player " + p.getName() + " has the magibridge.silentjoin permission, not sending join message!");
             return;
         }
 
-        DiscordMessageBuilder.forChannel(mainChannel)
-                .placeholder("player", p.getName())
-                .placeholder("nick", Utils.getNick(p))
-                .placeholder("prefix", p.getOption("prefix").orElse(""))
-                .placeholder("topgroup", Utils.getHighestGroup(p))
+        DiscordMessageBuilder.forChannel(channel)
+                .placeholders(Utils.playerPlaceholders(p))
                 .useWebhook(false)
                 .format(FormatType.QUIT_MESSAGE)
                 .send();

@@ -130,13 +130,19 @@ public class Utils {
     public static String getNick(Player p) {
         if (!Sponge.getPluginManager().getPlugin("nucleus").isPresent()) return p.getName();
         return NucleusAPI.getNicknameService()
-                .map(s -> s.getNickname(p).map(Text::toPlain).orElse(null))
+                .flatMap(s -> s.getNickname(p).map(Text::toPlain))
                 .orElse(p.getName());
     }
 
     public static void turnAllConfigChannelsNumeric() {
         Channel channels = MagiBridge.getInstance().getConfig().CHANNELS;
         channels.MAIN_CHANNEL = replaceIfNotNumeric(channels.MAIN_CHANNEL);
+        channels.JOIN_MESSAGES_CHANNEL = replaceIfNotNumeric(channels.JOIN_MESSAGES_CHANNEL);
+        channels.ADVANCEMENT_MESSAGES_CHANNEL = replaceIfNotNumeric(channels.ADVANCEMENT_MESSAGES_CHANNEL);
+        channels.DEATH_MESSAGES_CHANNEL = replaceIfNotNumeric(channels.DEATH_MESSAGES_CHANNEL);
+        channels.WELCOME_MESSAGES_CHANNEL = replaceIfNotNumeric(channels.WELCOME_MESSAGES_CHANNEL);
+        channels.TOPIC_UPDATER_CHANNEL = replaceIfNotNumeric(channels.TOPIC_UPDATER_CHANNEL);
+        channels.START_MESSAGES_CHANNEL = replaceIfNotNumeric(channels.START_MESSAGES_CHANNEL);
 
         Channel.UChatCategory uchat = channels.UCHAT;
         uchat.UCHAT_CHANNELS = uchat.UCHAT_CHANNELS.entrySet().stream()
@@ -146,6 +152,7 @@ public class Utils {
         nucleus.GLOBAL_CHANNEL = replaceIfNotNumeric(nucleus.GLOBAL_CHANNEL);
         nucleus.HELPOP_CHANNEL = replaceIfNotNumeric(nucleus.HELPOP_CHANNEL);
         nucleus.STAFF_CHANNEL = replaceIfNotNumeric(nucleus.STAFF_CHANNEL);
+        nucleus.AFK_MESSAGES_CHANNEL = replaceIfNotNumeric(nucleus.AFK_MESSAGES_CHANNEL);
     }
 
     private static String replaceIfNotNumeric(String s) {
@@ -165,5 +172,15 @@ public class Utils {
             }
             return true;
         }
+    }
+
+    public static Map<String, String> playerPlaceholders(Player player) {
+        return new HashMap<String, String>() {{
+            put("player", player.getName());
+            put("prefix", player.getOption("prefix").orElse(""));
+            put("suffix", player.getOption("suffix").orElse(""));
+            put("topgroup", getHighestGroup(player));
+            put("nick", getNick(player));
+        }};
     }
 }

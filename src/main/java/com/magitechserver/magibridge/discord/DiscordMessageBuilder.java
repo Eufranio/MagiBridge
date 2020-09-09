@@ -51,6 +51,11 @@ public class DiscordMessageBuilder implements MessageBuilder {
         return this;
     }
 
+    public DiscordMessageBuilder placeholders(Map<String, String> placeholders) {
+        placeholders.forEach(this::placeholder);
+        return this;
+    }
+
     public DiscordMessageBuilder useWebhook(boolean use) {
         this.useWebhook = use;
         return this;

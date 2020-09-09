@@ -26,6 +26,7 @@ public class ConfigManager {
             " You can use the following placeholder on the MC -> DISCORD formats:\n" +
             "     %player% -> player who sent the message in the chat channel\n" +
             "     %prefix% -> prefix of the player that sent the message. Usually set via permission plugins\n" +
+            "     %suffix% -> suffix of the player that sent the message. Usually set via permission plugins\n" +
             "     %topgroup% -> name of the highest group of the player who sent the message\n" +
             "     %nick% -> nickname of the player. If no nick is assigned to the player, his name will be used instead\n" +
             "     %message% -> message that the player sent";
