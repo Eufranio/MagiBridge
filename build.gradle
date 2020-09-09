@@ -46,6 +46,7 @@ shadowJar {
     relocate 'com.squareup', 'magibridge.com.squareup'
     relocate 'okio', 'magibridge.okio'
     relocate 'okhttp3', 'magibridge.okhttp3'
+    relocate 'net.dv8tion', 'magibridge.net.dv8tion'
     dependencies {
         exclude(dependency('org.slf4j:slf4j-api'))
         exclude(dependency('net.java.dev.jna:jna'))
