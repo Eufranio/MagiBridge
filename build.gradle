@@ -9,7 +9,7 @@ version = pluginVersion
 
 dependencies {
     shadow 'org.spongepowered:spongeapi:7.3.0'
-    shadow 'io.github.nucleuspowered:nucleus-api:2.0.4'
+    shadow 'io.github.nucleuspowered:nucleus-api:2.1.0'
     shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-56:1.9.1'
     shadow files('libs/boop.jar')
     shadow files('libs/mcclans.jar')
