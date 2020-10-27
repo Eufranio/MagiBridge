@@ -18,7 +18,7 @@ dependencies {
     shadow 'com.github.Aquerr:EagleFactionsAPI:0.15.0'
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
-    compile ('net.dv8tion:JDA:4.ALPHA.0_76') {
+    compile ('net.dv8tion:JDA:4.2.0_211') {
         exclude module: 'opus-java'
     }
     compile 'com.vdurmont:emoji-java:4.0.0'
@@ -46,16 +46,16 @@ shadowJar {
     relocate 'com.squareup', 'magibridge.com.squareup'
     relocate 'okio', 'magibridge.okio'
     relocate 'okhttp3', 'magibridge.okhttp3'
+    relocate 'net.dv8tion', 'magibridge.net.dv8tion'
+
+    relocate 'com.fasterxml.jackson', 'magibridge.com.fasterxml.jackson'
     dependencies {
         exclude(dependency('org.slf4j:slf4j-api'))
         exclude(dependency('net.java.dev.jna:jna'))
     }
+    exclude('module-info.class')
     baseName = 'MagiBridge-API7'
     classifier = null
-}
-
-compileJava {
-    excludes = ['**/module-info.java', '**/module-info.class']
 }
 
 build.dependsOn shadowJar
