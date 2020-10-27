@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
@@ -42,7 +43,6 @@ import org.spongepowered.api.util.Tristate;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.lang.management.ManagementFactory;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -180,23 +180,40 @@ public class MagiBridge {
             // needed because of parsing issues
             Utils.turnAllConfigChannelsNumeric();
 
+            boolean throwException = false;
             try {
-                jda = new JDABuilder(config.CORE.BOT_TOKEN)
-                .setDisabledCacheFlags(EnumSet.of(
-                        CacheFlag.VOICE_STATE,
-                        CacheFlag.CLIENT_STATUS)
+                jda = JDABuilder.create(
+                        config.CORE.BOT_TOKEN,
+                        GatewayIntent.GUILD_MEMBERS,
+                        GatewayIntent.GUILD_EMOJIS,
+                        GatewayIntent.GUILD_MESSAGES,
+                        GatewayIntent.DIRECT_MESSAGES
                 )
+                .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
                 .build()
                 .awaitReady();
                 jda.addEventListener(new MessageListener());
             } catch (LoginException e) {
-                String exception =
-                        "ERROR STARTING THE PLUGIN: \n" +
-                        "THE TOKEN IN THE CONFIG IS INVALID! \n" +
-                        "You probably didn't set the token yet, edit your config!";
-                throw new RuntimeException(exception);
+                throwException = true;
+                logger.error("ERROR STARTING THE PLUGIN: THE TOKEN IN THE CONFIG IS INVALID!");
+                logger.error("You probably didn't set the token yet, edit your config!");
+            } catch (IllegalStateException e) {
+                throwException = true;
+                if (e.getMessage().contains("Was shutdown trying to await status")) {
+                    logger.error("JDA couldn't start and didn't throw any errors. Make sure your bot " +
+                            "has the SERVER MEMBERS INTENT enabled in the application page! See https://github.com/Eufranio/MagiBridge#how-to-magibridge");
+                } else {
+                    logger.error("Error connecting to discord. This is NOT a plugin error: " + e.getMessage());
+                }
             } catch (Exception e) {
-                throw new RuntimeException("Error connecting to discord. This is NOT a plugin error: ", e);
+                throwException = true;
+                logger.error("Error connecting to discord. This is NOT a plugin error: " + e.getMessage());
+            }
+
+            if (throwException) {
+                RuntimeException exception = new RuntimeException("MagiBridge errored and could not start, check the logs for the error!");
+                exception.setStackTrace(new StackTraceElement[0]);
+                throw exception;
             }
         }, executor).thenRun(() -> {
             this.registerListeners();
