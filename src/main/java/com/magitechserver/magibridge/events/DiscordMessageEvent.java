@@ -10,7 +10,7 @@ import org.spongepowered.api.event.impl.AbstractEvent;
  * An event that is thrown when a message is received or sent from Discord to Server
  * or vice-versa.
  */
-public class DiscordMessageEvent extends AbstractEvent implements  Cancellable {
+public class DiscordMessageEvent extends AbstractEvent implements Cancellable {
 
     private boolean cancelled = false;
     private MessageBuilder messageBuilder;

@@ -138,14 +138,25 @@ public class ServerMessageBuilder implements MessageBuilder {
             }
 
             Text text = Text.of(prefix, Utils.toText(Utils.replaceEach(rawFormat, this.placeholders)), attachment);
-            chatChannel.sendMessage(Sponge.getServer().getConsole(), text, true);
-        } else if (config.CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().isLoaded("nucleus")) {
+
+            if (config.CORE.ENABLE_CHAT_RELAY) {
+                chatChannel.sendMessage(Sponge.getServer().getConsole(), text, true);
+            }
+        }
+
+        else if (config.CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().isLoaded("nucleus")) {
             MessageChannel messageChannel;
             if (!this.staff) {
-                if (Sponge.getPluginManager().getPlugin("boop").isPresent() && config.CORE.USE_BOOP) {
-                    messageChannel = new BoopableChannel(MessageChannel.TO_ALL);
-                } else {
-                    messageChannel = MessageChannel.TO_ALL;
+                // probably could be done more accurate
+                if (config.CORE.ENABLE_CHAT_RELAY) {
+                    if (Sponge.getPluginManager().getPlugin("boop").isPresent() && config.CORE.USE_BOOP) {
+                        messageChannel = new BoopableChannel(MessageChannel.TO_ALL);
+                    } else {
+                        messageChannel = MessageChannel.TO_ALL;
+                    }
+                }
+                else {
+                    return;
                 }
             } else {
                 this.format = FormatType.DISCORD_TO_SERVER_STAFF_FORMAT;
@@ -153,12 +164,16 @@ public class ServerMessageBuilder implements MessageBuilder {
             }
 
             messageChannel.send(Text.of(prefix, Utils.toText(this.format.format(this.placeholders)), attachment));
-        } else {
+        }
+
+        else {
             MessageChannel messageChannel = Sponge.getPluginManager().getPlugin("boop").isPresent() ?
                     new BoopableChannel(MessageChannel.TO_ALL) :
                     MessageChannel.TO_ALL;
 
-            messageChannel.send(Text.of(prefix, Utils.toText(this.format.format(this.placeholders)), attachment));
+            if (config.CORE.ENABLE_CHAT_RELAY) {
+                messageChannel.send(Text.of(prefix, Utils.toText(this.format.format(this.placeholders)), attachment));
+            }
         }
     }
 

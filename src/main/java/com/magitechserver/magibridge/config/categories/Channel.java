@@ -24,6 +24,8 @@ public class Channel {
     public String LIST_COMMAND = "!online";
     @Setting(value = "delete-list-message", comment = "Should MagiBridge delete the player list message?")
     public boolean DELETE_LIST = true;
+    @Setting(value = "list-delay", comment = "Delay to delete list message. Make sure delete-list-message is true!")
+    public int LIST_DELAY = 10;
     @Setting(value = "console-command", comment = "Discord command that executes server console commands")
     public String CONSOLE_COMMAND = "!cmd";
     @Setting(value = "commands-role-override", comment = "If a command is defined here, it will ONLY run if the user has the defined role.\n" +

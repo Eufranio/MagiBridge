@@ -5,6 +5,7 @@ import com.magitechserver.magibridge.config.categories.Channel;
 import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.spongepowered.api.Sponge;
@@ -74,9 +75,10 @@ public class Utils {
                 cmd);
     }
 
-    public static void dispatchList(MessageChannel channel) {
+    public static void dispatchList(MessageChannel channel, Message originalMessage) {
         ConfigCategory config = MagiBridge.getInstance().getConfig();
         boolean shouldDelete = config.CHANNELS.DELETE_LIST;
+        int delay = config.CHANNELS.LIST_DELAY;
 
         List<Player> onlinePlayers = Sponge.getServer().getOnlinePlayers().stream()
                 .filter(p -> !p.get(Keys.VANISH).orElse(false))
@@ -92,13 +94,14 @@ public class Utils {
                             .replace("%prefix%", p.getOption("prefix").orElse("")))
                     .collect(Collectors.joining(", "));
 
-            message = "**Players online (" + onlinePlayers.size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
+            message = "**"+ config.MESSAGES.LIST_TEXT + " (" + onlinePlayers.size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
                     + "```" + players + "```";
         }
 
         channel.sendMessage(message).queue(m -> {
             if (shouldDelete) {
-                m.delete().queueAfter(10, TimeUnit.SECONDS);
+                m.delete().queueAfter(delay, TimeUnit.SECONDS);
+                originalMessage.delete().queueAfter(delay, TimeUnit.SECONDS);
             }
         });
     }

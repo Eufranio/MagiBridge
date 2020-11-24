@@ -53,6 +53,7 @@ public class NucleusListeners {
 
             DiscordMessageBuilder.forChannel(channel)
                     .placeholders(Utils.playerPlaceholders(player))
+                    .placeholder("message", event.getArguments())
                     .format(format)
                     .allowEveryone(player.hasPermission("magibridge.everyone"))
                     .allowMentions(player.hasPermission("magibridge.mention"))

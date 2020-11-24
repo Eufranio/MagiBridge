@@ -22,6 +22,8 @@ public class CoreCategory {
     @Setting(value = "cut-messages", comment = "Set to false if MagiBridge should NOT cut messages coming from Discord with more than\n" +
             "120 characters. This can turn the chat ugly if someone sends a big message")
     public boolean CUT_MESSAGES = false;
+    @Setting(value = "send-from-discord-to-server", comment = "Set to false if you don't want to relay common chat messages from Discord to game")
+    public boolean ENABLE_CHAT_RELAY = true;
     @Setting(value = "topic-updater-interval", comment = "Topic Updater interval in minutes, minimum is 5. If you're having rate limit errors, set this to 10 or higher!")
     public int UPDATER_INTERVAL = 10;
     @Setting(value = "enable-topic-updater", comment = "Should MagiBridge enable the Topic Updater, updating the topic of the main Discord channel?")

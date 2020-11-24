@@ -16,6 +16,8 @@ public class Messages {
     @Setting(value = "no-players-message", comment = "Message shown when there are no players in the server \n" +
             "and the list command is executed")
     public String NO_PLAYERS = "**There are no players online!**";
+    @Setting(value = "list-format", comment = "Text shown before numbers (current and max online) using list command,")
+    public String LIST_TEXT = "Players online";
     @Setting(value = "console-command-no-permisson", comment = "No permission message (for console command)")
     public String CONSOLE_NO_PERMISSION = "**You don't have permission to use this command!**";
     @Setting(value = "server-to-discord-format", comment = "Format of messages sent FROM the server TO discord")

@@ -67,7 +67,7 @@ public class MessageListener extends ListenerAdapter {
 
         // Handle player list command
         if (message.equalsIgnoreCase(config.CHANNELS.LIST_COMMAND)) {
-            Utils.dispatchList(e.getChannel());
+            Utils.dispatchList(e.getChannel(), e.getMessage());
             return;
         }
 
