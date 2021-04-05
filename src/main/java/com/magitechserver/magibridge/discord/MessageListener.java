@@ -26,7 +26,9 @@ public class MessageListener extends ListenerAdapter {
 
     private void process(MessageReceivedEvent e) {
         ConfigCategory config = MagiBridge.getInstance().getConfig();
-
+        if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId())) {
+            return;
+        }
         if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) ||
                 e.getAuthor().isFake() ||
                 e.getAuthor().isBot()) {
