@@ -27,9 +27,11 @@ public class MessageListener extends ListenerAdapter {
     private void process(MessageReceivedEvent e) {
         ConfigCategory config = MagiBridge.getInstance().getConfig();
 
-        if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId()) ||
-                e.getAuthor().isFake() ||
-                e.getAuthor().isBot()) {
+        if (e.getAuthor().getId().equals(e.getJDA().getSelfUser().getId())) {
+            return;
+        }
+
+        if (e.getAuthor().isFake() || e.getAuthor().isBot()) {
             if (config.CHANNELS.IGNORE_BOTS)
                 return;
         }
@@ -67,7 +69,7 @@ public class MessageListener extends ListenerAdapter {
 
         // Handle player list command
         if (message.equalsIgnoreCase(config.CHANNELS.LIST_COMMAND)) {
-            Utils.dispatchList(e.getChannel());
+            Utils.dispatchList(e.getMessage());
             return;
         }
 
@@ -110,7 +112,10 @@ public class MessageListener extends ListenerAdapter {
 
         // Hooks active
         if (config.CHANNELS.USE_NUCLEUS) {
-            builder.staff(channel.equals(config.CHANNELS.NUCLEUS.STAFF_CHANNEL)).send();
+            builder.staff(
+                    channel.equals(config.CHANNELS.NUCLEUS.STAFF_CHANNEL) ||
+                    channel.equals(config.CHANNELS.NUCLEUS.HELPOP_CHANNEL))
+            .send();
         } else if (config.CHANNELS.USE_UCHAT) {
             String chatChannel = config.CHANNELS.UCHAT.UCHAT_CHANNELS.get(channel);
             if (chatChannel != null) {

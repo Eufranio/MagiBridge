@@ -2,26 +2,30 @@ package com.magitechserver.magibridge.listeners;
 
 import com.arckenver.nations.channel.NationMessageChannel;
 import com.magitechserver.magibridge.MagiBridge;
+import com.magitechserver.magibridge.common.NucleusBridge;
 import com.magitechserver.magibridge.config.FormatType;
+import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
 import com.magitechserver.magibridge.util.Utils;
 import io.github.aquerr.eaglefactions.api.messaging.chat.AllianceMessageChannel;
 import io.github.aquerr.eaglefactions.api.messaging.chat.FactionMessageChannel;
-import io.github.nucleuspowered.nucleus.api.NucleusAPI;
-import io.github.nucleuspowered.nucleus.api.chat.NucleusChatChannel;
 import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
 import nl.riebie.mcclans.channels.ClanMessageChannelImpl;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.advancement.AdvancementEvent;
+import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.type.FixedMessageChannel;
 
@@ -79,6 +83,15 @@ public class VanillaListeners {
         if (!plugin.enableVanillaChat()) return;
         if (!p.hasPermission("magibridge.chat")) return;
         if (!Sponge.getServer().getOnlinePlayers().contains(p) || e.isMessageCancelled()) return;
+
+        // workaround for preventing sending helpop messages to the normal channels.
+        // for some reason Nucleus triggers a new chat event for helpop messages.
+        if (e.getCause().first(PluginContainer.class)
+                .filter(container -> container.getId().contains("nucleus"))
+                .isPresent() &&
+            !NucleusBridge.getInstance().isDirectedToStaffChannel(e))
+            return;
+
         if (plugin.getConfig().CORE.HIDE_VANISHED_CHAT && p.get(Keys.VANISH).orElse(false)) return;
 
         FormatType format = FormatType.SERVER_TO_DISCORD_FORMAT;
@@ -110,12 +123,12 @@ public class VanillaListeners {
         if (plugin.getConfig().CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().isLoaded("nucleus") && e.getChannel().isPresent()) {
             MessageChannel messageChannel = e.getChannel().get();
 
-            if (!NucleusAPI.getStaffChatService().isPresent()) {
+            if (!NucleusBridge.getInstance().isStaffChatEnabled()) {
                 MagiBridge.getLogger().error("The staff chat module is disabled in the Nucleus config! Please enable it!");
                 return;
             }
 
-            boolean isStaffMessage = messageChannel instanceof NucleusChatChannel.StaffChat;
+            boolean isStaffMessage = NucleusBridge.getInstance().isDirectedToStaffChannel(e);
             if (!isStaffMessage && messageChannel instanceof FixedMessageChannel) {
                 if (!messageChannel.getMembers().containsAll(Sponge.getServer().getBroadcastChannel().getMembers())) {
                     return; // probably a non-global channel, griefprevention uses this on it's mute sytem
@@ -142,6 +155,7 @@ public class VanillaListeners {
                 .placeholder("message", e.getFormatter().getBody().toText().toPlain())
                 .format(format)
                 .allowEveryone(p.hasPermission("magibridge.everyone"))
+                .allowHere(p.hasPermission("magibridge.here"))
                 .allowMentions(p.hasPermission("magibridge.mention"))
                 .send();
 

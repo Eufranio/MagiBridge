@@ -3,12 +3,12 @@ package com.magitechserver.magibridge;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import com.magitechserver.magibridge.bridge.nucleus.NucleusBridgeImpl;
 import com.magitechserver.magibridge.config.ConfigManager;
 import com.magitechserver.magibridge.config.FormatType;
 import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
 import com.magitechserver.magibridge.discord.MessageListener;
-import com.magitechserver.magibridge.listeners.NucleusListeners;
 import com.magitechserver.magibridge.listeners.UChatListeners;
 import com.magitechserver.magibridge.listeners.VanillaListeners;
 import com.magitechserver.magibridge.util.ConsoleHandler;
@@ -106,8 +106,11 @@ public class MagiBridge {
                         String message = args.requireOne("message");
 
                         List<TextChannel> channels = jda.getTextChannelsByName(channel, true);
-                        if (channels.isEmpty())
-                            throw new CommandException(Text.of("Could not send message! Are you sure a channel with this name exists?"));
+                        if (channels.isEmpty()) {
+                            channels = Lists.newArrayList(jda.getTextChannelById(channel));
+                            if (channels.isEmpty())
+                                throw new CommandException(Text.of("Could not send message! Are you sure a channel with this name/id exists?"));
+                        }
 
                         channels.forEach(c -> c.sendMessage(message.replace("\\" + "n", "\n")).queue());
                         src.sendMessage(Text.of(TextColors.GREEN, "Message sent!"));
@@ -283,7 +286,7 @@ public class MagiBridge {
         if (config.CHANNELS.USE_NUCLEUS) {
             useVanillaChat = true;
             if (Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
-                Sponge.getEventManager().registerListeners(this, new NucleusListeners(this));
+                NucleusBridgeImpl.init(this);
                 logger.info("Hooking into Nucleus");
             } else {
                 logger.error(" ");

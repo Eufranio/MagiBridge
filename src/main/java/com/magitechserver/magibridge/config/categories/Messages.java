@@ -1,16 +1,22 @@
 package com.magitechserver.magibridge.config.categories;
 
+import com.google.common.collect.Lists;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
+
+import java.util.List;
 
 /**
  * Created by Frani on 27/09/2017.
  */
 @ConfigSerializable
 public class Messages {
-
     @Setting(value = "prefix", comment = "Prefix that will be sent before the actual message, with a hover and clickable link")
     public PrefixCategory PREFIX = new PrefixCategory();
+
+    @Setting(value = "player-list-title", comment = "Format of the title of the player list message. Supports %onlineplayers%, %maxplayers% and %players%")
+    public String playerListTitle = "**Players online (%onlineplayers%/%maxplayers%):** ```%players%```";
+
     @Setting(value = "player-list-name", comment = "Format of the player name displayed in the channel list command (!online)")
     public String PLAYER_LIST_NAME = "%player%";
     @Setting(value = "no-players-message", comment = "Message shown when there are no players in the server \n" +
@@ -29,7 +35,7 @@ public class Messages {
     public String DISCORD_TO_SERVER_FORMAT = "&f%user%&7: &7%message%";
     @Setting(value = "discord-to-server-staff-format", comment = "Format of the messages sent from the Discord Staff channel to the server\n" +
             "Node: This format is used ONLY when using the Nucleus hook!")
-    public String DISCORD_TO_SERVER_STAFF_FORMAT = "&f%user%&7: &7%message%";
+    public String DISCORD_TO_SERVER_STAFF_FORMAT = "&b[Staff] &f%user%&7: &7%message%";
     @Setting(value = "server-starting-message", comment = "Message that will be sent to the discord-main-channel when the server starts")
     public String SERVER_STARTING = "**The server is starting!**";
     @Setting(value = "server-stopping-message", comment = "Message that will be sent to the discord-main-channel when the server stops")
@@ -69,6 +75,31 @@ public class Messages {
     @Setting(value = "afk", comment = "Messages sent to Discord when a player goes/retuns AFK, if enabled")
     public AFKCategory AFK = new AFKCategory();
 
+    @Setting(value = "link-format", comment = "The format used to replace link URLs in chat")
+    public Link LINK_FORMAT = new Link();
+
+    @Setting(value = "broadcast-message", comment = "Format used when sending broadcast messages to Discord. Supports %message%.")
+    public String broadcastMessage = "**Broadcast** ```%message%```";
+
+    @ConfigSerializable
+    public static class Link {
+
+        @Setting(value = "format", comment = "The format of the text string in chat")
+        public String FORMAT = "&9&n%url%";
+
+        @Setting(value = "hover", comment = "The hover text over the text string in chat")
+        public List<String> HOVER = Lists.newArrayList("Click here to open this URL");
+
+        @Setting(value = "limit-length", comment = "Limit the length of the URL string from format, cutting the " +
+                "remaining string. An ... is added at the end of the text format automatically if this is enabled.")
+        public boolean limit_length = true;
+
+        @Setting(value = "max-length", comment = "The max. length one URL text may have. Only effective if limit-length is " +
+                "enabled. ")
+        public int max_length = 40;
+
+    }
+
     @ConfigSerializable
     public static class PrefixCategory {
 
@@ -76,7 +107,7 @@ public class Messages {
         public boolean ENABLED = true;
 
         @Setting(value = "text")
-        public String TEXT = "&6[Discord]";
+        public String TEXT = "&6[Discord] ";
 
         @Setting(value = "hover")
         public String HOVER = "&bClick do join our Discord!";

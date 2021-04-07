@@ -21,31 +21,16 @@ import java.util.List;
 public class WebhookManager {
 
     public static void sendWebhookMessage(String hook, String player, String message, String channelID) {
-
-        String content = message.replaceAll("&([0-9a-fA-FlLkKrR])", "");
-        List<String> usersMentioned = new ArrayList<>();
-        Arrays.stream(content.split(" ")).filter(word ->
-                word.startsWith("@")).forEach(mention ->
-                usersMentioned.add(mention.substring(1)));
-
-        if (!usersMentioned.isEmpty()) {
-            for (String user : usersMentioned) {
-                List<User> users = MagiBridge.getInstance().getJDA().getUsersByName(user, true);
-                if (!users.isEmpty()) {
-                    content = content.replaceAll("@" + user, "<@" + users.get(0).getId() + ">");
-                }
-            }
-        }
-
         Player p = Sponge.getServer().getPlayer(player).get();
-        String format = MagiBridge.getInstance().getConfig().MESSAGES.WEBHOOK_PICTURE_URL.replace("%player%", player).replace("%uuid%", p.getUniqueId().toString());
-        final String c = content;
+        String format = MagiBridge.getInstance().getConfig().MESSAGES.WEBHOOK_PICTURE_URL
+                .replace("%player%", player)
+                .replace("%uuid%", p.getUniqueId().toString());
         Task.builder()
                 .async()
                 .execute(() -> {
                     Webhook webhook = getWebhook(channelID);
                     if (webhook == null) return;
-                    sendWebhook(webhook, WebhookContent.of(format, hook, c));
+                    sendWebhook(webhook, WebhookContent.of(format, hook, message));
                 })
                 .submit(MagiBridge.getInstance());
     }

@@ -1,2 +1,5 @@
 rootProject.name = 'MagiBridge'
+include 'nucleus-v1'
+include 'nucleus-v2'
+include 'common'
 

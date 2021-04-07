@@ -62,6 +62,9 @@ public class Channel {
     @Setting(value = "start-messages-channel", comment = "ID of the channel that start/stop messages will be sent to. If blank, main-discord-channel will be used")
     public String START_MESSAGES_CHANNEL = "";
 
+    @Setting(value = "broadcast-channel", comment = "ID of the channel that broadcast messages will be sent to. If blank, main-discord-channel will be used")
+    public String broadcastChannel = "";
+
     public Channel() {
         COMMANDS_ROLE_OVERRIDE.put("stop", "admin");
         COMMANDS_ROLE_OVERRIDE.put("ban", "mod");

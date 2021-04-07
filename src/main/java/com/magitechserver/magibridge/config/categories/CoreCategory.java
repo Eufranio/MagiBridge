@@ -30,7 +30,12 @@ public class CoreCategory {
     public boolean ENABLE_CONSOLE_LOGGING = false;
 
     @Setting(value = "send-helpop", comment = "Should MagiBridge send Nucleus' HelpOp messages to Discord? The channel that the messages will be sent\n" +
-            "SHOULD be defined in the Channels section if this is enabled!")
+            "SHOULD be defined in the Channels section if this is enabled. \n" +
+            "NOTE: The HelpOp Discord channel is READ ONLY, it will forward any user messages to the in-game staff channel.")
     public boolean SEND_HELPOP = false;
+
+    @Setting(value = "send-broadcast", comment = "Should MagiBridge relay broadcast messages? If the broadcast-channel is not set in the channels \n" +
+            "section, the broadcasts will be sent to the main channel. ")
+    public boolean sendBroadcasts = true;
 
 }

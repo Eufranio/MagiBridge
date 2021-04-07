@@ -9,7 +9,7 @@ version = pluginVersion
 
 dependencies {
     shadow 'org.spongepowered:spongeapi:7.3.0'
-    shadow 'io.github.nucleuspowered:nucleus-api:1.8.0-S7.1'
+    //shadow 'io.github.nucleuspowered:nucleus-api:1.8.0-S7.1'
     shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-56:1.9.1'
     shadow files('libs/boop.jar')
     shadow files('libs/mcclans.jar')
@@ -18,10 +18,13 @@ dependencies {
     shadow 'com.github.Aquerr:EagleFactionsAPI:0.15.0'
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
-    compile ('net.dv8tion:JDA:4.2.0_211') {
+    compile ('net.dv8tion:JDA:4.2.1_253') {
         exclude module: 'opus-java'
     }
     compile 'com.vdurmont:emoji-java:4.0.0'
+
+    compile project(':nucleus-v1')
+    compile project(':nucleus-v2')
 }
 
 spongestart {
@@ -31,7 +34,10 @@ spongestart {
 repositories {
     mavenCentral()
     jcenter()
-    maven { url = "http://repo.drnaylor.co.uk/artifactory/list/minecraft" }
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
     maven { url = "https://raw.github.com/FabioZumbi12/UltimateChat/mvn-repo/" }
     maven { url 'https://jitpack.io' }
 }
@@ -47,6 +53,7 @@ shadowJar {
     relocate 'okio', 'magibridge.okio'
     relocate 'okhttp3', 'magibridge.okhttp3'
     relocate 'net.dv8tion', 'magibridge.net.dv8tion'
+    relocate 'com.neovisionaries.ws.client', 'magibridge.com.neovisionaries.ws.client'
 
     relocate 'com.fasterxml.jackson', 'magibridge.com.fasterxml.jackson'
     dependencies {

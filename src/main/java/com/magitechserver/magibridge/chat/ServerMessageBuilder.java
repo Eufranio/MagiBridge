@@ -4,13 +4,15 @@ import br.net.fabiozumbi12.UltimateChat.Sponge.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.Sponge.UChat;
 import com.google.common.collect.Maps;
 import com.magitechserver.magibridge.MagiBridge;
+import com.magitechserver.magibridge.common.NucleusBridge;
 import com.magitechserver.magibridge.config.FormatType;
 import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import com.magitechserver.magibridge.config.categories.Messages;
 import com.magitechserver.magibridge.events.DiscordMessageEvent;
+import com.magitechserver.magibridge.util.TextHelper;
 import com.magitechserver.magibridge.util.Utils;
+import com.vdurmont.emoji.EmojiParser;
 import flavor.pie.boop.BoopableChannel;
-import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import net.dv8tion.jda.api.entities.Message;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
@@ -87,6 +89,8 @@ public class ServerMessageBuilder implements MessageBuilder {
         boolean isUchat = this.channel != null;
         ConfigCategory config = MagiBridge.getInstance().getConfig();
 
+        this.placeholders.computeIfPresent("%message%", (k, v) -> Utils.replaceEach(v, config.REPLACER.mcToDiscordReplacer));
+
         Text prefix = Text.of();
         // Prefix enabled
         if (config.MESSAGES.PREFIX.ENABLED) {
@@ -126,6 +130,7 @@ public class ServerMessageBuilder implements MessageBuilder {
         }
 
         // implementation specific sending code
+
         if (isUchat && config.CHANNELS.USE_UCHAT && Sponge.getPluginManager().isLoaded("ultimatechat")) {
             String rawFormat = config.CHANNELS.UCHAT.UCHAT_OVERRIDES.getOrDefault(channel, this.format.get());
 
@@ -138,6 +143,7 @@ public class ServerMessageBuilder implements MessageBuilder {
             }
 
             Text text = Text.of(prefix, Utils.toText(Utils.replaceEach(rawFormat, this.placeholders)), attachment);
+            text = TextHelper.replaceLink(text);
             chatChannel.sendMessage(Sponge.getServer().getConsole(), text, true);
         } else if (config.CHANNELS.USE_NUCLEUS && Sponge.getPluginManager().isLoaded("nucleus")) {
             MessageChannel messageChannel;
@@ -148,17 +154,21 @@ public class ServerMessageBuilder implements MessageBuilder {
                     messageChannel = MessageChannel.TO_ALL;
                 }
             } else {
-                messageChannel = NucleusAPI.getStaffChatService().get().getStaffChat();
+                messageChannel = NucleusBridge.getInstance().getStaffChannel();
                 this.format = FormatType.DISCORD_TO_SERVER_STAFF_FORMAT;
             }
 
-            messageChannel.send(Text.of(prefix, Utils.toText(this.format.format(this.placeholders)), attachment));
+            Text toSend = Text.of(prefix, Utils.toText(this.format.format(this.placeholders)), attachment);
+            toSend = TextHelper.replaceLink(toSend);
+            messageChannel.send(toSend);
         } else {
             MessageChannel messageChannel = Sponge.getPluginManager().getPlugin("boop").isPresent() ?
                     new BoopableChannel(MessageChannel.TO_ALL) :
                     MessageChannel.TO_ALL;
 
-            messageChannel.send(Text.of(prefix, Utils.toText(this.format.format(this.placeholders)), attachment));
+            Text toSend = Text.of(prefix, Utils.toText(this.format.format(this.placeholders)), attachment);
+            toSend = TextHelper.replaceLink(toSend);
+            messageChannel.send(toSend);
         }
     }
 

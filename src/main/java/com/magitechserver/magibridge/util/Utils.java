@@ -1,10 +1,11 @@
 package com.magitechserver.magibridge.util;
 
 import com.magitechserver.magibridge.MagiBridge;
+import com.magitechserver.magibridge.common.NucleusBridge;
 import com.magitechserver.magibridge.config.categories.Channel;
 import com.magitechserver.magibridge.config.categories.ConfigCategory;
-import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.spongepowered.api.Sponge;
@@ -74,7 +75,7 @@ public class Utils {
                 cmd);
     }
 
-    public static void dispatchList(MessageChannel channel) {
+    public static void dispatchList(Message discordMessage) {
         ConfigCategory config = MagiBridge.getInstance().getConfig();
         boolean shouldDelete = config.CHANNELS.DELETE_LIST;
 
@@ -85,19 +86,22 @@ public class Utils {
 
         String message = config.MESSAGES.NO_PLAYERS;
         if (!onlinePlayers.isEmpty()) {
-            String format = config.MESSAGES.PLAYER_LIST_NAME;
+            String nameFormat = config.MESSAGES.PLAYER_LIST_NAME;
             String players = onlinePlayers.stream()
-                    .map(p -> format.replace("%player%", p.getName())
+                    .map(p -> nameFormat.replace("%player%", p.getName())
                             .replace("%topgroup%", Utils.getHighestGroup(p))
                             .replace("%prefix%", p.getOption("prefix").orElse("")))
                     .collect(Collectors.joining(", "));
 
-            message = "**Players online (" + onlinePlayers.size() + "/" + Sponge.getServer().getMaxPlayers() + "):** "
-                    + "```" + players + "```";
+            String titleFormat = config.MESSAGES.playerListTitle;
+            message = titleFormat.replace("%onlineplayers%", onlinePlayers.size()+"")
+                    .replace("%maxplayers%", Sponge.getServer().getMaxPlayers()+"")
+                    .replace("%players%", players);
         }
 
-        channel.sendMessage(message).queue(m -> {
+        discordMessage.getChannel().sendMessage(message).queue(m -> {
             if (shouldDelete) {
+                discordMessage.delete().queueAfter(10, TimeUnit.SECONDS);
                 m.delete().queueAfter(10, TimeUnit.SECONDS);
             }
         });
@@ -125,13 +129,6 @@ public class Utils {
 
     public static Text toText(String s) {
         return TextSerializers.FORMATTING_CODE.deserialize(s);
-    }
-
-    public static String getNick(Player p) {
-        if (!Sponge.getPluginManager().getPlugin("nucleus").isPresent()) return p.getName();
-        return NucleusAPI.getNicknameService()
-                .flatMap(s -> s.getNickname(p).map(Text::toPlain))
-                .orElse(p.getName());
     }
 
     public static void turnAllConfigChannelsNumeric() {
@@ -180,7 +177,7 @@ public class Utils {
             put("prefix", player.getOption("prefix").orElse(""));
             put("suffix", player.getOption("suffix").orElse(""));
             put("topgroup", getHighestGroup(player));
-            put("nick", getNick(player));
+            put("nick", NucleusBridge.getInstance().getNick(player.getUniqueId()).toPlain());
         }};
     }
 }

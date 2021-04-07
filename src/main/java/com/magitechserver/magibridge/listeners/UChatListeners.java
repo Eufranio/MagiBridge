@@ -2,6 +2,7 @@ package com.magitechserver.magibridge.listeners;
 
 import br.net.fabiozumbi12.UltimateChat.Sponge.API.SendChannelMessageEvent;
 import com.magitechserver.magibridge.MagiBridge;
+import com.magitechserver.magibridge.common.NucleusBridge;
 import com.magitechserver.magibridge.config.FormatType;
 import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
 import com.magitechserver.magibridge.util.Utils;
@@ -42,9 +43,10 @@ public class UChatListeners {
                 .placeholder("player", e.getSender().getName())
                 .placeholder("message", e.getMessage().toPlain())
                 .placeholder("topgroup", p != null ? Utils.getHighestGroup(p) : "")
-                .placeholder("nick", p != null ? Utils.getNick(p) : "")
+                .placeholder("nick", p != null ? NucleusBridge.getInstance().getNick(p.getUniqueId()).toPlain() : "")
                 .format(format)
                 .allowEveryone(e.getSender().hasPermission("magibridge.everyone"))
+                .allowHere(e.getSender().hasPermission("magibridge.here"))
                 .allowMentions(e.getSender().hasPermission("magibridge.mention"))
                 .send();
     }

@@ -47,6 +47,8 @@ public class FormatType {
 
     public static FormatType HELP_OP_MESSAGE = new FormatType(() -> MagiBridge.getInstance().getConfig().MESSAGES.HELP_OP);
 
+    public static FormatType BROADCAST_MESSAGE = new FormatType(() -> MagiBridge.getInstance().getConfig().MESSAGES.broadcastMessage);
+
     Supplier<String> template;
 
     FormatType(Supplier<String> template) {
