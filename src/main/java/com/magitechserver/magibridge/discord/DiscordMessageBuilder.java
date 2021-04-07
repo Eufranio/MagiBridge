@@ -4,12 +4,16 @@ import com.google.common.collect.Maps;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.chat.MessageBuilder;
 import com.magitechserver.magibridge.chat.ServerMessageBuilder;
+import com.magitechserver.magibridge.common.NucleusBridge;
 import com.magitechserver.magibridge.config.FormatType;
 import com.magitechserver.magibridge.events.DiscordMessageEvent;
 import com.magitechserver.magibridge.util.Utils;
+import me.rojo8399.placeholderapi.PlaceholderService;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.Arrays;
 import java.util.List;
@@ -105,14 +109,24 @@ public class DiscordMessageBuilder implements MessageBuilder {
             for (char ch : bannedCharacters) { // Remove special chars that discord removes anyway, preventing unwanted @everyone and @here
                 value = value.replace(Character.toString(ch), "");
             }
-            return value;
+
+            // also replace the words in the mc-to-discord-replacer
+            return Utils.replaceEach(value, MagiBridge.getInstance().getConfig().REPLACER.mcToDiscordReplacer);
         });
 
-        String message = this.formatType.format(this.placeholders)
-                .replaceAll(ServerMessageBuilder.STRIP_COLOR_PATTERN.pattern(), "");
+        CommandSource source = Sponge.getServer().getConsole();
+        if (placeholders.get("%player%") != null) {
+            source = Sponge.getServer().getPlayer(placeholders.get("%player%")).get();
+        }
+
+        // apply placeholders
+        String message = this.parsePlaceholders(this.formatType, source);
+
+        // don't apply placeholders for the raw message
         if (this.useWebhook && MagiBridge.getInstance().getConfig().CHANNELS.USE_WEBHOOKS) {
-            message = Utils.replaceEach(placeholders.get("%message%"), this.placeholders);
-        } // the whole message should be the exact player message if we're gonna send this via webhooks
+            message = placeholders.get("%message%")
+                    .replaceAll(ServerMessageBuilder.STRIP_COLOR_PATTERN.pattern(), "");
+        } // the whole message should be the raw message if we're gonna send this via webhooks
 
         // replace message emotes with the ones from the guild, if they exist
         Guild guild = textChannel.getGuild();
@@ -171,17 +185,50 @@ public class DiscordMessageBuilder implements MessageBuilder {
             else
                 textChannel.sendMessage(message).complete().delete().queueAfter(this.deleteTime, TimeUnit.SECONDS);
         } else if (this.useWebhook && MagiBridge.getInstance().getConfig().CHANNELS.USE_WEBHOOKS) {
+            Player player = Sponge.getServer().getPlayer(placeholders.get("%player%")).get();
+            String placeholderName = this.parsePlaceholders(FormatType.WEBHOOK_NAME, player);
+
             WebhookManager.sendWebhookMessage(
-                    FormatType.WEBHOOK_NAME.format(this.placeholders),
-                    placeholders.get("%player%"),
+                    placeholderName,
+                    player.getName(),
                     message,
-                    channel);
+                    channel
+            );
         } else {
             if (this.queue)
                 textChannel.sendMessage(message).queue();
             else
                 textChannel.sendMessage(message).complete();
         }
+    }
+
+    String parsePlaceholders(FormatType format, CommandSource source) {
+        // apply magibridge placeholders
+        String rawMessage = this.placeholders.remove("%message%");
+        if (rawMessage != null)
+            rawMessage = rawMessage.replace("%message%", "");
+
+        String message = format.format(this.placeholders);
+
+        // apply PlaceholderAPI placeholders
+        if (Sponge.getPluginManager().isLoaded("placeholderapi")) {
+            PlaceholderService service = Sponge.getServiceManager().provideUnchecked(PlaceholderService.class);
+            message = service.replacePlaceholders(message, source, null).toPlain();
+        }
+
+        // apply Nucleus placeholders
+        if (Sponge.getPluginManager().isLoaded("nucleus")) {
+            message = NucleusBridge.getInstance().replacePlaceholders(message, source).toPlain();
+        }
+
+        // PlaceholderAPI adds {} around unresolved placeholders
+        if (rawMessage != null) {
+            message = message.replace("{message}", rawMessage)
+                    .replace("%message%", rawMessage);
+        }
+
+        message = message.replaceAll(ServerMessageBuilder.STRIP_COLOR_PATTERN.pattern(), "");
+        return message;
     }
 
 }

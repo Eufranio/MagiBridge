@@ -1,6 +1,7 @@
 package com.magitechserver.magibridge.common;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
@@ -29,5 +30,10 @@ public class EmptyNucleusDelegate implements NucleusBridgeDelegate {
     @Override
     public MessageChannel getStaffChannel() {
         return MessageChannel.TO_ALL;
+    }
+
+    @Override
+    public Text replacePlaceholders(String string, CommandSource commandSource) {
+        return Text.EMPTY;
     }
 }

@@ -112,7 +112,11 @@ public class MagiBridge {
                                 throw new CommandException(Text.of("Could not send message! Are you sure a channel with this name/id exists?"));
                         }
 
-                        channels.forEach(c -> c.sendMessage(message.replace("\\" + "n", "\n")).queue());
+                        channels.forEach(c -> DiscordMessageBuilder.forChannel(c.getId())
+                                .format(FormatType.of(() -> message))
+                                .useWebhook(false)
+                                .send()
+                        );
                         src.sendMessage(Text.of(TextColors.GREEN, "Message sent!"));
 
                         return CommandResult.success();

@@ -11,7 +11,6 @@ import com.magitechserver.magibridge.config.categories.Messages;
 import com.magitechserver.magibridge.events.DiscordMessageEvent;
 import com.magitechserver.magibridge.util.TextHelper;
 import com.magitechserver.magibridge.util.Utils;
-import com.vdurmont.emoji.EmojiParser;
 import flavor.pie.boop.BoopableChannel;
 import net.dv8tion.jda.api.entities.Message;
 import org.spongepowered.api.Sponge;
@@ -88,8 +87,6 @@ public class ServerMessageBuilder implements MessageBuilder {
 
         boolean isUchat = this.channel != null;
         ConfigCategory config = MagiBridge.getInstance().getConfig();
-
-        this.placeholders.computeIfPresent("%message%", (k, v) -> Utils.replaceEach(v, config.REPLACER.mcToDiscordReplacer));
 
         Text prefix = Text.of();
         // Prefix enabled

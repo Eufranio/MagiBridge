@@ -16,6 +16,7 @@ dependencies {
     shadow 'com.github.Arckenver:Nations:v2.11_api7'
     shadow 'org.apache.logging.log4j:log4j-core:2.8.1'
     shadow 'com.github.Aquerr:EagleFactionsAPI:0.15.0'
+    shadow 'com.github.rojo8399:PlaceholderAPI:master-SNAPSHOT'
 
     compile 'com.mashape.unirest:unirest-java:1.4.9'
     compile ('net.dv8tion:JDA:4.2.1_253') {

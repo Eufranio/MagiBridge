@@ -6,7 +6,6 @@ import com.magitechserver.magibridge.config.categories.Channel;
 import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -110,8 +109,9 @@ public class Utils {
     private static boolean canUseCommand(Member m, String command) {
         ConfigCategory config = MagiBridge.getInstance().getConfig();
         Map<String, String> override = config.CHANNELS.COMMANDS_ROLE_OVERRIDE;
-        if (override.getOrDefault(command, "")
-                .equalsIgnoreCase("everyone")) {
+
+        List<String> roles = Arrays.asList(override.getOrDefault(command, "").split(","));
+        if (roles.contains("everyone")) {
             return true;
         }
 
@@ -121,10 +121,9 @@ public class Utils {
             return true;
         }
 
-        String r = override.get(command);
-        return r != null && m.getRoles().stream().anyMatch(role ->
-                role.getName().equalsIgnoreCase(r) ||
-                role.getId().equals(r));
+        return m.getRoles()
+                .stream()
+                .anyMatch(role -> roles.contains(role.getName()) || roles.contains(role.getId()));
     }
 
     public static Text toText(String s) {

@@ -4,7 +4,6 @@ import com.arckenver.nations.channel.NationMessageChannel;
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.common.NucleusBridge;
 import com.magitechserver.magibridge.config.FormatType;
-import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
 import com.magitechserver.magibridge.util.Utils;
 import io.github.aquerr.eaglefactions.api.messaging.chat.AllianceMessageChannel;
@@ -12,20 +11,17 @@ import io.github.aquerr.eaglefactions.api.messaging.chat.FactionMessageChannel;
 import nl.riebie.mcclans.channels.AllyMessageChannelImpl;
 import nl.riebie.mcclans.channels.ClanMessageChannelImpl;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.advancement.AdvancementEvent;
-import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.type.FixedMessageChannel;
 
@@ -100,7 +96,9 @@ public class VanillaListeners {
         if (e.getChannel().isPresent()) {
             MessageChannel messageChannel = e.getChannel().get();
 
-            if (Sponge.getPluginManager().isLoaded("nations") && messageChannel instanceof NationMessageChannel) {
+            boolean nationsLoaded = Sponge.getPluginManager().isLoaded("nations") ||
+                    Sponge.getPluginManager().isLoaded("nations-updated");
+            if (nationsLoaded && messageChannel instanceof NationMessageChannel) {
                 return; // don't want to send private nation messages to Discord
             }
 

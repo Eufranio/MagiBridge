@@ -1,6 +1,7 @@
 package com.magitechserver.magibridge.common;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.text.Text;
@@ -46,6 +47,10 @@ public abstract class NucleusBridge {
 
     public MessageChannel getStaffChannel() {
         return delegate.getStaffChannel();
+    }
+
+    public Text replacePlaceholders(String string, CommandSource commandSource) {
+        return delegate.replacePlaceholders(string, commandSource);
     }
 
     public static NucleusBridge getInstance() {

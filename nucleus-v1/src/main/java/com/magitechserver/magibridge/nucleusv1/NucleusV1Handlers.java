@@ -6,8 +6,11 @@ import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import io.github.nucleuspowered.nucleus.api.chat.NucleusChatChannel;
 import io.github.nucleuspowered.nucleus.api.events.NucleusAFKEvent;
 import io.github.nucleuspowered.nucleus.api.events.NucleusTextTemplateEvent;
+import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
+import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
 import io.github.nucleuspowered.nucleus.api.text.NucleusTextTemplate;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.Listener;
@@ -69,5 +72,16 @@ public class NucleusV1Handlers implements NucleusBridgeDelegate {
     @Override
     public MessageChannel getStaffChannel() {
         return MessageChannel.fixed(NucleusAPI.getStaffChatService().get().getStaffChat().getMembers());
+    }
+
+    @Override
+    public Text replacePlaceholders(String string, CommandSource commandSource) {
+        NucleusMessageTokenService service = NucleusAPI.getMessageTokenService();
+        try {
+            return service.createFromString(string).getForCommandSource(commandSource);
+        } catch (NucleusException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

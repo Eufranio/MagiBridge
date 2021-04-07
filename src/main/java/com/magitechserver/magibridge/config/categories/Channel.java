@@ -26,11 +26,11 @@ public class Channel {
     public boolean DELETE_LIST = true;
     @Setting(value = "console-command", comment = "Discord command that executes server console commands")
     public String CONSOLE_COMMAND = "!cmd";
-    @Setting(value = "commands-role-override", comment = "If a command is defined here, it will ONLY run if the user has the defined role.\n" +
-            "In this example, ONLY who have the admin role can stop the server\n" +
-            "Set the role to \"everyone\" to allow everyone use the command")
+    @Setting(value = "commands-role-override", comment = "If a command is defined here, it will ONLY run if the user has one of the comma-separated defined roles.\n" +
+            "In this example, ONLY who have the admin OR owner role can stop the server\n" +
+            "Add \"everyone\" to allow everyone use the command")
     public Map<String, String> COMMANDS_ROLE_OVERRIDE = Maps.newHashMap();
-    @Setting(value = "console-command-required-role", comment = "Role that a user needs to have in order to run the console command")
+    @Setting(value = "console-command-required-role", comment = "Role that a user needs to have in order to run the console command. Can be either the role name or role ID.")
     public String CONSOLE_REQUIRED_ROLE = "admin";
     @Setting(value = "color-allowed-role", comment = "Role that users need to have to be able to send colored chat to minecraft\n" +
             "Set to \"everyone\" to allow everyone use colors in the messages")
@@ -66,7 +66,7 @@ public class Channel {
     public String broadcastChannel = "";
 
     public Channel() {
-        COMMANDS_ROLE_OVERRIDE.put("stop", "admin");
+        COMMANDS_ROLE_OVERRIDE.put("stop", "admin,owner");
         COMMANDS_ROLE_OVERRIDE.put("ban", "mod");
     }
 
