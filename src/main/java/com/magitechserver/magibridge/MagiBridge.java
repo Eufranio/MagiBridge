@@ -287,10 +287,10 @@ public class MagiBridge {
     }
 
     private void registerListeners() {
+        NucleusBridgeImpl.init(this);
         if (config.CHANNELS.USE_NUCLEUS) {
             useVanillaChat = true;
             if (Sponge.getPluginManager().getPlugin("nucleus").isPresent()) {
-                NucleusBridgeImpl.init(this);
                 logger.info("Hooking into Nucleus");
             } else {
                 logger.error(" ");

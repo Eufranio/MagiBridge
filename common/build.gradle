@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+group 'com.magitechserver.magibridge.common'
+version rootProject.version
+
+dependencies {
+    compileOnly 'org.spongepowered:spongeapi:7.3.0'
+}
+
+repositories {
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+    mavenCentral()
+}

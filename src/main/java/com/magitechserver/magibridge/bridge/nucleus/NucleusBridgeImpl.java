@@ -2,7 +2,6 @@ package com.magitechserver.magibridge.bridge.nucleus;
 
 import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.common.NucleusBridge;
-import com.magitechserver.magibridge.common.NucleusBridgeDelegate;
 import com.magitechserver.magibridge.config.FormatType;
 import com.magitechserver.magibridge.config.categories.ConfigCategory;
 import com.magitechserver.magibridge.discord.DiscordMessageBuilder;
@@ -22,7 +21,7 @@ public class NucleusBridgeImpl extends NucleusBridge {
         instance = new NucleusBridgeImpl() {{
             this.plugin = pl;
         }};
-        instance.init(pl);
+        instance.init(pl, Sponge.getPluginManager().isLoaded("nucleus"));
     }
 
     @Override

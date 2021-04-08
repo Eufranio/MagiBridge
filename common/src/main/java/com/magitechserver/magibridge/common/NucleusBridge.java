@@ -14,16 +14,20 @@ public abstract class NucleusBridge {
     protected static NucleusBridge instance;
     protected NucleusBridgeDelegate delegate;
 
-    public void init(Object plugin) {
-        try {
-            Class.forName("io.github.nucleuspowered.nucleus.api.events.NucleusAFKEvent");
-            delegate = (NucleusBridgeDelegate) Class.forName("com.magitechserver.magibridge.nucleusv1.NucleusV1Handlers").newInstance();
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+    public void init(Object plugin, boolean nucleusAvailable) {
+        if (nucleusAvailable) {
             try {
-                delegate = (NucleusBridgeDelegate) Class.forName("com.magitechserver.magibridge.nucleusv2.NucleusV2Handlers").newInstance();
-            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
-                delegate = new EmptyNucleusDelegate();
+                Class.forName("io.github.nucleuspowered.nucleus.api.events.NucleusAFKEvent");
+                delegate = (NucleusBridgeDelegate) Class.forName("com.magitechserver.magibridge.nucleusv1.NucleusV1Handlers").newInstance();
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                try {
+                    delegate = (NucleusBridgeDelegate) Class.forName("com.magitechserver.magibridge.nucleusv2.NucleusV2Handlers").newInstance();
+                } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
+                    delegate = new EmptyNucleusDelegate();
+                }
             }
+        } else {
+            delegate = new EmptyNucleusDelegate();
         }
 
         Sponge.getEventManager().registerListeners(plugin, delegate);
