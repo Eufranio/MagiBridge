@@ -227,6 +227,7 @@ public class DiscordMessageBuilder implements MessageBuilder {
                     .replace("%message%", rawMessage);
         }
 
+        this.placeholder("message", rawMessage);
         message = message.replaceAll(ServerMessageBuilder.STRIP_COLOR_PATTERN.pattern(), "");
         return message;
     }
