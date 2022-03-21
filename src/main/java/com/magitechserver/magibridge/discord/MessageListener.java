@@ -37,7 +37,8 @@ public class MessageListener extends ListenerAdapter {
         }
         
         if (e.getMessage().isWebhookMessage()) {
-            return;
+            if (config.CHANNELS.IGNORE_WEBHOOKS)
+                return;
         }
 
         String messageStripped = e.getMessage().getContentStripped();
