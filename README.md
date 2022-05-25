@@ -2,6 +2,7 @@
   <img src="https://user-images.githubusercontent.com/2921172/28250066-27f28466-6a2f-11e7-81fb-98cfee3a7313.png" width="300" alt="MagiBridge Logo"/>
 </p>
 <p align="center">MagiBridge logo, made by <a href="https://github.com/fcpwiz">fcpwiz</a></p>
+<p align="center"><a href="https://discord.gg/YttMwEr">MagiBridge discord server</a></p>
 
 # MagiBridge, by Eufranio
 MagiBridge is a Sponge plugin that creates a Discord <-> Minecraft chat bridge, forwarding messages from/to both sides, through JDA and supported chat plugins.
@@ -45,6 +46,7 @@ https://discordapp.com/oauth2/authorize?client_id=CLIENTID&scope=bot (for exampl
 * `magibridge.silentjoin` - doesn't trigger a join message when the player joins the server
 * `magibridge.silentquit` - doesn't trigger a quit message when the player leaves the server
 * `magibridge.everyone` - allow the player to use @everyone on messages sent to Discord
+* `magibridge.whois` - allows the use of `/whois <player>` command to check the Discord username of a linked player via MBDiscordLink
 * `magibridge.admin.broadcast` - allows the use of the `/mb <channel> <message>` command to send messages to Discord
 * `magibridge.chat` (granted by default) - allows messages from the player to be sent to Discord
 * `magibridge.mention` (granted by default) - allows players to mention discord users

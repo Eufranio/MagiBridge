@@ -14,6 +14,8 @@ public class Channel {
 
     @Setting(value="ignore-bots", comment = "Should MagiBridge ignore messages by other bots?")
     public boolean IGNORE_BOTS = true;
+    @Setting(value="ignore-webhooks", comment = "Should MagiBridge ignore messages by other webhooks?")
+    public boolean IGNORE_WEBHOOKS = true;
     @Setting(value = "use-nucleus", comment = "Should MagiBridge use Nucleus? If this and use-ultimatechat are both false, MagiBridge will use the vanilla chat system")
     public boolean USE_NUCLEUS = true;
     @Setting(value = "use-ultimatechat", comment = "Should MagiBridge use UltimateChat instead? If this and use-nucleus are both false, MagiBridge will use the vanilla chat system")
