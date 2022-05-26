@@ -8,7 +8,7 @@ group = pluginGroup
 version = pluginVersion
 
 dependencies {
-    shadow 'org.spongepowered:spongeapi:7.3.0'
+    shadow 'org.spongepowered:spongeapi:7.4.0'
     //shadow 'io.github.nucleuspowered:nucleus-api:1.8.0-S7.1'
     shadow 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-56:1.9.1'
     shadow files('libs/boop.jar')
