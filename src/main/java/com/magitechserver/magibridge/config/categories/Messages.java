@@ -75,7 +75,7 @@ public class Messages {
     @Setting(value = "afk", comment = "Messages sent to Discord when a player goes/retuns AFK, if enabled")
     public AFKCategory AFK = new AFKCategory();
 
-    @Setting(value = "link-format", comment = "The format used to replace link URLs in chat")
+    @Setting(value = "link-format", comment = "The format used to replace link URLs in chat. Supports %url%")
     public Link LINK_FORMAT = new Link();
 
     @Setting(value = "broadcast-message", comment = "Format used when sending broadcast messages to Discord. Supports %message%.")
@@ -88,7 +88,7 @@ public class Messages {
         public String FORMAT = "&9&n%url%";
 
         @Setting(value = "hover", comment = "The hover text over the text string in chat")
-        public List<String> HOVER = Lists.newArrayList("Click here to open this URL");
+        public List<String> HOVER = Lists.newArrayList("Click here to open %url%");
 
         @Setting(value = "limit-length", comment = "Limit the length of the URL string from format, cutting the " +
                 "remaining string. An ... is added at the end of the text format automatically if this is enabled.")

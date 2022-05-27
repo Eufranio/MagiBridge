@@ -5,8 +5,6 @@ import com.magitechserver.magibridge.MagiBridge;
 import com.magitechserver.magibridge.config.categories.Messages;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,6 +30,7 @@ public class TextHelper {
         Text hoverText = Text.joinWith(Text.NEW_LINE, hover);
 
         Function<String, Text> toReplace = urlString -> {
+            System.out.println(urlString);
             URL url = null;
             try {
                 String urlStringWithHttp = urlString.startsWith("http") ?
@@ -94,7 +93,11 @@ public class TextHelper {
         List<String> strs = Arrays.asList(pattern.split(plain, -1));
         for (String str : Iterables.limit(strs, strs.size() - 1)) {
             builder.append(Text.of(str));
-            builder.append(toReplaceFunction.apply(plain));
+            if (matcher.find()) {
+                builder.append(toReplaceFunction.apply(matcher.group()));
+            } else {
+                builder.append(toReplaceFunction.apply(plain));
+            }
         }
         builder.append(Text.of(strs.get(strs.size() - 1))).append(text.getChildren());
         return reformat(thisText, builder).build();
